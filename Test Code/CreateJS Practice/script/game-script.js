@@ -49,6 +49,10 @@ function handleComplete() {
   background = new createjs.Shape();
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,screen_width,screen_height);
+  box = new createjs.Shape();
+  // (1410-500)/2 = 455, just to center the box
+  box.graphics.beginStroke("#ff0000").drawRect(455,0,500,screen_height);
+
 
   var megamanSpriteSheet = new createjs.SpriteSheet({
     "images": [loader.getResult("megaman")],
@@ -59,9 +63,9 @@ function handleComplete() {
   });
   megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
   //setTransform places megaman at x=1300, y=330, scalex=1, scalex=2
-  megamanSprite.setTransform(1300,330,1,1);
+  megamanSprite.setTransform(600,330,1,1);
   megamanSprite.framerate = 60;
-  stage.addChild(background, megamanSprite);
+  stage.addChild(background, megamanSprite, box);
 
   
   createjs.Ticker.timingMode = createjs.Ticker.RAF;
@@ -111,12 +115,27 @@ function tick(event) {
   if (leftPressed && !rightPressed){
     megamanSprite.scaleX = 1;
     megamanSprite.x--;
+
+    //485 is 30 from the bounding box
+    //Moves the background in the opposite direction
+    //the ++ cancels movement, I feel like there is a better way to do this
+    if (megamanSprite.x <= 485){
+      megamanSprite.x++;
+      background.x++;
+    }
+    
   }
   //Pressed the Left Arrow Key
   if (!leftPressed && rightPressed){
     //set the X scale to -1 to flip along the horizontal
     megamanSprite.scaleX = -1;
-    megamanSprite.x++
+    megamanSprite.x++;
+    
+    //925 is 30 from the bounding box
+    if (megamanSprite.x >= 925){
+      megamanSprite.x--;
+      background.x--;
+    }
   }
 
 
@@ -130,6 +149,9 @@ function tick(event) {
     megamanSprite.gotoAndPlay("run");
     anyKeyPressed= true;
   }
+
+
+
 
 
   stage.update(event);
