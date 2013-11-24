@@ -97,7 +97,6 @@ function handleKeyUp(e) {
       leftPressed = false;
       megamanSprite.gotoAndStop("runLeft");
       anyKeyPressed = false;
-
       break;
     }  
     case KEYCODE_RIGHT:{
