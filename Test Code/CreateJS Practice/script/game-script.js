@@ -24,6 +24,10 @@ var anyKeyPressed = false;
 document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
+var box;
+var background;
+var StartPage;
+var StartText;
 
 
 
@@ -45,13 +49,22 @@ function init() {
 
 function handleComplete() {
   document.getElementById("loader").className = "";
-  
+  box = new createjs.Shape();
   background = new createjs.Shape();
+  StartPage = new createjs.Shape();
+  StartText = new createjs.Text("Start Button","20px Arial", "#000000");
+
+  StartText.x = 600;
+  StartText.y = 330;
+
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,screen_width,screen_height);
-  box = new createjs.Shape();
+
   // (1410-500)/2 = 455, just to center the box
   box.graphics.beginStroke("#ff0000").drawRect(455,0,500,screen_height);
+  
+
+  StartPage.graphics.beginFill("#6C8CD5").drawRect(455,0,500,screen_height);
 
 
   var megamanSpriteSheet = new createjs.SpriteSheet({
@@ -62,14 +75,16 @@ function handleComplete() {
       "run": [3, 5,"run", 5/60]} //Runs Left
   });
   megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
+  
   //setTransform places megaman at x=1300, y=330, scalex=1, scalex=2
   megamanSprite.setTransform(600,330,1,1);
   megamanSprite.framerate = 60;
   stage.addChild(background, megamanSprite, box);
-
+  stage.addChild(StartPage,StartText);
   
   createjs.Ticker.timingMode = createjs.Ticker.RAF;
   createjs.Ticker.addEventListener("tick", tick);
+  StartText.addEventListener("click", StartButton);
  
 }
 
@@ -108,7 +123,9 @@ function handleKeyUp(e) {
     } 
   }
 }
-
+function StartButton(event) {
+  stage.removeChild(StartText,StartPage);
+}
 
 function tick(event) {
   //Pressed the Left Arrow Key
@@ -130,7 +147,7 @@ function tick(event) {
     //set the X scale to -1 to flip along the horizontal
     megamanSprite.scaleX = -1;
     megamanSprite.x++;
-    
+
     //925 is 30 from the bounding box
     if (megamanSprite.x >= 925){
       megamanSprite.x--;
