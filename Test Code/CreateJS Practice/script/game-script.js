@@ -28,8 +28,8 @@ var box;
 var background;
 var StartPage;
 var StartText;
-
-
+var scoreDisplay;
+var score = 0;
 
 function init() {
   stage = new createjs.Stage("myCanvas");
@@ -37,7 +37,7 @@ function init() {
   screen_width = stage.canvas.width;
   manifest = [
     {src:"images/megaman.png", id:"megaman"},
-    {src:"images/charabg.png", id:"background"}
+    {src:"images/ChristmasBG.png", id:"background"}
   ];
   //Not completely sure what this does. I think it runs handlerComplete when
   //the files are done loading
@@ -53,9 +53,14 @@ function handleComplete() {
   background = new createjs.Shape();
   StartPage = new createjs.Shape();
   StartText = new createjs.Text("Start Button","20px Arial", "#000000");
-
+  scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#000000");
   StartText.x = 600;
   StartText.y = 330;
+
+  scoreDisplay.x = 750;
+  scoreDisplay.y = 100;
+
+
 
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,screen_width,screen_height);
@@ -81,6 +86,8 @@ function handleComplete() {
   megamanSprite.framerate = 60;
   stage.addChild(background, megamanSprite, box);
   stage.addChild(StartPage,StartText);
+  
+
   
   createjs.Ticker.timingMode = createjs.Ticker.RAF;
   createjs.Ticker.addEventListener("tick", tick);
@@ -125,7 +132,29 @@ function handleKeyUp(e) {
 }
 function StartButton(event) {
   stage.removeChild(StartText,StartPage);
+  stage.addChild(scoreDisplay);
+  
+
+
+  //createjs.Ticker.setFPS(40);
+  
+  createjs.Ticker.addEventListener("tick",scoretimer);
 }
+
+function restart() {
+  stage.removeAllChildren();
+
+}
+
+function scoretimer(event){
+
+  score++;
+
+  scoreDisplay.text = "Score: "+score+" ";
+
+
+}
+
 
 function tick(event) {
   //Pressed the Left Arrow Key
@@ -166,7 +195,6 @@ function tick(event) {
     megamanSprite.gotoAndPlay("run");
     anyKeyPressed= true;
   }
-
 
 
 
