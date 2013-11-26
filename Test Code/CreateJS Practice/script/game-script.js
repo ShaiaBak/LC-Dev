@@ -54,8 +54,8 @@ function handleComplete() {
   StartPage = new createjs.Shape();
   StartText = new createjs.Text("Start Button","20px Arial", "#000000");
   scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#000000");
-  StartText.x = 600;
-  StartText.y = 330;
+  StartText.x = 100;
+  StartText.y = 270;
 
   scoreDisplay.x = 750;
   scoreDisplay.y = 100;
@@ -63,13 +63,13 @@ function handleComplete() {
 
 
   //fill the background at 0,0 to the size of the screen
-  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,screen_width,screen_height);
+  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
 
   // (1410-500)/2 = 455, just to center the box
-  box.graphics.beginStroke("#ff0000").drawRect(455,0,500,screen_height);
+  box.graphics.beginStroke("#ff0000").drawRect(0,0,500,screen_height);
   
 
-  StartPage.graphics.beginFill("#6C8CD5").drawRect(455,0,500,screen_height);
+  StartPage.graphics.beginFill("#6C8CD5").drawRect(0,0,500,screen_height);
 
 
   var megamanSpriteSheet = new createjs.SpriteSheet({
@@ -82,7 +82,7 @@ function handleComplete() {
   megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
   
   //setTransform places megaman at x=1300, y=330, scalex=1, scalex=2
-  megamanSprite.setTransform(600,330,1,1);
+  megamanSprite.setTransform(120,250,1,1);
   megamanSprite.framerate = 60;
   stage.addChild(background, megamanSprite, box);
   stage.addChild(StartPage,StartText);
@@ -175,13 +175,13 @@ function tick(event) {
   if (!leftPressed && rightPressed){
     //set the X scale to -1 to flip along the horizontal
     megamanSprite.scaleX = -1;
-    megamanSprite.x++;
+    //megamanSprite.x++;
 
     //925 is 30 from the bounding box
-    if (megamanSprite.x >= 925){
-      megamanSprite.x--;
+    //if (megamanSprite.x >= 925){
+    //  megamanSprite.x--;
       background.x--;
-    }
+  // }
   }
 
 
@@ -196,8 +196,7 @@ function tick(event) {
     anyKeyPressed= true;
   }
 
-
-
+  //stage.addChild(background);
 
   stage.update(event);
 }
