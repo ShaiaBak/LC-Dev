@@ -11,13 +11,14 @@ var KEYCODE_SPACE = 32;   //usefull keycode
 var KEYCODE_UP = 38;    //usefull keycode
 var KEYCODE_LEFT = 37;    //usefull keycode
 var KEYCODE_RIGHT = 39;   //usefull keycode
+var KEYCODE_DOWN = 40;   //usefull keycode
 var KEYCODE_W = 87;     //usefull keycode
 var KEYCODE_A = 65;     //usefull keycode
 var KEYCODE_D = 68;     //usefull keycode
 
 var leftPressed = false;
 var rightPressed = false;
-
+var spacePressed = false;
 var anyKeyPressed = false;
 
 
@@ -30,6 +31,7 @@ var StartPage;
 var StartText;
 var scoreDisplay;
 var score = 0;
+var backgroundvalue = 0;
 
 function init() {
   stage = new createjs.Stage("myCanvas");
@@ -57,7 +59,7 @@ function handleComplete() {
   StartText.x = 100;
   StartText.y = 270;
 
-  scoreDisplay.x = 750;
+  scoreDisplay.x = 300;
   scoreDisplay.y = 100;
 
 
@@ -77,7 +79,9 @@ function handleComplete() {
     "frames": {height: 30, width: 30, regX: 15, regY: 0},
     "animations": {
       "idle": [0, 0], 
-      "run": [3, 5,"run", 5/60]} //Runs Left
+      "run": [3, 5,"run", 5/60], //Runs Left
+      "duck": [7, 7]
+      } 
   });
   megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
   
@@ -108,6 +112,13 @@ function handleKeyDown(e) {
     rightPressed = true;
     return false;
     }
+    
+    case KEYCODE_SPACE: {
+    spacePressed = true;
+    return false;
+    }
+
+
   }
 }
 
@@ -128,6 +139,13 @@ function handleKeyUp(e) {
       anyKeyPressed = false;
       break;
     } 
+      case KEYCODE_SPACE:{
+      spacePressed = false;
+      megamanSprite.gotoAndStop("duck");
+      anyKeyPressed = false;
+      break;
+    } 
+
   }
 }
 function StartButton(event) {
@@ -149,49 +167,86 @@ function restart() {
 function scoretimer(event){
 
   score++;
-
-  scoreDisplay.text = "Score: "+score+" ";
+  backgroundvalue = background.x
+  scoreDisplay.text = "Score: "+megamanSprite.x+" ";
 
 
 }
 
 
 function tick(event) {
-  //Pressed the Left Arrow Key
-  if (leftPressed && !rightPressed){
-    megamanSprite.scaleX = 1;
-    megamanSprite.x--;
 
-    //485 is 30 from the bounding box
-    //Moves the background in the opposite direction
-    //the ++ cancels movement, I feel like there is a better way to do this
-    if (megamanSprite.x <= 485){
-      megamanSprite.x++;
+  //Pressed the Left Arrow Key
+  if (leftPressed && !rightPressed && !spacePressed){
+    megamanSprite.scaleX = 1;
+    if (background.x > -500){
+      megamanSprite.x--;
+      background.x++;
+    } else {
+     
       background.x++;
     }
-    
   }
   //Pressed the Left Arrow Key
-  if (!leftPressed && rightPressed){
+  if ( !leftPressed && rightPressed && !spacePressed ){
     //set the X scale to -1 to flip along the horizontal
     megamanSprite.scaleX = -1;
-    //megamanSprite.x++;
+    
 
-    //925 is 30 from the bounding box
-    //if (megamanSprite.x >= 925){
-    //  megamanSprite.x--;
+    //So the background will move till it hits the end.
+    //after it hits the end, the sprite will move
+
+    if (background.x > -500){
       background.x--;
+    } else {
+      megamanSprite.x++;
+    }
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // OLD CODE, LEFT IN FOR NOW
+
+
+  // //Pressed the Left Arrow Key
+  // if (leftPressed && !rightPressed){
+  //   megamanSprite.scaleX = 1;
+  //   megamanSprite.x--;
+
+  //   //485 is 30 from the bounding box
+  //   //Moves the background in the opposite direction
+  //   //the ++ cancels movement, I feel like there is a better way to do this
+  //   if (megamanSprite.x <= 485){
+  //     megamanSprite.x++;
+  //     background.x++;
+  //   }
+    
   // }
+  // //Pressed the Left Arrow Key
+  // if (!leftPressed && rightPressed){
+  //   //set the X scale to -1 to flip along the horizontal
+  //   megamanSprite.scaleX = -1;
+  //   //megamanSprite.x++;
+
+  //   //925 is 30 from the bounding box
+  //   //if (megamanSprite.x >= 925){
+  //   //  megamanSprite.x--;
+  //     background.x--;
+  // // }
+  // }
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  if (spacePressed){
+    megamanSprite.gotoAndPlay("duck");
+    anykeypress = true;
   }
 
-
-  if (!leftPressed && !rightPressed){
+  // if both or neither buttons pressed, the character will stop
+  if ( (!spacePressed&&!leftPressed&&!rightPressed) ){
     megamanSprite.gotoAndStop("idle");
   }
 
   //When an arrow key is pressed, it will play the "run" animation (which loops)
   //will remove the anykeypress flag so that the animation will be only played once
-  if ((leftPressed||rightPressed) && !anyKeyPressed){
+  if ((leftPressed||rightPressed) && !anyKeyPressed && !spacePressed){
     megamanSprite.gotoAndPlay("run");
     anyKeyPressed= true;
   }
