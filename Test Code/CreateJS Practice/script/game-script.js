@@ -30,6 +30,8 @@ var background;
 var StartPage;
 var StartText;
 var scoreDisplay;
+var backgroundxDisplay;
+var spritexDisplay;
 var score = 0;
 var backgroundvalue = 0;
 
@@ -56,13 +58,17 @@ function handleComplete() {
   StartPage = new createjs.Shape();
   StartText = new createjs.Text("Start Button","20px Arial", "#000000");
   scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#000000");
+  backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
+  spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
   StartText.x = 100;
   StartText.y = 270;
 
   scoreDisplay.x = 300;
   scoreDisplay.y = 100;
-
-
+  backgroundxDisplay.x = 300;
+  backgroundxDisplay.y = 150;
+  spritexDisplay.x = 300;
+  spritexDisplay.y = 180;
 
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
@@ -85,7 +91,7 @@ function handleComplete() {
   });
   megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
   
-  //setTransform places megaman at x=1300, y=330, scalex=1, scalex=2
+  //setTransform places megaman at x=1300, y=330, scalex=1, scaley=1
   megamanSprite.setTransform(120,250,1,1);
   megamanSprite.framerate = 60;
   stage.addChild(background, megamanSprite, box);
@@ -150,7 +156,7 @@ function handleKeyUp(e) {
 }
 function StartButton(event) {
   stage.removeChild(StartText,StartPage);
-  stage.addChild(scoreDisplay);
+  stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
   
 
 
@@ -167,8 +173,10 @@ function restart() {
 function scoretimer(event){
 
   score++;
-  backgroundvalue = background.x
-  scoreDisplay.text = "Score: "+megamanSprite.x+" ";
+
+  scoreDisplay.text = "Score: "+score+" ";
+  backgroundxDisplay.text = "bg: "+background.x+" ";
+  spritexDisplay.text = "sprite: "+megamanSprite.x+" ";
 
 
 }
@@ -176,14 +184,28 @@ function scoretimer(event){
 
 function tick(event) {
 
+  //Walking logic broken down into 3 stages
+  //stage 1: starting area
+  //15 < character.x <= 200 && bg.x == 0
+  //character moves left and right freely til he hits 200
+
+  //stage 2: traversing area
+  //character.x == 200 && -500 <= bg.x && bg.x <= 0
+  //character runs on the spot and the background moves
+
+  //stage 3
+  //200 < character.x <= 400 && bg.x == -500
+  //character runs freely past 200 to 400
+
   //Pressed the Left Arrow Key
   if (leftPressed && !rightPressed && !spacePressed){
     megamanSprite.scaleX = 1;
-    if (background.x > -500){
+    
+    if ((15 < megamanSprite.x && megamanSprite.x <= 200 && background.x == 0) || 
+        (200 < megamanSprite.x && megamanSprite.x <= 400 && background.x == -500)){
       megamanSprite.x--;
-      background.x++;
-    } else {
-     
+    } 
+    if (megamanSprite.x == 200 && -500 <= background.x && background.x <= 0){
       background.x++;
     }
   }
@@ -196,12 +218,16 @@ function tick(event) {
     //So the background will move till it hits the end.
     //after it hits the end, the sprite will move
 
-    if (background.x > -500){
-      background.x--;
-    } else {
+    if ((15 <= megamanSprite.x && megamanSprite.x < 200 && background.x == 0) || 
+        (200 <= megamanSprite.x && megamanSprite.x < 400 && background.x == -500)){
       megamanSprite.x++;
+    } 
+    if (megamanSprite.x == 200 && -500 <= background.x && background.x <= 0){
+      background.x--;
     }
   }
+
+
   /////////////////////////////////////////////////////////////////////////////////////////
   // OLD CODE, LEFT IN FOR NOW
 
