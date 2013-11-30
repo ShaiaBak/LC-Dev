@@ -263,5 +263,5 @@ function stageUpdate(event) {
 
   //stage.addChild(background);
 
-  stage.update(event);
+  stage.update();
 }
