@@ -76,6 +76,7 @@ function handleComplete() {
  stage.addEventListener("click", loadingScreenClick);
 }
 
+//Creates everything related to the loading screen
 function loadingInitialize() {
   
   //define loading screen graphics
