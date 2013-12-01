@@ -27,63 +27,145 @@ document.onkeyup = handleKeyUp;
 
 var box;
 var background;
-var StartPage;
-var StartText;
+var startPage;
+var startText;
 var scoreDisplay;
 var backgroundxDisplay;
 var spritexDisplay;
 var score = 0;
 var backgroundvalue = 0;
+var loadProgressLabel;
 
 function init() {
   // conventional initializer
   stage = new createjs.Stage("myCanvas");
   screen_height = stage.canvas.height;
   screen_width = stage.canvas.width;
+
+  loadingInitialize();
+
   manifest = [
     // array of assest (images/music) that load with manifest
     {src:"images/megaman.png", id:"megaman"},
     {src:"images/ChristmasBG.png", id:"background"}
   ];
+
+
   //Not completely sure what this does. I think it runs handlerComplete when
   //the files are done loading
   loader = new createjs.LoadQueue(false);
   loader.addEventListener("complete", handleComplete);
+  loader.addEventListener("progress", handleProgress);
   // loads the manifest
   loader.loadManifest(manifest);
+  stage.update();
+}
+
+//this function is called everytime the progress of our loading changes
+function handleProgress() {
+  loadingBar.scaleX = loader.progress * 300;
+  progressPercentage = Math.round(loader.progress*100);
+  loadProgressLabel.text = progressPercentage +"% Loaded";
+  stage.update();
+}
+
+//called when everything is loaded 
+function handleComplete() {
+  // the canvas is now clickable and will run loadingScreenClick
+
+ stage.addEventListener("click", loadingScreenClick);
+}
+
+function loadingInitialize() {
+  
+  //define loading screen graphics
+  loadProgressLabel = new createjs.Text("","20px Arial","black");
+  loadingScreenFill = new createjs.Shape();
+  loadingBar = new createjs.Shape();
+  loadingBarFrame = new createjs.Shape();
+  loadingBarContainer = new createjs.Container();
+  loadingBarHeight = 20;
+  loadingBarWidth = 300;
+
+  loadProgressLabel.lineWidth = 200;
+  loadProgressLabel.textAlign = "center";
+  loadProgressLabel.x = screen_width/2;
+  loadProgressLabel.y = screen_height/2;
+
+  //Fill background with gray
+  loadingScreenFill.graphics.beginFill("#B0B0B0").drawRect(0,0,screen_width,screen_height).endFill();
+
+  //Create the progression part of the loading screen
+  loadingBar.graphics.beginFill("#000000").drawRect(0,0,1,20).endFill();
+  
+  //Creates a frame around the loading bar. Used 3 as a padding value
+  //the frame is 3px larger and is offset by 1.5
+  loadingBarFrame.graphics.setStrokeStyle(1).beginStroke("#000000").drawRect(-3/2, -3/2, loadingBarWidth+3, loadingBarHeight+3).endStroke();
+  
+  //Combine the frame and the bar into 1 object
+  loadingBarContainer.addChild(loadingBar, loadingBarFrame);
+  
+  //center the loading bar
+  loadingBarContainer.x = screen_width/2 - loadingBarWidth/2;
+  loadingBarContainer.y = screen_height/2 + 50;
+
+  stage.addChild(loadingScreenFill, loadProgressLabel, loadingBarContainer);
 
 }
 
-// when game is done
-function handleComplete() {
+
+// When the canvas is clicked, build the game
+function loadingScreenClick() {
+  
+  //create the game
+  startGame();
+
+  //remove the loading screen page and click function
+  stage.removeChild(loadProgressLabel, loadingBarContainer, loadingScreenFill);
+  stage.removeEventListener("click", loadingScreenClick);
+
+}
+
+// Create the starting point of the game
+function startGame() {
   document.getElementById("loader").className = "";
   // crates new stages and properties for assets to live on
   box = new createjs.Shape();
   background = new createjs.Shape();
-  StartPage = new createjs.Shape();
-  StartText = new createjs.Text("Start Button","20px Arial", "#000000");
+  startPage = new createjs.Shape();
+  startText = new createjs.Text("Start Button","20px Arial", "#000000");
+  startButton = new createjs.Shape();
+  startButtonContainer = new createjs.Container();
   scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#000000");
   backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
   spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
-  StartText.x = 100;
-  StartText.y = 270;
-
+ 
+ 
+  startButtonContainer.x = screen_width/2 - 200/2;
+  startButtonContainer.y = screen_height/2;
+   startText.textAlign = "center";
+  startText.x = 200/2;
+  startText.y = 50/2;
+  
   scoreDisplay.x = 300;
   scoreDisplay.y = 100;
+
   backgroundxDisplay.x = 300;
   backgroundxDisplay.y = 150;
+
   spritexDisplay.x = 300;
   spritexDisplay.y = 180;
 
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
-
-  // (1410-500)/2 = 455, just to center the box
   box.graphics.beginStroke("#ff0000").drawRect(0,0,500,screen_height);
   
+  //Create start button graohuc
+  startPage.graphics.beginFill("#6C8CD5").drawRect(0,0,500,screen_height);
+  startButton.graphics.beginFill("#B0B0B0").drawRect(0,0,200,50);
 
-  StartPage.graphics.beginFill("#6C8CD5").drawRect(0,0,250,screen_height);
-
+  //Link the start button and the text together
+  startButtonContainer.addChild(startButton, startText);
 
   var megamanSpriteSheet = new createjs.SpriteSheet( {
     // all main strings are reserved strings (images, frames, animations) that do a specific task
@@ -102,14 +184,27 @@ function handleComplete() {
   megamanSprite.framerate = 60;
   // .addchild put everythign on the screen
   stage.addChild(background, megamanSprite, box);
-  stage.addChild(StartPage,StartText);
+
+  stage.addChild(startPage,startButtonContainer);
   
+  startButtonContainer.addEventListener("click",startButtonClick);
+
   // not sure what .timingMode is
   // .Ticker adds continuous timer
   createjs.Ticker.timingMode = createjs.Ticker.RAF;
   createjs.Ticker.addEventListener("tick", stageUpdate);
-  StartText.addEventListener("click", StartButton);
+ 
 }
+
+// When the start button is clicked, remove the start page
+// Add score displays
+function startButtonClick() {
+  stage.removeChild(startPage, startButtonContainer);
+  startButtonContainer.removeEventListener("click", startButtonClick);
+  stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
+  createjs.Ticker.addEventListener("tick",scoretimer)
+}
+
 
 // press key down
 function handleKeyDown(e) {
@@ -165,17 +260,7 @@ function handleKeyUp(e) {
 
   }
 }
-function StartButton(event) {
-  // take out the start screen and add in the HUD
-  stage.removeChild(StartText,StartPage);
-  stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
-  
 
-
-  //createjs.Ticker.setFPS(40);
-  
-  createjs.Ticker.addEventListener("tick",scoretimer);
-}
 
 function restart() {
   // take out EVERYTHING
