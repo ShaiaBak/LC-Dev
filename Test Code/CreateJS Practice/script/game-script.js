@@ -144,7 +144,7 @@ function startGame() {
  
   startButtonContainer.x = screen_width/2 - 200/2;
   startButtonContainer.y = screen_height/2;
-   startText.textAlign = "center";
+  startText.textAlign = "center";
   startText.x = 200/2;
   startText.y = 50/2;
   
@@ -161,10 +161,10 @@ function startGame() {
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
   box.graphics.beginStroke("#ff0000").drawRect(0,0,500,screen_height);
   
-  //Create start button graohuc
+  //Create start button graphic
   startPage.graphics.beginFill("#6C8CD5").drawRect(0,0,500,screen_height);
   startButton.graphics.beginFill("#B0B0B0").drawRect(0,0,200,50);
-
+  startButton.alpha = 0.5;
   //Link the start button and the text together
   startButtonContainer.addChild(startButton, startText);
 
@@ -341,13 +341,33 @@ function stageUpdate(event) {
     anykeypress = true;
   }
 
-  // if both or neither buttons pressed, the character will stop moving
-  if ((!spacePressed&&!leftPressed&&!rightPressed)) {
+  // If left and right are pressed at the same time or nothing is pressed
+  // return to the standing animation
+  if ((!spacePressed&&!leftPressed&&!rightPressed) || (rightPressed&&leftPressed)) {
     megamanSprite.gotoAndStop("idle");
     anyKeyPressed = false;
   }
 
-  //stage.addChild(background);
+  //if (megamanSprite.x >= 400){
+    endCardPhoto();
+  //}
+
 
   stage.update();
+}
+
+function endCardPhoto() {
+  stage.removeAllChildren();
+  endPhoto = new createjs.Shape();
+  endPhotoBackground = new createjs.Shape();
+  endPhoto.graphics.beginStroke("#ff0000").beginFill("#FFFFFF").drawRect(0,0,250,250);
+  endPhotoBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
+  endPhoto.regX = 125;
+  endPhoto.regY = 125;
+  endPhoto.rotation = 60;
+  endPhoto.x = 125;
+  endPhoto.y = 50;
+  
+
+  stage.addChild(endPhotoBackground, endPhoto);
 }
