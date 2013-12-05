@@ -119,7 +119,7 @@ function loadingInitialize() {
 function loadingScreenClick() {
   
   //create the game
-  startGame();
+  startScreen();
 
   //remove the loading screen page and click function
   stage.removeChild(loadProgressLabel, loadingBarContainer, loadingScreenFill);
@@ -128,6 +128,33 @@ function loadingScreenClick() {
 
 function startScreen() {
 
+  document.getElementById("loader").className = "";
+  // crates new stages and properties for assets to live on
+  startPage = new createjs.Shape();
+  startText = new createjs.Text("Start Button","20px Arial", "#000000");
+  startButton = new createjs.Shape();
+  startButtonContainer = new createjs.Container();
+
+  startButtonContainer.x = screen_width/2 - 200/2;
+  startButtonContainer.y = screen_height/2;
+  startText.textAlign = "center";
+  startText.x = 200/2;
+  startText.y = 50/2;
+
+  //Create start button graphic
+  startPage.graphics.beginFill("#6C8CD5").drawRect(0,0,500,screen_height);
+  startButton.graphics.beginFill("#B0B0B0").drawRect(0,0,200,50);
+  startButton.alpha = 0.5;
+
+
+  //Link the start button and the text together
+  startButtonContainer.addChild(startButton, startText);
+
+  stage.addChild(startPage,startButtonContainer);
+  
+  startButtonContainer.addEventListener("click",startButtonClick);
+
+  stage.update();
 }
 
 
@@ -139,28 +166,19 @@ function startButtonClick() {
   stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
   createjs.Ticker.addEventListener("tick",scoretimer);
 
+  startGame();
+
   createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
 // Create the starting point of the game
 function startGame() {
-  document.getElementById("loader").className = "";
-  // crates new stages and properties for assets to live on
   background = new createjs.Shape();
-  startPage = new createjs.Shape();
-  startText = new createjs.Text("Start Button","20px Arial", "#000000");
-  startButton = new createjs.Shape();
-  startButtonContainer = new createjs.Container();
-  scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#000000");
   backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
   spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
- 
- 
-  startButtonContainer.x = screen_width/2 - 200/2;
-  startButtonContainer.y = screen_height/2;
-  startText.textAlign = "center";
-  startText.x = 200/2;
-  startText.y = 50/2;
+  scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#000000");
+  //fill the background at 0,0 to the size of the screen
+  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
   
   scoreDisplay.x = 300;
   scoreDisplay.y = 100;
@@ -171,15 +189,7 @@ function startGame() {
   spritexDisplay.x = 300;
   spritexDisplay.y = 180;
 
-  //fill the background at 0,0 to the size of the screen
-  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
-  
-  //Create start button graphic
-  startPage.graphics.beginFill("#6C8CD5").drawRect(0,0,500,screen_height);
-  startButton.graphics.beginFill("#B0B0B0").drawRect(0,0,200,50);
-  startButton.alpha = 0.5;
-  //Link the start button and the text together
-  startButtonContainer.addChild(startButton, startText);
+
 
   var megamanSpriteSheet = new createjs.SpriteSheet( {
     // all main strings are reserved strings (images, frames, animations) that do a specific task
@@ -196,12 +206,10 @@ function startGame() {
   // setTransform sets sprites x and y coordinates and scale
   megamanSprite.setTransform(120,250,1,1);
   megamanSprite.framerate = 60;
+
+
   // .addchild put everythign on the screen
   stage.addChild(background, megamanSprite);
-
-  stage.addChild(startPage,startButtonContainer);
-  
-  startButtonContainer.addEventListener("click",startButtonClick);
 
   // not sure what .timingMode is
   // .Ticker adds continuous timer
