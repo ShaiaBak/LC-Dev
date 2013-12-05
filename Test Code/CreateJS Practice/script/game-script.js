@@ -168,7 +168,33 @@ function startButtonClick() {
 
   startGame();
 
+  //TODO: MUSIC HAS TO MOVE
   createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+}
+
+function charSelect {
+  /* PSUEDO CODE**** //TODO: REMOVE
+
+  character = 0; //TODO: PUT AS GLOBAL VARIABLE
+  
+  megaGirl = new createjs("GIRL_SRITE");
+  megaBOY = new createjs("BOY_SPRITE");
+
+  switch:
+    case CHOOSE_BOY: {
+      character = 1;
+    }
+    case CHOOSE_boy: {
+      character = 2;
+    }
+
+  if ( character == 1 ) {
+    character = megaGirl;
+  } else if ( character == 2) {
+    character = megaBoy;
+  }
+  
+  */
 }
 
 // Create the starting point of the game
@@ -287,7 +313,6 @@ function handleKeyUp(e) {
 function restart() {
   // take out EVERYTHING
   stage.removeAllChildren();
-
 }
 
 function scoretimer(event) {
