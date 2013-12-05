@@ -177,6 +177,7 @@ function startGame() {
   backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
   spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
   scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#000000");
+  
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
   
@@ -239,7 +240,10 @@ function handleKeyDown(e) {
       spacePressed = true;
       break;
     }
-
+    case KEYCODE_DOWN: {
+      spacePressed = true;
+      break;
+    }
   }
 }
 
@@ -263,12 +267,18 @@ function handleKeyUp(e) {
       anyKeyPressed = false;
       break;
     } 
-      case KEYCODE_SPACE: {
+    case KEYCODE_SPACE: {
       spacePressed = false;
       megamanSprite.gotoAndStop("duck");
       anyKeyPressed = false;
       break;
-    } 
+    }
+    case KEYCODE_DOWN: {
+      spacePressed = false;
+      megamanSprite.gotoAndStop("duck");
+      anyKeyPressed = false;
+      break;
+    }
 
   }
 }
