@@ -47,13 +47,15 @@ function init() {
   manifest = [
     // array of assest (images/music) that load with manifest
     {src:"images/megaman.png", id:"megaman"},
-    {src:"images/ChristmasBG.png", id:"background"}
+    {src:"images/ChristmasBG.png", id:"background"},
+    {src:"assests/Test.mp3", id:"music"}
   ];
 
 
   //Not completely sure what this does. I think it runs handlerComplete when
   //the files are done loading
   loader = new createjs.LoadQueue(false);
+  loader.installPlugin(createjs.Sound);
   loader.addEventListener("complete", handleComplete);
   loader.addEventListener("progress", handleProgress);
   // loads the manifest
@@ -203,7 +205,9 @@ function startButtonClick() {
   stage.removeChild(startPage, startButtonContainer);
   startButtonContainer.removeEventListener("click", startButtonClick);
   stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
-  createjs.Ticker.addEventListener("tick",scoretimer)
+  createjs.Ticker.addEventListener("tick",scoretimer);
+
+  createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
 
@@ -349,7 +353,7 @@ function stageUpdate(event) {
   }
 
   //if (megamanSprite.x >= 400){
-    endCardPhoto();
+  //  endCardPhoto();
   //}
 
 
