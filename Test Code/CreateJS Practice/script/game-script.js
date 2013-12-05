@@ -25,7 +25,6 @@ var anyKeyPressed = false;
 document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
-var box;
 var background;
 var startPage;
 var startText;
@@ -116,7 +115,6 @@ function loadingInitialize() {
 
 }
 
-
 // When the canvas is clicked, build the game
 function loadingScreenClick() {
   
@@ -126,14 +124,28 @@ function loadingScreenClick() {
   //remove the loading screen page and click function
   stage.removeChild(loadProgressLabel, loadingBarContainer, loadingScreenFill);
   stage.removeEventListener("click", loadingScreenClick);
+}
 
+function startScreen() {
+
+}
+
+
+// When the start button is clicked, remove the start page
+// Add score displays
+function startButtonClick() {
+  stage.removeChild(startPage, startButtonContainer);
+  startButtonContainer.removeEventListener("click", startButtonClick);
+  stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
+  createjs.Ticker.addEventListener("tick",scoretimer);
+
+  createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
 // Create the starting point of the game
 function startGame() {
   document.getElementById("loader").className = "";
   // crates new stages and properties for assets to live on
-  box = new createjs.Shape();
   background = new createjs.Shape();
   startPage = new createjs.Shape();
   startText = new createjs.Text("Start Button","20px Arial", "#000000");
@@ -161,7 +173,6 @@ function startGame() {
 
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
-  box.graphics.beginStroke("#ff0000").drawRect(0,0,500,screen_height);
   
   //Create start button graphic
   startPage.graphics.beginFill("#6C8CD5").drawRect(0,0,500,screen_height);
@@ -186,7 +197,7 @@ function startGame() {
   megamanSprite.setTransform(120,250,1,1);
   megamanSprite.framerate = 60;
   // .addchild put everythign on the screen
-  stage.addChild(background, megamanSprite, box);
+  stage.addChild(background, megamanSprite);
 
   stage.addChild(startPage,startButtonContainer);
   
@@ -198,18 +209,6 @@ function startGame() {
   createjs.Ticker.addEventListener("tick", stageUpdate);
  
 }
-
-// When the start button is clicked, remove the start page
-// Add score displays
-function startButtonClick() {
-  stage.removeChild(startPage, startButtonContainer);
-  startButtonContainer.removeEventListener("click", startButtonClick);
-  stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
-  createjs.Ticker.addEventListener("tick",scoretimer);
-
-  createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
-}
-
 
 // press key down
 function handleKeyDown(e) {
