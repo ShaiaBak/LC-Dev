@@ -173,7 +173,7 @@ function startButtonClick() {
   createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
-//function charSelect {
+function charSelect {
   /* PSUEDO CODE**** //TODO: REMOVE
 
   character = 0; //TODO: PUT AS GLOBAL VARIABLE
@@ -196,7 +196,7 @@ function startButtonClick() {
   }
   
   */
-//}
+}
 
 // Create the starting point of the game
 function startGame() {
