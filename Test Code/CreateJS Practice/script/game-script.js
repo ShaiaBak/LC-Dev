@@ -14,6 +14,7 @@ var KEYCODE_RIGHT = 39;   //usefull keycode
 var KEYCODE_DOWN = 40;   //usefull keycode
 var KEYCODE_W = 87;     //usefull keycode
 var KEYCODE_A = 65;     //usefull keycode
+var KEYCODE_S = 83;     //useful keycode
 var KEYCODE_D = 68;     //usefull keycode
 
 var leftPressed = false;
@@ -172,7 +173,7 @@ function startButtonClick() {
   createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
-function charSelect {
+//function charSelect {
   /* PSUEDO CODE**** //TODO: REMOVE
 
   character = 0; //TODO: PUT AS GLOBAL VARIABLE
@@ -195,7 +196,7 @@ function charSelect {
   }
   
   */
-}
+//}
 
 // Create the starting point of the game
 function startGame() {
@@ -254,19 +255,19 @@ function handleKeyDown(e) {
 
   switch(e.keyCode) {
     
-    case KEYCODE_LEFT: {
+    case KEYCODE_LEFT:
+    case KEYCODE_A: {
       leftPressed = true;
       break;
     }
-    case KEYCODE_RIGHT: {
+    case KEYCODE_RIGHT:
+    case KEYCODE_D: {
       rightPressed = true;
       break;
     }
-    case KEYCODE_SPACE: {
-      spacePressed = true;
-      break;
-    }
-    case KEYCODE_DOWN: {
+    case KEYCODE_SPACE: 
+    case KEYCODE_DOWN:
+    case KEYCODE_S: {
       spacePressed = true;
       break;
     }
@@ -281,25 +282,23 @@ function handleKeyUp(e) {
 
   //gotoAndStop will play the animation once and stop
   switch(e.keyCode) {
-    case KEYCODE_LEFT: {
+    case KEYCODE_LEFT:
+    case KEYCODE_A: {
       leftPressed = false;
       megamanSprite.gotoAndStop("run");
       anyKeyPressed = false;
       break;
     }  
-    case KEYCODE_RIGHT: {
+    case KEYCODE_RIGHT:
+    case KEYCODE_D: {
       rightPressed = false;
       megamanSprite.gotoAndStop("run");
       anyKeyPressed = false;
       break;
     } 
-    case KEYCODE_SPACE: {
-      spacePressed = false;
-      megamanSprite.gotoAndStop("duck");
-      anyKeyPressed = false;
-      break;
-    }
-    case KEYCODE_DOWN: {
+    case KEYCODE_SPACE: 
+    case KEYCODE_DOWN:
+    case KEYCODE_S: {
       spacePressed = false;
       megamanSprite.gotoAndStop("duck");
       anyKeyPressed = false;
