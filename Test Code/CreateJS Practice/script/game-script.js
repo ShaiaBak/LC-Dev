@@ -26,6 +26,8 @@ var anyKeyPressed = false;
 document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
+var character = -1;
+
 var background;
 var startPage;
 var startText;
@@ -38,6 +40,7 @@ var loadProgressLabel;
 var endCardPhotoStatus = false;
 var endCardPhotoCount = 0;
 var endCardGiftStatus = false;
+
 function init() {
   // conventional initializer
   stage = new createjs.Stage("myCanvas");
@@ -130,7 +133,6 @@ function loadingScreenClick() {
 }
 
 function startScreen() {
-
   document.getElementById("loader").className = "";
   // crates new stages and properties for assets to live on
   startPage = new createjs.Shape();
@@ -169,14 +171,15 @@ function startButtonClick() {
   stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
   createjs.Ticker.addEventListener("tick",scoretimer);
 
-  startGame();
+  charScreen();
 
   //TODO: MUSIC HAS TO MOVE
   createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
-//function charSelect {
-  /* PSUEDO CODE**** //TODO: REMOVE
+function charScreen() {
+
+    /* PSUEDO CODE**** //TODO: REMOVE
 
   character = 0; //TODO: PUT AS GLOBAL VARIABLE
   
@@ -198,7 +201,50 @@ function startButtonClick() {
   }
   
   */
-//}
+
+  // create shapes and containers
+  var charPage = new createjs.Shape();
+  var charTitle = new createjs.Text("Select Your Character", "24px Arial", "#666");
+  var boyDisplay = new createjs.Shape();
+  var boyDisplayContainer = new createjs.Container();
+  var girlDisplay = new createjs.Shape();
+  var girlDisplayContainer = new createjs.Container();
+
+  // how big are they
+  charTitle.x = screen_width/2;
+  charTitle.y = 15;
+  charTitle.textAlign = "center";
+
+  // 
+  boyDisplayContainer.x = 50;
+  boyDisplayContainer.y = 50;
+  girlDisplayContainer.x = 300;
+  girlDisplayContainer.y = 50;
+
+  charPage.graphics.beginFill("#B26BE8").drawRect(0,0,500,screen_height);
+  boyDisplay.graphics.beginFill("#6B97E8").drawRect(0,0,150,200);
+  girlDisplay.graphics.beginFill("#F0596A").drawRect(0,0,150,200);
+
+  boyDisplayContainer.addChild(boyDisplay);
+  girlDisplayContainer.addChild(girlDisplay);
+
+  stage.addChild(charPage, boyDisplayContainer, girlDisplayContainer, charTitle);
+
+  boyDisplayContainer.addEventListener("click", boySelect);
+  girlDisplayContainer.addEventListener("click", girlSelect);
+
+  function boySelect() {
+    character = 0;
+    startGame();
+  }
+
+  function girlSelect() {
+    character = 1;
+    startGame();
+  }
+
+  stage.update();
+}
 
 // Create the starting point of the game
 function startGame() {
@@ -206,6 +252,17 @@ function startGame() {
   backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
   spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
   scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#FFFFFF");
+  
+  // display which character in text (for now)
+  //TODO: change to actual sprite and remove text
+  var characterDisplay;
+  if(character == 0) {
+    characterDisplay = new createjs.Text("It's a Boy", "20px Arial", "#FFFFFF");
+  } else if (character == 1) {
+    characterDisplay = new createjs.Text("It's a Girl", "20px Arial", "#FFFFFF");
+  }
+  characterDisplay.x = 200;
+  characterDisplay.y = 50;
   
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
@@ -239,7 +296,7 @@ function startGame() {
 
 
   // .addchild put everythign on the screen
-  stage.addChild(background, megamanSprite);
+  stage.addChild(background, megamanSprite, /*TODO: TAKE OUT*/characterDisplay);
 
   // not sure what .timingMode is
   // .Ticker adds continuous timer
