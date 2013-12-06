@@ -36,9 +36,8 @@ var score = 0;
 var backgroundvalue = 0;
 var loadProgressLabel;
 var endCardPhotoStatus = false;
-var endCardPhotoCountFPS = 0;
-var endCardPhotoCountSec = 0;
-
+var endCardPhotoCount = 0;
+var endCardGiftStatus = false;
 function init() {
   // conventional initializer
   stage = new createjs.Stage("myCanvas");
@@ -381,6 +380,7 @@ function stageUpdate(event) {
     } 
     if (megamanSprite.x == 200 && -500 <= background.x && background.x <= 0) {
       background.x--;
+
     }
   }
 
@@ -397,47 +397,87 @@ function stageUpdate(event) {
     anyKeyPressed = false;
   }
 
- // if (megamanSprite.x >= 400){
+  if (megamanSprite.x >= 400){
    endCardPhoto();
- // }
-
-
-  if(endCardPhotoStatus) {
-    endCardPhotoCountFPS++
-    endCardPhotoCountSec = parseInt(endCardPhotoCountFPS/60);
   }
 
-  if (endCardPhotoCountSec == 5){
 
+
+  //if the end card photo is being displayed, begin counting for 5 seconds
+  if(endCardPhotoStatus) {
+    //Count in fps, currently set to 60
+    endCardPhotoCount++
+  }
+
+  // Convect the fps to seconds 
+  if ( parseInt(endCardPhotoCount/60) == 5){
+    //When the time is 5 seconds, continue to the next end card
     endCardGift();
   }
+  
 
+  if (endCardGiftStatus) {
+
+    // Red banner pans across the screen
+    if (endCardGiftBanner.x < 500) {
+      endCardGiftBanner.x = endCardGiftBanner.x + 20;
+    }
+    // After red banner pans across
+    // "YOU GOT" Text pans across quickly at first then slowly and exits quickly
+    if (endCardGiftBanner.x == 500) {
+      if (endCardGiftYouGot.x < 100) {
+        endCardGiftYouGot.x = endCardGiftYouGot.x + 30;
+      }
+      if (endCardGiftYouGot.x < 160 && endCardGiftYouGot.x >= 100) {
+        endCardGiftYouGot.x = endCardGiftYouGot.x + 1;
+      }
+      if (endCardGiftYouGot.x >= 160) {
+        endCardGiftYouGot.x = endCardGiftYouGot.x + 30;
+      }
+    }
+  }
+
+  
   stage.update();
 }
-
+//First stage of the end cards
+//displays the photo of character and santa for 5 seconds
 function endCardPhoto() {
   endCardPhotoStatus = true;
-  
+  megamanSprite.x = 120;
   stage.removeAllChildren();
   endPhoto = new createjs.Shape();
-  endPhotoBackground = new createjs.Shape();
+  endBackground = new createjs.Shape();
   endPhoto.graphics.beginStroke("#ff0000").beginFill("#FFFFFF").drawRect(0,0,250,250);
-  endPhotoBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
+  endBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
 
   endPhoto.regX = 125;
   endPhoto.regY = 125;
   endPhoto.rotation = 60;
   endPhoto.x = 125;
   endPhoto.y = 50;
-  stage.addChild(endPhotoBackground, endPhoto);
+  stage.addChild(endBackground, endPhoto);
   
   
 }
-
+//Second stage of the end cards
+//Display the gift the player receives based on their score
 function endCardGift() {
   endCardPhotoStatus = false;
-  endCardPhotoCountSec = 0;
-  endCardPhotoCountFPS = 0;
+  endCardPhotoCount = 0;
+  endCardGiftStatus = true;
+
   stage.removeAllChildren();
+
+
+  endCardGiftBanner = new createjs.Shape();
+  endCardGiftYouGot = new createjs.Text("YOU GOT", "50px Arial", "#FFFFFF");
+  endCardGiftYouGot.y = 125;
+  endCardGiftYouGot.x = -350;
+
+  endCardGiftBanner.graphics.beginFill("F25050").drawRect(-screen_width,75,screen_width,150);
+  
+  stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot);
 } 
+
 
