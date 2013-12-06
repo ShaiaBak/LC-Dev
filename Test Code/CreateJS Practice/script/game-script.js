@@ -210,6 +210,7 @@ function charScreen() {
   //put is all on the main screen
   stage.addChild(charPage, boyDisplayContainer, girlDisplayContainer, charTitle);
 
+  //add eventListeners (hover, clikc etc..)
   boyDisplayContainer.addEventListener("click", boySelect);
   girlDisplayContainer.addEventListener("click", girlSelect);
 
@@ -228,6 +229,7 @@ function charScreen() {
 
 // Create the starting point of the game
 function startGame() {
+  stage.removeAllChildren();
   background = new createjs.Shape();
   backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
   spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
