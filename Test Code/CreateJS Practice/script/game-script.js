@@ -35,6 +35,9 @@ var spritexDisplay;
 var score = 0;
 var backgroundvalue = 0;
 var loadProgressLabel;
+var endCardPhotoStatus = false;
+var endCardPhotoCountFPS = 0;
+var endCardPhotoCountSec = 0;
 
 function init() {
   // conventional initializer
@@ -173,7 +176,7 @@ function startButtonClick() {
   createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
-function charSelect {
+//function charSelect {
   /* PSUEDO CODE**** //TODO: REMOVE
 
   character = 0; //TODO: PUT AS GLOBAL VARIABLE
@@ -196,14 +199,14 @@ function charSelect {
   }
   
   */
-}
+//}
 
 // Create the starting point of the game
 function startGame() {
   background = new createjs.Shape();
   backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
   spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
-  scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#000000");
+  scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#FFFFFF");
   
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
@@ -241,7 +244,8 @@ function startGame() {
 
   // not sure what .timingMode is
   // .Ticker adds continuous timer
-  createjs.Ticker.timingMode = createjs.Ticker.RAF;
+  createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
+  createjs.Ticker.setFPS(60);
   createjs.Ticker.addEventListener("tick", stageUpdate);
  
 }
@@ -393,26 +397,47 @@ function stageUpdate(event) {
     anyKeyPressed = false;
   }
 
-  //if (megamanSprite.x >= 400){
-  //  endCardPhoto();
-  //}
+ // if (megamanSprite.x >= 400){
+   endCardPhoto();
+ // }
 
+
+  if(endCardPhotoStatus) {
+    endCardPhotoCountFPS++
+    endCardPhotoCountSec = parseInt(endCardPhotoCountFPS/60);
+  }
+
+  if (endCardPhotoCountSec == 5){
+
+    endCardGift();
+  }
 
   stage.update();
 }
 
 function endCardPhoto() {
+  endCardPhotoStatus = true;
+  
   stage.removeAllChildren();
   endPhoto = new createjs.Shape();
   endPhotoBackground = new createjs.Shape();
   endPhoto.graphics.beginStroke("#ff0000").beginFill("#FFFFFF").drawRect(0,0,250,250);
   endPhotoBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
+
   endPhoto.regX = 125;
   endPhoto.regY = 125;
   endPhoto.rotation = 60;
   endPhoto.x = 125;
   endPhoto.y = 50;
-  
-
   stage.addChild(endPhotoBackground, endPhoto);
+  
+  
 }
+
+function endCardGift() {
+  endCardPhotoStatus = false;
+  endCardPhotoCountSec = 0;
+  endCardPhotoCountFPS = 0;
+  stage.removeAllChildren();
+} 
+
