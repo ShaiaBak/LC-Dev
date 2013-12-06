@@ -179,29 +179,6 @@ function startButtonClick() {
 
 function charScreen() {
 
-    /* PSUEDO CODE**** //TODO: REMOVE
-
-  character = 0; //TODO: PUT AS GLOBAL VARIABLE
-  
-  megaGirl = new createjs("GIRL_SRITE");
-  megaBOY = new createjs("BOY_SPRITE");
-
-  switch:
-    case CHOOSE_BOY: {
-      character = 1;
-    }
-    case CHOOSE_boy: {
-      character = 2;
-    }
-
-  if ( character == 1 ) {
-    character = megaGirl;
-  } else if ( character == 2) {
-    character = megaBoy;
-  }
-  
-  */
-
   // create shapes and containers
   var charPage = new createjs.Shape();
   var charTitle = new createjs.Text("Select Your Character", "24px Arial", "#666");
@@ -215,19 +192,22 @@ function charScreen() {
   charTitle.y = 15;
   charTitle.textAlign = "center";
 
-  // 
+  // where are they
   boyDisplayContainer.x = 50;
   boyDisplayContainer.y = 50;
   girlDisplayContainer.x = 300;
   girlDisplayContainer.y = 50;
 
+  // draw it and fill it
   charPage.graphics.beginFill("#B26BE8").drawRect(0,0,500,screen_height);
   boyDisplay.graphics.beginFill("#6B97E8").drawRect(0,0,150,200);
   girlDisplay.graphics.beginFill("#F0596A").drawRect(0,0,150,200);
 
+  //put stuff into its containers
   boyDisplayContainer.addChild(boyDisplay);
   girlDisplayContainer.addChild(girlDisplay);
 
+  //put is all on the main screen
   stage.addChild(charPage, boyDisplayContainer, girlDisplayContainer, charTitle);
 
   boyDisplayContainer.addEventListener("click", boySelect);
