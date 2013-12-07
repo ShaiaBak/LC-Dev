@@ -16,6 +16,7 @@ var KEYCODE_W = 87;     //usefull keycode
 var KEYCODE_A = 65;     //usefull keycode
 var KEYCODE_S = 83;     //useful keycode
 var KEYCODE_D = 68;     //usefull keycode
+var KEYCODE_ESC = 27;    
 
 var leftPressed = false;
 var rightPressed = false;
@@ -40,6 +41,7 @@ var loadProgressLabel;
 var endCardPhotoStatus = false;
 var endCardPhotoCount = 0;
 var endCardGiftStatus = false;
+var endCardFinalStatus = false;
 
 function init() {
   // conventional initializer
@@ -346,8 +348,13 @@ function handleKeyUp(e) {
       anyKeyPressed = false;
       break;
     }
-
   }
+  //During the end card photo, press esc, enter or space to skip it
+  if(endCardPhotoStatus)
+    if(e.keyCode == KEYCODE_ESC || e.keyCode == KEYCODE_ENTER || e.keyCode == KEYCODE_SPACE  ) {
+      endCardGift();
+    }
+
 }
 
 
@@ -416,10 +423,17 @@ function stageUpdate(event) {
     if ((megamanSprite.x >= 15 && megamanSprite.x < 200 && background.x == 0) || 
     (megamanSprite.x >= 200 && megamanSprite.x < 400 && background.x == -500)) {
       megamanSprite.x++;
+    megamanSprite.x++;
+    megamanSprite.x++;
+    megamanSprite.x++;
+    megamanSprite.x++;
     } 
     if (megamanSprite.x == 200 && -500 <= background.x && background.x <= 0) {
       background.x--;
-
+background.x--;
+background.x--;
+background.x--;
+background.x--;
     }
   }
 
@@ -453,28 +467,24 @@ function stageUpdate(event) {
     //When the time is 5 seconds, continue to the next end card
     endCardGift();
   }
-  
 
-  if (endCardGiftStatus) {
-
-    // Red banner pans across the screen
-    if (endCardGiftBanner.x < 500) {
-      endCardGiftBanner.x = endCardGiftBanner.x + 20;
-    }
-    // After red banner pans across
-    // "YOU GOT" Text pans across quickly at first then slowly and exits quickly
-    if (endCardGiftBanner.x == 500) {
-      if (endCardGiftYouGot.x < 100) {
-        endCardGiftYouGot.x = endCardGiftYouGot.x + 30;
-      }
-      if (endCardGiftYouGot.x < 160 && endCardGiftYouGot.x >= 100) {
-        endCardGiftYouGot.x = endCardGiftYouGot.x + 1;
-      }
-      if (endCardGiftYouGot.x >= 160) {
-        endCardGiftYouGot.x = endCardGiftYouGot.x + 30;
-      }
-    }
-  }
+    // // Red banner pans across the screen
+    // if (endCardGiftBanner.x < 500) {
+    //   endCardGiftBanner.x = endCardGiftBanner.x + 20;
+    // }
+    // // After red banner pans across
+    // // "YOU GOT" Text pans across quickly at first then slowly and exits quickly
+    // if (endCardGiftBanner.x == 500) {
+    //   if (endCardGiftYouGot.x < 100) {
+    //     endCardGiftYouGot.x = endCardGiftYouGot.x + 30;
+    //   }
+    //   if (endCardGiftYouGot.x < 160 && endCardGiftYouGot.x >= 100) {
+    //     endCardGiftYouGot.x = endCardGiftYouGot.x + 1;
+    //   }
+    //   if (endCardGiftYouGot.x >= 160) {
+    //     endCardGiftYouGot.x = endCardGiftYouGot.x + 30;
+    //   }
+    // }
 
   
   stage.update();
@@ -497,7 +507,6 @@ function endCardPhoto() {
   endPhoto.y = 50;
   stage.addChild(endBackground, endPhoto);
   
-  
 }
 //Second stage of the end cards
 //Display the gift the player receives based on their score
@@ -511,12 +520,58 @@ function endCardGift() {
 
   endCardGiftBanner = new createjs.Shape();
   endCardGiftYouGot = new createjs.Text("YOU GOT", "50px Arial", "#FFFFFF");
+  endCardGiftText = new createjs.Text("GIFT", "50px Arial", "#FFFFFF");
   endCardGiftYouGot.y = 125;
   endCardGiftYouGot.x = -350;
+  endCardGiftText.y = 125;
+  endCardGiftText.x = -350;
 
   endCardGiftBanner.graphics.beginFill("F25050").drawRect(-screen_width,75,screen_width,150);
   
-  stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot);
+  stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftText);
+
+  // Red banner pans across the screen
+  var giftBannerAnim = createjs.Tween.get(endCardGiftBanner)
+                    .to({x:500},200,createjs.Ease.linear)
+                    .wait(2200)
+                    .to({x:1000},300,createjs.Ease.linear);
+  // The words YOU GOT moves across the screen
+  var giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot)
+                    .wait(200)
+                    .to({x:100},200,createjs.Ease.linear)
+                    .to({x:160},1000,createjs.Ease.linear)
+                    .to({x:500},200,createjs.Ease.linear);
+  // the gift name pans across
+  var giftTextAnim = createjs.Tween.get(endCardGiftText)
+                    .wait(1600)
+                    .to({x:190},200,createjs.Ease.linear)
+                    .wait(800)
+                    .to({x:500},300,createjs.Ease.linear)
+                    .call(endCardFinal);
+
+
 } 
 
+//Third stage of the end cards
+//Display social media info and score
+function endCardFinal() {
 
+  endCardGiftStatus = false;
+  endCardFinalStatus = true;
+
+  stage.removeAllChildren();
+  endCardFinalBackground = new createjs.Shape();
+  endCardFinalContainer = new createjs.Container();
+  
+  endCardFinalBackground.graphics.beginFill("F25050").drawRect(100,100,100,100);
+
+  endCardFinalContainer.addChild(endCardFinalBackground);
+  endCardFinalContainer.alpha = 0;
+
+  stage.addChild(endBackground, endCardFinalContainer);
+
+  //test image fades in
+  var FinalAnim = createjs.Tween.get(endCardFinalContainer)
+                .to({alpha:1},2000);
+
+}
