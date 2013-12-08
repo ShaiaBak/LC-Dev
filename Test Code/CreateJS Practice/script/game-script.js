@@ -53,7 +53,9 @@ function init() {
 
   manifest = [
     // array of assest (images/music) that load with manifest
+    // grabbing assets from the DOM
     {src:"images/megaman.png", id:"megaman"},
+    {src:"images/megamanred.png", id:"megamanred"},
     {src:"images/ChristmasBG.png", id:"background"},
     {src:"assests/Test.mp3", id:"music"}
   ];
@@ -237,17 +239,6 @@ function startGame() {
   spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
   scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#FFFFFF");
   
-  // display which character in text (for now)
-  //TODO: change to actual sprite and remove text
-  var characterDisplay;
-  if(character == 0) {
-    characterDisplay = new createjs.Text("It's a Boy", "20px Arial", "#FFFFFF");
-  } else if (character == 1) {
-    characterDisplay = new createjs.Text("It's a Girl", "20px Arial", "#FFFFFF");
-  }
-  characterDisplay.x = 200;
-  characterDisplay.y = 50;
-  
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
   
@@ -261,17 +252,34 @@ function startGame() {
   spritexDisplay.y = 180;
 
 
+  if (character == 0) {
+    var megamanSpriteSheet = new createjs.SpriteSheet( {
+      // all main strings are reserved strings (images, frames, animations) that do a specific task
+      "images": [loader.getResult("megaman")],
+      "frames": {height: 30, width: 30, regX: 15, regY: 0},
+      "animations": {
+        "idle": [0, 0],
+        "run": [3, 5,"run", 5/60], //Runs Left
+        "duck": [7, 7]
+      }
+    });
+  }
 
-  var megamanSpriteSheet = new createjs.SpriteSheet( {
-    // all main strings are reserved strings (images, frames, animations) that do a specific task
-    "images": [loader.getResult("megaman")],
-    "frames": {height: 30, width: 30, regX: 15, regY: 0},
-    "animations": {
-      "idle": [0, 0],
-      "run": [3, 5,"run", 5/60], //Runs Left
-      "duck": [7, 7]
-    }
-  });
+  else if (character == 1) {
+    var megamanSpriteSheet = new createjs.SpriteSheet( {
+      // all main strings are reserved strings (images, frames, animations) that do a specific task
+      "images": [loader.getResult("megamanred")],
+      "frames": {height: 30, width: 30, regX: 15, regY: 0},
+      "animations": {
+        "idle": [0, 0],
+        "run": [3, 5,"run", 5/60], //Runs Left
+        "duck": [7, 7]
+      }
+    });
+  } else {
+    charScreen();
+  }
+
   megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
   
   // setTransform sets sprites x and y coordinates and scale
@@ -280,7 +288,7 @@ function startGame() {
 
 
   // .addchild put everythign on the screen
-  stage.addChild(background, megamanSprite, /*TODO: TAKE OUT*/characterDisplay);
+  stage.addChild(background, megamanSprite);
 
   // not sure what .timingMode is
   // .Ticker adds continuous timer
