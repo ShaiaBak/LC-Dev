@@ -176,7 +176,7 @@ function startButtonClick() {
   charScreen();
 
   //TODO: MUSIC HAS TO MOVE
-  createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+  //createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
 function charScreen() {
@@ -361,6 +361,7 @@ function handleKeyUp(e) {
 function restart() {
   // take out EVERYTHING
   stage.removeAllChildren();
+  startScreen();
 }
 
 function scoretimer(event) {
@@ -375,7 +376,6 @@ function scoretimer(event) {
 
 
 function stageUpdate(event) {
-
 
   //When an arrow key is pressed, it will play the "run" animation (which loops)
   //will remove the anykeypress flag so that the animation will be only played once
@@ -454,8 +454,6 @@ background.x--;
    endCardPhoto();
   }
 
-
-
   //if the end card photo is being displayed, begin counting for 5 seconds
   if(endCardPhotoStatus) {
     //Count in fps, currently set to 60
@@ -464,8 +462,9 @@ background.x--;
 
   // Convect the fps to seconds 
   if ( parseInt(endCardPhotoCount/60) == 5){
+
     //When the time is 5 seconds, continue to the next end card
-    endCardGift();
+     endCardGift();
   }
 
     // // Red banner pans across the screen
@@ -497,23 +496,30 @@ function endCardPhoto() {
   stage.removeAllChildren();
   endPhoto = new createjs.Shape();
   endBackground = new createjs.Shape();
-  endPhoto.graphics.beginStroke("#ff0000").beginFill("#FFFFFF").drawRect(0,0,250,250);
+  endEnterSkip = new createjs.Text("Press Enter to skip >", "15px Arial", "#FFFFFF");
+  endPhoto.graphics.beginStroke("#ff0000").beginFill("#F25050").drawRect(0,0,250,250);
   endBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
+  endEnterSkip.x = 350;
+  endEnterSkip.y = 280;
 
   endPhoto.regX = 125;
   endPhoto.regY = 125;
   endPhoto.rotation = 60;
   endPhoto.x = 125;
   endPhoto.y = 50;
-  stage.addChild(endBackground, endPhoto);
+  stage.addChild(endBackground, endPhoto, endEnterSkip);
   
 }
 //Second stage of the end cards
 //Display the gift the player receives based on their score
 function endCardGift() {
+
   endCardPhotoStatus = false;
   endCardPhotoCount = 0;
   endCardGiftStatus = true;
+  var endCardPhotoAnim = createjs.Tween.get(endPhoto, {paused:true})
+                          .to({alpha:0},300);
+  endCardPhotoAnim.setPaused(false);
 
   stage.removeAllChildren();
 
@@ -531,24 +537,28 @@ function endCardGift() {
   stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftText);
 
   // Red banner pans across the screen
-  var giftBannerAnim = createjs.Tween.get(endCardGiftBanner)
+  var giftBannerAnim = createjs.Tween.get(endCardGiftBanner, {paused:true})
                     .to({x:500},200,createjs.Ease.linear)
-                    .wait(2200)
+                    .wait(3000)
                     .to({x:1000},300,createjs.Ease.linear);
   // The words YOU GOT moves across the screen
-  var giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot)
+  var giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot, {paused:true})
                     .wait(200)
                     .to({x:100},200,createjs.Ease.linear)
                     .to({x:160},1000,createjs.Ease.linear)
                     .to({x:500},200,createjs.Ease.linear);
   // the gift name pans across
-  var giftTextAnim = createjs.Tween.get(endCardGiftText)
+
+  var giftTextAnim = createjs.Tween.get(endCardGiftText, {paused:true})
                     .wait(1600)
                     .to({x:190},200,createjs.Ease.linear)
-                    .wait(800)
+                    .wait(1600)
                     .to({x:500},300,createjs.Ease.linear)
+                    .wait(1000)
                     .call(endCardFinal);
 
+  giftTimeline = new createjs.Timeline([giftBannerAnim, giftYouGotAnim, giftTextAnim],{paused:true});
+  giftTimeline.setPaused(false);
 
 } 
 
@@ -569,9 +579,8 @@ function endCardFinal() {
   endCardFinalContainer.alpha = 0;
 
   stage.addChild(endBackground, endCardFinalContainer);
-
+  endCardFinalContainer.addEventListener('click', restart);
   //test image fades in
   var FinalAnim = createjs.Tween.get(endCardFinalContainer)
                 .to({alpha:1},2000);
-
 }
