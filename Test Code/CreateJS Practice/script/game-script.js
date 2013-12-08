@@ -423,17 +423,17 @@ function stageUpdate(event) {
     if ((megamanSprite.x >= 15 && megamanSprite.x < 200 && background.x == 0) || 
     (megamanSprite.x >= 200 && megamanSprite.x < 400 && background.x == -500)) {
       megamanSprite.x++;
-    megamanSprite.x++;
-    megamanSprite.x++;
-    megamanSprite.x++;
-    megamanSprite.x++;
+      megamanSprite.x++;
+      megamanSprite.x++;
+      megamanSprite.x++;
+      megamanSprite.x++;
     } 
     if (megamanSprite.x == 200 && -500 <= background.x && background.x <= 0) {
       background.x--;
-background.x--;
-background.x--;
-background.x--;
-background.x--;
+      background.x--;
+      background.x--;
+      background.x--;
+      background.x--;
     }
   }
 
@@ -451,7 +451,7 @@ background.x--;
   }
 
   if (megamanSprite.x >= 400){
-   endCardPhoto();
+    endCardPhoto();
   }
 
 
@@ -489,6 +489,7 @@ background.x--;
   
   stage.update();
 }
+
 //First stage of the end cards
 //displays the photo of character and santa for 5 seconds
 function endCardPhoto() {
@@ -506,8 +507,8 @@ function endCardPhoto() {
   endPhoto.x = 125;
   endPhoto.y = 50;
   stage.addChild(endBackground, endPhoto);
-  
 }
+
 //Second stage of the end cards
 //Display the gift the player receives based on their score
 function endCardGift() {
