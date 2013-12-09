@@ -44,6 +44,8 @@ var endCardPhotoCount = 0;
 var endCardGiftStatus = false;
 var endCardFinalStatus = false;
 
+
+
 function init() {
   // conventional initializer
   stage = new createjs.Stage("myCanvas");
@@ -59,6 +61,10 @@ function init() {
     {src:"images/megamanred.png", id:"megamanred"},
     {src:"images/ChristmasBG_70.png", id:"background"},
     {src:"images/bg_firesprites.png", id:"fireplace"},
+    {src:"images/endcard_info_tumblr.png", id:"tumblrButtonImg"},
+    {src:"images/endcard_info_twitter.png", id:"twitterButtonImg"},
+    {src:"images/endcard_info_facebook.png", id:"facebookButtonImg"},
+    {src:"images/endcard_logo.png", id:"lcLogoImg"},
     {src:"assests/Test.mp3", id:"music"}
   ];
 
@@ -378,6 +384,7 @@ function handleKeyUp(e) {
   //During the end card photo, press esc, enter or space to skip it
   if(endCardPhotoStatus)
     if(e.keyCode == KEYCODE_ESC || e.keyCode == KEYCODE_ENTER || e.keyCode == KEYCODE_SPACE  ) {
+      endCardPhotoStatus = false;
       endCardPhotoTransition()
     }
 
@@ -606,29 +613,73 @@ function endCardGift() {
 
 	//Third stage of the end cards
 	//Display social media info and score
-	function endCardFinal() {
+function endCardFinal() {
 
 	endCardGiftStatus = false;
 	endCardFinalStatus = true;
 
 	stage.removeAllChildren();
 
+  tumblrButton = new createjs.Shape();
+  // twitterButton = new createjs.Shape();
+  // facebookButton = new createjs.Shape();
+  // lcLogo = new createjs.Shape();
+  // socialMediaInfo = new createjs.Container();
+
 	endCardFinalBackground = new createjs.Shape();
 	endCardFinalContainer = new createjs.Container();
+  
 
-	endCardFinalBackground.graphics.beginFill("F25050").drawRect(100,100,100,100);
+  tumblrButton.graphics.beginBitmapFill(loader.getResult("tumblrButtonImg")).drawRect(0,0,147,21);
+  twitterButton.graphics.beginBitmapFill(loader.getResult("twitterButtonImg")).drawRect(0,0,150,21);
+  facebookButton.graphics.beginBitmapFill(loader.getResult("facebookButtonImg")).drawRect(0,0,163,21);
+  lcLogo.graphics.beginBitmapFill(loader.getResult("lcLogoImg")).drawRect(0,0,59,82);
+  
+  tumblrButton.x = 64;
+  tumblrButton.y = 15;
+  twitterButton.x = 64;
+  twitterButton.y = 38;
+  facebookButton.x = 64;
+  facebookButton.y = 61;
 
+  // tumblrButton.addEventListener('click',tumblrLink);
+  // twitterButton.addEventListener('click',twitterLink);
+  // facebookButton.addEventListener('click',facebookLink);
+
+
+  socialMediaInfo.addChild(tumblrButton, twitterButton, facebookButton, lcLogo)
+  socialMediaInfo.x = 260;
+  socialMediaInfo.y = 210;
+
+
+
+
+  endCardFinalBackground.graphics.beginFill("F25050").drawRect(100,100,100,100);
 	//Set to invisible 
 	endCardFinalContainer.addChild(endCardFinalBackground);
 	endCardFinalContainer.alpha = 0;
 
-	stage.addChild(endBackground, endCardFinalContainer);
-
+	stage.addChild(endBackground, endCardFinalContainer, socialMediaInfo);
+  
 	//test image fades in
 	var FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
 		        .to({alpha:1},2000);
 	FinalAnim.setPaused(false);
 
-	endCardFinalContainer.addEventListener('click', startScreen);
+	endCardFinalContainer.addEventListener('click', facebookLink);
 
+}
+
+
+
+function tumblrLink() {
+  window.open("http://lanterncubed.tumblr.com","_blank");
+}
+
+function twitterLink() {
+  window.open("https://www.twitter.com/LanternCubed","_blank");
+}
+
+function facebookLink() {
+  window.open("https://www.facebook.com/LanternCubed","_blank");
 }
