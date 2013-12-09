@@ -44,7 +44,8 @@ var endCardPhotoCount = 0;
 var endCardGiftStatus = false;
 var endCardFinalStatus = false;
 
-
+var stepsTaken = 0;
+var alert = false;
 
 function init() {
   // conventional initializer
@@ -300,7 +301,7 @@ function startGame() {
 
 	fireplaceSprite = new createjs.Sprite(fireplaceSpriteSheet, "idle");
  	fireplaceSprite.setTransform(0,0,1,1);
-  	fireplaceSprite.framerate = 60;
+  fireplaceSprite.framerate = 60;
 
 
   megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
@@ -322,6 +323,31 @@ function startGame() {
  
 }
 
+function santaAlert() {
+
+  for(var i = 0; i < stepsTaken; i++) {
+    if(i % 2 == 0) {
+      var detection = Math.floor((Math.random()*10)+1);
+      if(detection >= 7) {
+        alert = true;
+      }
+    }
+  }
+
+  if (alert == true) {
+    forceduck();
+  }
+
+  createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
+  createjs.Ticker.setFPS(60);
+  createjs.Ticker.addEventListener("tick", stageUpdate);
+}
+
+function forceduck() {
+  spacePressed = true;
+  alert = false;
+}
+
 // press key down
 function handleKeyDown(e) {
   //cross browser issues exist
@@ -339,6 +365,8 @@ function handleKeyDown(e) {
     case KEYCODE_RIGHT:
     case KEYCODE_D: {
       rightPressed = true;
+      //add to stepsTaken
+      stepsTaken++;
       break;
     }
     case KEYCODE_SPACE: 
@@ -400,15 +428,14 @@ function scoretimer(event) {
 
   score++;
 
-  scoreDisplay.text = "Score: "+score+" ";
+/*  scoreDisplay.text = "Score: "+score+" ";
   backgroundxDisplay.text = "bg: "+background.x+" ";
   spritexDisplay.text = "sprite: "+megamanSprite.x+" ";
-
+*/
 }
 
 
 function stageUpdate(event) {
-
 
   //When an arrow key is pressed, it will play the "run" animation (which loops)
   //will remove the anykeypress flag so that the animation will be only played once
