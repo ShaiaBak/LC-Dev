@@ -36,6 +36,7 @@ var startText;
 var scoreDisplay;
 var backgroundxDisplay;
 var spritexDisplay;
+var detectSteps;
 var score = 0;
 var backgroundvalue = 0;
 var loadProgressLabel;
@@ -244,10 +245,15 @@ function charScreen() {
 function startGame() {
   stage.removeAllChildren();
   background = new createjs.Shape();
-  backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
-  spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
-  scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#FFFFFF");
   backgroundContainer = new createjs.Container();
+  scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#FFFFFF");
+  
+  //TODO: for testing movment and score
+  backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
+  spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF"); 
+  
+  //TODO: for testing alert
+  detectSteps = new createjs.Text("Steps: 0", "20px Arial", "#FFFFFF")
 
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
@@ -261,6 +267,8 @@ function startGame() {
   spritexDisplay.x = 300;
   spritexDisplay.y = 180;
 
+  detectSteps.x = 300;
+  detectSteps.y = 210;
 
   if (character == 0) {
     var megamanSpriteSheet = new createjs.SpriteSheet( {
@@ -313,7 +321,7 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, megamanSprite);
+  stage.addChild(backgroundContainer, megamanSprite, detectSteps);
 
 
   // run santa alert function
@@ -327,26 +335,24 @@ function startGame() {
  
 }
 
-function santaAlert() {
+function santaAlert(event) {
 
-  for(var i = 0; i < stepsTaken; i++) {
-    if(i % 2 == 0) {
-      var detection = Math.floor((Math.random()*10)+1);
-      if(detection >= 7) {
-        alert = true;
-      }
+  if(stepsTaken % 1 == 0) {
+    var detection = Math.floor((Math.random()*10)+1);
+    if(detection >= 7) {
+      alert = true;
     }
   }
 
   if (alert == true) {
     forceduck();
   }
+
 }
 
 function forceduck() {
-  spacePressed = true;
-  alert = false;
-}
+    spacePressed = true;
+  }
 
 // press key down
 function handleKeyDown(e) {
@@ -359,6 +365,7 @@ function handleKeyDown(e) {
     
     case KEYCODE_LEFT:
     case KEYCODE_A: {
+      alert = true;
       leftPressed = true;
       break;
     }
@@ -428,10 +435,11 @@ function scoretimer(event) {
 
   score++;
 
-/*  scoreDisplay.text = "Score: "+score+" ";
-  backgroundxDisplay.text = "bg: "+background.x+" ";
-  spritexDisplay.text = "sprite: "+megamanSprite.x+" ";
-*/
+  scoreDisplay.text = "Score: " + score + " ";
+  backgroundxDisplay.text = "bg: " + background.x + " ";
+  spritexDisplay.text = "sprite: " + megamanSprite.x + " ";
+  detectSteps.text = "steps: " + stepsTaken + " ";
+
 }
 
 
