@@ -338,21 +338,26 @@ function startGame() {
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
   createjs.Ticker.setFPS(60);
   createjs.Ticker.addEventListener("tick", stageUpdate);
+  createjs.Ticker.addEventListener("tick", santaAlert);
  
 }
 
-function santaAlert(event) {
+function santaAlert() {
 
-  if(stepsTaken == 3) {
-    var detection = 8; //Math.floor((Math.random()*10)+1);
-    if(detection >= 7) {
-      alert = 1;
+  for(var i = 0; i < stepsTaken; i++) {
+    if(stepsTaken % 2 == 0 && stepsTaken != 0) {
+      var detection =  Math.floor((Math.random()*10)+1);
+      if(detection == 7) {
+        alert = 1;
+        return;
+      }
+      console.log(detection);
     }
-    console.log('in the butt');
   }
 
   if (alert == 1) {
     forceduck();
+    alert = 0;
   }
 
   console.log('wat');
@@ -376,7 +381,6 @@ function handleKeyDown(e) {
     
     case KEYCODE_LEFT:
     case KEYCODE_A: {
-      alert = 1;
       leftPressed = true;
       break;
     }
