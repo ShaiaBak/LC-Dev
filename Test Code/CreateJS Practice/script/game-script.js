@@ -46,7 +46,9 @@ var endCardGiftStatus = false;
 var endCardFinalStatus = false;
 
 var stepsTaken = 0;
-var alert = false;
+var alert = 0;
+
+var alertStatus;
 
 function init() {
   // conventional initializer
@@ -183,7 +185,7 @@ function startButtonClick() {
   stage.removeChild(startPage, startButtonContainer);
   startButtonContainer.removeEventListener("click", startButtonClick);
   stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
-  createjs.Ticker.addEventListener("tick",scoretimer);
+  createjs.Ticker.addEventListener("tick", scoretimer);
 
   charScreen();
 
@@ -253,7 +255,8 @@ function startGame() {
   spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF"); 
   
   //TODO: for testing alert
-  detectSteps = new createjs.Text("Steps: 0", "20px Arial", "#FFFFFF")
+  detectSteps = new createjs.Text("Steps: 0", "20px Arial", "#FFFFFF");
+  alertStatus = new createjs.Text("Alert: false", "20px Arial", "#FFFFFF");
 
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
@@ -269,6 +272,9 @@ function startGame() {
 
   detectSteps.x = 300;
   detectSteps.y = 210;
+
+  alertStatus.x = 300;
+  alertStatus.y = 230;
 
   if (character == 0) {
     var megamanSpriteSheet = new createjs.SpriteSheet( {
@@ -321,7 +327,7 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, megamanSprite, detectSteps);
+  stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus);
 
 
   // run santa alert function
@@ -338,15 +344,20 @@ function startGame() {
 function santaAlert(event) {
 
   if(stepsTaken == 3) {
-    var detection = Math.floor((Math.random()*10)+1);
+    var detection = 8; //Math.floor((Math.random()*10)+1);
     if(detection >= 7) {
-      alert = true;
+      alert = 1;
     }
+    console.log('in the butt');
   }
 
-  if (alert == true) {
+  if (alert == 1) {
     forceduck();
   }
+
+  console.log('wat');
+
+  stageUpdate();
 
 }
 
@@ -365,7 +376,7 @@ function handleKeyDown(e) {
     
     case KEYCODE_LEFT:
     case KEYCODE_A: {
-      alert = true;
+      alert = 1;
       leftPressed = true;
       break;
     }
@@ -435,10 +446,11 @@ function scoretimer(event) {
 
   score++;
 
-  scoreDisplay.text = "Score: " + score + " ";
+  /*scoreDisplay.text = "Score: " + score + " ";
   backgroundxDisplay.text = "bg: " + background.x + " ";
-  spritexDisplay.text = "sprite: " + megamanSprite.x + " ";
+  spritexDisplay.text = "sprite: " + megamanSprite.x + " ";*/
   detectSteps.text = "steps: " + stepsTaken + " ";
+  alertStatus.text = "alert: " + alert + " ";
 
 }
 
