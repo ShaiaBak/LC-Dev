@@ -298,17 +298,17 @@ function startGame() {
     charScreen();
   }
 
-	var fireplaceSpriteSheet = new createjs.SpriteSheet( {
-	// all main strings are reserved strings (images, frames, animations) that do a specific task
-		"images": [loader.getResult("fireplace")],
-		"frames": {height: 300, width: 1000, regX: 0, regY: 0},
-		"animations": {
-			"idle": [0, 5,"idle", 5/60],
-		}
-	});
+  var fireplaceSpriteSheet = new createjs.SpriteSheet( {
+  // all main strings are reserved strings (images, frames, animations) that do a specific task
+    "images": [loader.getResult("fireplace")],
+    "frames": {height: 300, width: 1000, regX: 0, regY: 0},
+    "animations": {
+      "idle": [0, 5,"idle", 5/60],
+    }
+  });
 
-	fireplaceSprite = new createjs.Sprite(fireplaceSpriteSheet, "idle");
- 	fireplaceSprite.setTransform(0,0,1,1);
+  fireplaceSprite = new createjs.Sprite(fireplaceSpriteSheet, "idle");
+  fireplaceSprite.setTransform(0,0,1,1);
   fireplaceSprite.framerate = 60;
 
 
@@ -561,99 +561,99 @@ function stageUpdate(event) {
 //First stage of the end cards
 //displays the photo of character and santa for 5 seconds
 function endCardPhoto() {
-	endCardPhotoStatus = true;
-	megamanSprite.x = 120;
-	stage.removeAllChildren();
-	endPhoto = new createjs.Shape();
-	endBackground = new createjs.Shape();
-	endCardEnterSkip = new createjs.Text("Press Enter to skip >", "20px Arial", "#FFFFFF");
-	endPhotoContainer = new createjs.Container();
+  endCardPhotoStatus = true;
+  megamanSprite.x = 120;
+  stage.removeAllChildren();
+  endPhoto = new createjs.Shape();
+  endBackground = new createjs.Shape();
+  endCardEnterSkip = new createjs.Text("Press Enter to skip >", "20px Arial", "#FFFFFF");
+  endPhotoContainer = new createjs.Container();
 
-	//Draw Filler image endPhoto and black background
-	endPhoto.graphics.beginStroke("#ff0000").beginFill("#FFFFFF").drawRect(0,0,250,250);
-	endBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
+  //Draw Filler image endPhoto and black background
+  endPhoto.graphics.beginStroke("#ff0000").beginFill("#FFFFFF").drawRect(0,0,250,250);
+  endBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
 
 
-	//Image and text location
-	endPhoto.regX = 125;
-	endPhoto.regY = 125;
-	endPhoto.rotation = 60;
-	endPhoto.x = 125;
-	endPhoto.y = 50;
-	endCardEnterSkip.x = 300;
-	endCardEnterSkip.y = 275;
+  //Image and text location
+  endPhoto.regX = 125;
+  endPhoto.regY = 125;
+  endPhoto.rotation = 60;
+  endPhoto.x = 125;
+  endPhoto.y = 50;
+  endCardEnterSkip.x = 300;
+  endCardEnterSkip.y = 275;
 
-	endPhotoContainer.addChild(endPhoto, endCardEnterSkip);
+  endPhotoContainer.addChild(endPhoto, endCardEnterSkip);
 
-	stage.addChild(endBackground, endPhotoContainer);
+  stage.addChild(endBackground, endPhotoContainer);
 
 }
 
 function endCardPhotoTransition() {
-	//Photo and text fade away and move to the Gift end card 
-	var endPhotoContainerAnim = createjs.Tween.get(endPhotoContainer, {paused:true})
-					.to({alpha:0},500)
-					.call(endCardGift);
-	endPhotoContainerAnim.setPaused(false);
+  //Photo and text fade away and move to the Gift end card 
+  var endPhotoContainerAnim = createjs.Tween.get(endPhotoContainer, {paused:true})
+          .to({alpha:0},500)
+          .call(endCardGift);
+  endPhotoContainerAnim.setPaused(false);
 }
 
 //Second stage of the end cards
 //Display the gift the player receives based on their score
 function endCardGift() {
-	endCardPhotoStatus = false;
-	endCardPhotoCount = 0;
-	endCardGiftStatus = true;
+  endCardPhotoStatus = false;
+  endCardPhotoCount = 0;
+  endCardGiftStatus = true;
 
-	stage.removeAllChildren();
-
-
-	endCardGiftBanner = new createjs.Shape();
-	endCardGiftYouGot = new createjs.Text("YOU GOT", "50px Arial", "#FFFFFF");
-	endCardGiftText = new createjs.Text("GIFT", "50px Arial", "#FFFFFF");
-	endCardGiftYouGot.y = 125;
-	endCardGiftYouGot.x = -350;
-	endCardGiftText.y = 125;
-	endCardGiftText.x = -350;
-
-	endCardGiftBanner.graphics.beginFill("F25050").drawRect(-screen_width,75,screen_width,150);
-
-	stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftText);
+  stage.removeAllChildren();
 
 
-	//Gift Card Animation
+  endCardGiftBanner = new createjs.Shape();
+  endCardGiftYouGot = new createjs.Text("YOU GOT", "50px Arial", "#FFFFFF");
+  endCardGiftText = new createjs.Text("GIFT", "50px Arial", "#FFFFFF");
+  endCardGiftYouGot.y = 125;
+  endCardGiftYouGot.x = -350;
+  endCardGiftText.y = 125;
+  endCardGiftText.x = -350;
 
-	// Red banner pans across the screen
-	var giftBannerAnim = createjs.Tween.get(endCardGiftBanner, {paused:true})
-	                .to({x:500},200,createjs.Ease.linear)
-	                .wait(4500)
-	                .to({x:1000},400,createjs.Ease.linear);
-	// The words YOU GOT moves across the screen
-	var giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot, {paused:true})
-	                .wait(200)
-	                .to({x:100},200,createjs.Ease.linear)
-	                .to({x:160},1000,createjs.Ease.linear)
-	                .to({x:500},200,createjs.Ease.linear);
-	// the gift name pans across
-	var giftTextAnim = createjs.Tween.get(endCardGiftText, {paused:true})
-	                .wait(1600)
-	                .to({x:190},200,createjs.Ease.linear)
-	                .wait(3100)
-	                .to({x:500},400,createjs.Ease.linear)
-	                .call(endCardFinal);
+  endCardGiftBanner.graphics.beginFill("F25050").drawRect(-screen_width,75,screen_width,150);
 
-	//Animation Timeline
-	var giftTimeline = new createjs.Timeline([giftBannerAnim, giftYouGotAnim, giftTextAnim], {paused:true})
-	giftTimeline.setPaused(false);
+  stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftText);
+
+
+  //Gift Card Animation
+
+  // Red banner pans across the screen
+  var giftBannerAnim = createjs.Tween.get(endCardGiftBanner, {paused:true})
+                  .to({x:500},200,createjs.Ease.linear)
+                  .wait(4500)
+                  .to({x:1000},400,createjs.Ease.linear);
+  // The words YOU GOT moves across the screen
+  var giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot, {paused:true})
+                  .wait(200)
+                  .to({x:100},200,createjs.Ease.linear)
+                  .to({x:160},1000,createjs.Ease.linear)
+                  .to({x:500},200,createjs.Ease.linear);
+  // the gift name pans across
+  var giftTextAnim = createjs.Tween.get(endCardGiftText, {paused:true})
+                  .wait(1600)
+                  .to({x:190},200,createjs.Ease.linear)
+                  .wait(3100)
+                  .to({x:500},400,createjs.Ease.linear)
+                  .call(endCardFinal);
+
+  //Animation Timeline
+  var giftTimeline = new createjs.Timeline([giftBannerAnim, giftYouGotAnim, giftTextAnim], {paused:true})
+  giftTimeline.setPaused(false);
 } 
 
-	//Third stage of the end cards
-	//Display social media info and score
+  //Third stage of the end cards
+  //Display social media info and score
 function endCardFinal() {
 
-	endCardGiftStatus = false;
-	endCardFinalStatus = true;
+  endCardGiftStatus = false;
+  endCardFinalStatus = true;
 
-	stage.removeAllChildren();
+  stage.removeAllChildren();
 
   tumblrButton = new createjs.Shape();
   // twitterButton = new createjs.Shape();
@@ -661,8 +661,8 @@ function endCardFinal() {
   // lcLogo = new createjs.Shape();
   // socialMediaInfo = new createjs.Container();
 
-	endCardFinalBackground = new createjs.Shape();
-	endCardFinalContainer = new createjs.Container();
+  endCardFinalBackground = new createjs.Shape();
+  endCardFinalContainer = new createjs.Container();
   
 
   tumblrButton.graphics.beginBitmapFill(loader.getResult("tumblrButtonImg")).drawRect(0,0,147,21);
@@ -690,18 +690,18 @@ function endCardFinal() {
 
 
   endCardFinalBackground.graphics.beginFill("F25050").drawRect(100,100,100,100);
-	//Set to invisible 
-	endCardFinalContainer.addChild(endCardFinalBackground);
-	endCardFinalContainer.alpha = 0;
+  //Set to invisible 
+  endCardFinalContainer.addChild(endCardFinalBackground);
+  endCardFinalContainer.alpha = 0;
 
-	stage.addChild(endBackground, endCardFinalContainer, socialMediaInfo);
+  stage.addChild(endBackground, endCardFinalContainer, socialMediaInfo);
   
-	//test image fades in
-	var FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
-		        .to({alpha:1},2000);
-	FinalAnim.setPaused(false);
+  //test image fades in
+  var FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
+            .to({alpha:1},2000);
+  FinalAnim.setPaused(false);
 
-	endCardFinalContainer.addEventListener('click', facebookLink);
+  endCardFinalContainer.addEventListener('click', facebookLink);
 
 }
 
