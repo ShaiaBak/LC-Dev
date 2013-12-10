@@ -337,7 +337,7 @@ function startGame() {
 
 function santaAlert(event) {
 
-  if(stepsTaken % 1 == 0) {
+  if(stepsTaken == 3) {
     var detection = Math.floor((Math.random()*10)+1);
     if(detection >= 7) {
       alert = true;
@@ -352,7 +352,7 @@ function santaAlert(event) {
 
 function forceduck() {
     spacePressed = true;
-  }
+}
 
 // press key down
 function handleKeyDown(e) {
