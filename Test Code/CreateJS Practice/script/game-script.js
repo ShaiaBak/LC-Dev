@@ -187,7 +187,7 @@ function startButtonClick() {
   charScreen();
 
   //TODO: MUSIC HAS TO MOVE
-  createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+  //createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
 function charScreen() {
@@ -315,6 +315,10 @@ function startGame() {
   // .addchild put everythign on the screen
   stage.addChild(backgroundContainer, megamanSprite);
 
+
+  // run santa alert function
+  santaAlert();
+
   // not sure what .timingMode is
   // .Ticker adds continuous timer
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
@@ -337,10 +341,6 @@ function santaAlert() {
   if (alert == true) {
     forceduck();
   }
-
-  createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
-  createjs.Ticker.setFPS(60);
-  createjs.Ticker.addEventListener("tick", stageUpdate);
 }
 
 function forceduck() {
@@ -365,8 +365,6 @@ function handleKeyDown(e) {
     case KEYCODE_RIGHT:
     case KEYCODE_D: {
       rightPressed = true;
-      //add to stepsTaken
-      stepsTaken++;
       break;
     }
     case KEYCODE_SPACE: 
@@ -398,6 +396,8 @@ function handleKeyUp(e) {
       rightPressed = false;
       megamanSprite.gotoAndStop("run");
       anyKeyPressed = false;
+      //add to stepsTaken
+      stepsTaken++;
       break;
     } 
     case KEYCODE_SPACE: 
