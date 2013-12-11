@@ -350,6 +350,8 @@ function santaAlert() {
       if(detection == 7) {
         alert = 1;
         return;
+      } else {
+        return;
       }
       console.log(detection);
     }
@@ -507,16 +509,8 @@ function stageUpdate(event) {
     if ((megamanSprite.x >= 15 && megamanSprite.x < 200 && backgroundContainer.x == 0) || 
     (megamanSprite.x >= 200 && megamanSprite.x < 400 && backgroundContainer.x == -500)) {
       megamanSprite.x++;
-      megamanSprite.x++;
-      megamanSprite.x++;
-      megamanSprite.x++;
-      megamanSprite.x++;
     } 
     if (megamanSprite.x == 200 && -500 <= backgroundContainer.x && backgroundContainer.x <= 0) {
-      backgroundContainer.x--;
-      backgroundContainer.x--;
-      backgroundContainer.x--;
-      backgroundContainer.x--;
       backgroundContainer.x--;
     }
   }
