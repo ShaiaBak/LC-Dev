@@ -329,10 +329,6 @@ function startGame() {
   // .addchild put everythign on the screen
   stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus);
 
-
-  // run santa alert function
-  santaAlert();
-
   // not sure what .timingMode is
   // .Ticker adds continuous timer
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
@@ -343,33 +339,36 @@ function startGame() {
 }
 
 function santaAlert() {
-
-  for(var i = 0; i < stepsTaken; i++) {
-    if(stepsTaken % 2 == 0 && stepsTaken != 0) {
-      var detection =  Math.floor((Math.random()*10)+1);
-      if(detection == 7) {
-        alert = 1;
-        return;
-      } else {
-        return;
+  //if(alert != 1) {
+    for(var i = 0; i < stepsTaken; i++) {
+      if(stepsTaken % 2 == 0 && stepsTaken != 0) {
+        var detection =  Math.floor((Math.random()*10)+1);
+        if(detection == 7) {
+          alert = 1;
+          return;
+        } else {
+          return;
+        }
       }
       console.log(detection);
     }
-  }
 
-  if (alert == 1) {
-    forceduck();
-    alert = 0;
-  }
+    if (alert == 1) {
+      forceduck();
+      alert = 0;
+    }
+  //}
 
   console.log('wat');
-
   stageUpdate();
-
 }
 
 function forceduck() {
-    spacePressed = true;
+  spacePressed = true;
+  alert = 0;
+  if(alert == 0) {
+    spacePressed = false;
+  }
 }
 
 // press key down
@@ -389,6 +388,8 @@ function handleKeyDown(e) {
     case KEYCODE_RIGHT:
     case KEYCODE_D: {
       rightPressed = true;
+      //add to stepsTaken
+      stepsTaken++;
       break;
     }
     case KEYCODE_SPACE: 
@@ -420,8 +421,6 @@ function handleKeyUp(e) {
       rightPressed = false;
       megamanSprite.gotoAndStop("run");
       anyKeyPressed = false;
-      //add to stepsTaken
-      stepsTaken++;
       break;
     } 
     case KEYCODE_SPACE: 
@@ -462,6 +461,9 @@ function scoretimer(event) {
 
 
 function stageUpdate(event) {
+
+  // run santa alert function
+  //santaAlert();
 
   //When an arrow key is pressed, it will play the "run" animation (which loops)
   //will remove the anykeypress flag so that the animation will be only played once
