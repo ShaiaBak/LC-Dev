@@ -69,7 +69,7 @@ function init() {
     {src:"images/endcard_info_twitter.png", id:"twitterButtonImg"},
     {src:"images/endcard_info_facebook.png", id:"facebookButtonImg"},
     {src:"images/endcard_logo.png", id:"lcLogoImg"},
-    {src:"assests/Test.mp3", id:"music"}
+    {src:"assets/Test.mp3", id:"music"}
   ];
 
 
@@ -103,7 +103,7 @@ function handleComplete() {
 function loadingInitialize() {
   
   //define loading screen graphics
-  loadProgressLabel = new createjs.Text("","20px Arial","black");
+  loadProgressLabel = new createjs.Text("","32px PixelFont3","black");
   loadingScreenFill = new createjs.Shape();
   loadingBar = new createjs.Shape();
   loadingBarFrame = new createjs.Shape();
