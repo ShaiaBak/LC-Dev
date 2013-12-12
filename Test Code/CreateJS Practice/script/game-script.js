@@ -6,7 +6,7 @@ var bmpAnimation;
 var megaman;
 var megamanSprite;
 var fireplaceSprite
-
+var bellSprite;
 var KEYCODE_ENTER = 13;   //usefull keycode
 var KEYCODE_SPACE = 32;   //usefull keycode
 var KEYCODE_UP = 38;    //usefull keycode
@@ -56,7 +56,7 @@ function init() {
   screen_height = stage.canvas.height;
   screen_width = stage.canvas.width;
 
-  loadingInitialize();
+ 
 
   manifest = [
     // array of assest (images/music) that load with manifest
@@ -69,35 +69,50 @@ function init() {
     {src:"images/endcard_info_twitter.png", id:"twitterButtonImg"},
     {src:"images/endcard_info_facebook.png", id:"facebookButtonImg"},
     {src:"images/endcard_logo.png", id:"lcLogoImg"},
+    {src:"images/bell.png", id:"bell"},
     {src:"assets/Test.mp3", id:"music"}
   ];
-
-
+  loader = new createjs.LoadQueue(false);
+  loadingInitialize();
   //Not completely sure what this does. I think it runs handlerComplete when
   //the files are done loading
-  loader = new createjs.LoadQueue(false);
+
   loader.installPlugin(createjs.Sound);
   loader.addEventListener("complete", handleComplete);
   loader.addEventListener("progress", handleProgress);
   // loads the manifest
   loader.loadManifest(manifest);
+  loadingInitialize();
   stage.update();
 }
 
 //this function is called everytime the progress of our loading changes
 function handleProgress() {
-  loadingBar.scaleX = loader.progress * 300;
+  //loadingBar.scaleX = loader.progress * 300;
   progressPercentage = Math.round(loader.progress*100);
+  var progressPercentageInt = progressPercentage % 5;
+  bellSprite.gotoAndStop(progressPercentageInt); 
 
+  //Text and color changes depending on percentage done
   if (progressPercentage >= 80) {
+  	loadProgressLabel.color ="#7cc576";
     loadProgressLabel.text = "baking cookies";
+
   } else if (progressPercentage >= 60) {
+	loadProgressLabel.color ="#f74f4d";
     loadProgressLabel.text = "knitting sweaters";
+
   } else if (progressPercentage >= 40) {
+  	loadProgressLabel.color ="#7cc576";
     loadProgressLabel.text = "catching snowflakes";
+
   } else if (progressPercentage >= 20) {
+  	loadProgressLabel.color ="#f74f4d";
     loadProgressLabel.text = "making snowangels";
+
   } else if (progressPercentage >= 0) {
+
+  	loadProgressLabel.color ="#fafcfa";
     loadProgressLabel.text = "wrapping presents";
   }
 
@@ -109,7 +124,7 @@ function handleProgress() {
 //called when everything is loaded 
 function handleComplete() {
   // the canvas is now clickable and will run loadingScreenClick
-
+  stage.removeChild(bellSprite);
  stage.addEventListener("click", loadingScreenClick);
 }
 
@@ -119,35 +134,48 @@ function loadingInitialize() {
   //define loading screen graphics
   loadProgressLabel = new createjs.Text("","48px PixelFont3","black");
   loadingScreenFill = new createjs.Shape();
-  loadingBar = new createjs.Shape();
-  loadingBarFrame = new createjs.Shape();
-  loadingBarContainer = new createjs.Container();
-  loadingBarHeight = 20;
-  loadingBarWidth = 300;
+  // loadingBar = new createjs.Shape();
+  // loadingBarFrame = new createjs.Shape();
+  // loadingBarContainer = new createjs.Container();
+  // loadingBarHeight = 20;
+  // loadingBarWidth = 300;
 
-  loadProgressLabel.lineWidth = 200;
+  loadProgressLabel.lineWidth = 2000;
   loadProgressLabel.textAlign = "center";
   loadProgressLabel.x = screen_width/2;
   loadProgressLabel.y = screen_height/2 - 20;
 
   //Fill background with gray
-  loadingScreenFill.graphics.beginFill("#B0B0B0").drawRect(0,0,screen_width,screen_height).endFill();
+  loadingScreenFill.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height).endFill();
+
+	var bellSpriteSheet = new createjs.SpriteSheet( {
+	// all main strings are reserved strings (images, frames, animations) that do a specific task
+		"images": ["images/bell.png"],
+		"frames": {height: 47, width: 42, regX: 21, regY: 0},
+		"animations": {
+			"initial": [0, 3, 5/60],
+			"ringing": [4, 5,"ringing", 5/60]
+		}
+	});
+
+	bellSprite = new createjs.Sprite(bellSpriteSheet, "initial");
+	bellSprite.setTransform(screen_width/2,screen_height/2 + 20,1,1);
 
   //Create the progression part of the loading screen
-  loadingBar.graphics.beginFill("#000000").drawRect(0,0,1,20).endFill();
+  // loadingBar.graphics.beginFill("#000000").drawRect(0,0,1,20).endFill();
   
   //Creates a frame around the loading bar. Used 3 as a padding value
   //the frame is 3px larger and is offset by 1.5
-  loadingBarFrame.graphics.setStrokeStyle(1).beginStroke("#000000").drawRect(-3/2, -3/2, loadingBarWidth+3, loadingBarHeight+3).endStroke();
+  //loadingBarFrame.graphics.setStrokeStyle(1).beginStroke("#000000").drawRect(-3/2, -3/2, loadingBarWidth+3, loadingBarHeight+3).endStroke();
   
   //Combine the frame and the bar into 1 object
-  loadingBarContainer.addChild(loadingBar, loadingBarFrame);
+  //loadingBarContainer.addChild(loadingBar, loadingBarFrame);
   
   //center the loading bar
-  loadingBarContainer.x = screen_width/2 - loadingBarWidth/2;
-  loadingBarContainer.y = screen_height/2 + 50;
+  //loadingBarContainer.x = screen_width/2 - loadingBarWidth/2;
+  //loadingBarContainer.y = screen_height/2 + 50;
 
-  stage.addChild(loadingScreenFill, loadProgressLabel, loadingBarContainer);
+  stage.addChild(loadingScreenFill, loadProgressLabel, bellSprite);
 
 }
 
@@ -158,7 +186,7 @@ function loadingScreenClick() {
   startScreen();
 
   //remove the loading screen page and click function
-  stage.removeChild(loadProgressLabel, loadingBarContainer, loadingScreenFill);
+  stage.removeChild(loadProgressLabel, loadingScreenFill);
   stage.removeEventListener("click", loadingScreenClick);
 }
 
@@ -166,7 +194,7 @@ function startScreen() {
   document.getElementById("loader").className = "";
   // crates new stages and properties for assets to live on
   startPage = new createjs.Shape();
-  startText = new createjs.Text("Start Button","20px Arial", "#000000");
+  startText = new createjs.Text("Start Button","20px PixelFont3", "#000000");
   startButton = new createjs.Shape();
   startButtonContainer = new createjs.Container();
 
@@ -211,7 +239,7 @@ function charScreen() {
 
   // create shapes and containers
   var charPage = new createjs.Shape();
-  var charTitle = new createjs.Text("Select Your Character", "24px Arial", "#666");
+  var charTitle = new createjs.Text("Select Your Character", "24px PixelFont3", "#666");
   var boyDisplay = new createjs.Shape();
   var boyDisplayContainer = new createjs.Container();
   var girlDisplay = new createjs.Shape();
@@ -262,15 +290,15 @@ function startGame() {
   stage.removeAllChildren();
   background = new createjs.Shape();
   backgroundContainer = new createjs.Container();
-  scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#FFFFFF");
+  scoreDisplay = new createjs.Text("Score: 0", "36px PixelFont3", "#FFFFFF");
   
   //TODO: for testing movment and score
-  backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
-  spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF"); 
+  backgroundxDisplay = new createjs.Text("bg: 0", "20px PixelFont3", "#FFFFFF");
+  spritexDisplay = new createjs.Text("sprite: 0", "20px PixelFont3", "#FFFFFF"); 
   
   //TODO: for testing alert
-  detectSteps = new createjs.Text("Steps: 0", "20px Arial", "#FFFFFF");
-  alertStatus = new createjs.Text("Alert: false", "20px Arial", "#FFFFFF");
+  detectSteps = new createjs.Text("Steps: 0", "20px PixelFont3", "#FFFFFF");
+  alertStatus = new createjs.Text("Alert: false", "20px PixelFont3", "#FFFFFF");
 
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
@@ -592,7 +620,7 @@ function endCardPhoto() {
   stage.removeAllChildren();
   endPhoto = new createjs.Shape();
   endBackground = new createjs.Shape();
-  endCardEnterSkip = new createjs.Text("Press Enter to skip >", "20px Arial", "#FFFFFF");
+  endCardEnterSkip = new createjs.Text("Press Enter to skip >", "20px PixelFont3", "#FFFFFF");
   endPhotoContainer = new createjs.Container();
 
   //Draw Filler image endPhoto and black background
@@ -634,8 +662,8 @@ function endCardGift() {
 
 
   endCardGiftBanner = new createjs.Shape();
-  endCardGiftYouGot = new createjs.Text("YOU GOT", "50px Arial", "#FFFFFF");
-  endCardGiftText = new createjs.Text("GIFT", "50px Arial", "#FFFFFF");
+  endCardGiftYouGot = new createjs.Text("YOU GOT", "50px PixelFont3", "#FFFFFF");
+  endCardGiftText = new createjs.Text("GIFT", "50px PixelFont3", "#FFFFFF");
   endCardGiftYouGot.y = 125;
   endCardGiftYouGot.x = -350;
   endCardGiftText.y = 125;
