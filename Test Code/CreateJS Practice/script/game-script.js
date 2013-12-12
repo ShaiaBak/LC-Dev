@@ -88,7 +88,21 @@ function init() {
 function handleProgress() {
   loadingBar.scaleX = loader.progress * 300;
   progressPercentage = Math.round(loader.progress*100);
-  loadProgressLabel.text = progressPercentage +"% Loaded";
+
+  if (progressPercentage >= 80) {
+    loadProgressLabel.text = "baking cookies";
+  } else if (progressPercentage >= 60) {
+    loadProgressLabel.text = "knitting sweaters";
+  } else if (progressPercentage >= 40) {
+    loadProgressLabel.text = "catching snowflakes";
+  } else if (progressPercentage >= 20) {
+    loadProgressLabel.text = "making snowangels";
+  } else if (progressPercentage >= 0) {
+    loadProgressLabel.text = "wrapping presents";
+  }
+
+
+
   stage.update();
 }
 
@@ -103,7 +117,7 @@ function handleComplete() {
 function loadingInitialize() {
   
   //define loading screen graphics
-  loadProgressLabel = new createjs.Text("","32px PixelFont3","black");
+  loadProgressLabel = new createjs.Text("","48px PixelFont3","black");
   loadingScreenFill = new createjs.Shape();
   loadingBar = new createjs.Shape();
   loadingBarFrame = new createjs.Shape();
@@ -114,7 +128,7 @@ function loadingInitialize() {
   loadProgressLabel.lineWidth = 200;
   loadProgressLabel.textAlign = "center";
   loadProgressLabel.x = screen_width/2;
-  loadProgressLabel.y = screen_height/2;
+  loadProgressLabel.y = screen_height/2 - 20;
 
   //Fill background with gray
   loadingScreenFill.graphics.beginFill("#B0B0B0").drawRect(0,0,screen_width,screen_height).endFill();

@@ -9,5 +9,7 @@ body {
 }
 
 /*@import src(http://fonts.googleapis.com/css?family=Dorsa);*/
-
-@font-face { font-family: {PixelFont3}; src: url('PixelFont3.ttf'); } 
+@font-face { 
+	font-family: 'PixelFont3'; 
+	src:('../assets/PixelFont3.ttf') format("truetype"); 
+} 
