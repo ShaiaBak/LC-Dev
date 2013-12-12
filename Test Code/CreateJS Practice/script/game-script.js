@@ -70,6 +70,8 @@ function init() {
     {src:"images/endcard_info_facebook.png", id:"facebookButtonImg"},
     {src:"images/endcard_logo.png", id:"lcLogoImg"},
     {src:"images/bell.png", id:"bell"},
+    {src:"images/endcard_boy.png", id:"endcard_boy"},
+    {src:"images/endcard_girl.png", id:"endcard_girl"},
     {src:"assets/Test.mp3", id:"music"}
   ];
   loader = new createjs.LoadQueue(false);
@@ -620,26 +622,31 @@ function endCardPhoto() {
   stage.removeAllChildren();
   endPhoto = new createjs.Shape();
   endBackground = new createjs.Shape();
-  endCardEnterSkip = new createjs.Text("Press Enter to skip >", "20px PixelFont3", "#FFFFFF");
+  endCardFlash = new createjs.Shape();
+
+  endCardEnterSkip = new createjs.Text("Press Enter to skip >", "32px PixelFont3", "#FFFFFF");
   endPhotoContainer = new createjs.Container();
 
-  //Draw Filler image endPhoto and black background
-  endPhoto.graphics.beginStroke("#ff0000").beginFill("#FFFFFF").drawRect(0,0,250,250);
+	if (character == 0) {
+		endPhoto.graphics.beginBitmapFill(loader.getResult("endcard_boy")).drawRect(0,0,500,300);
+	} else if (character == 1) {
+		endPhoto.graphics.beginBitmapFill(loader.getResult("endcard_girl")).drawRect(0,0,500,300);
+	}
+
   endBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
+  endCardFlash.graphics.beginFill("#FFFFFF").drawRect(0,0,screen_width,screen_height);
 
+  var endCardFlashAnim = createjs.Tween.get(endCardFlash, {paused:true})
+          .to({alpha:0},75)
 
-  //Image and text location
-  endPhoto.regX = 125;
-  endPhoto.regY = 125;
-  endPhoto.rotation = 60;
-  endPhoto.x = 125;
-  endPhoto.y = 50;
-  endCardEnterSkip.x = 300;
-  endCardEnterSkip.y = 275;
+  endCardFlashAnim.setPaused(false);
+
+  endCardEnterSkip.x = 310;
+  endCardEnterSkip.y = 270;
 
   endPhotoContainer.addChild(endPhoto, endCardEnterSkip);
 
-  stage.addChild(endBackground, endPhotoContainer);
+  stage.addChild(endBackground, endPhotoContainer, endCardFlash);
 
 }
 
@@ -662,14 +669,14 @@ function endCardGift() {
 
 
   endCardGiftBanner = new createjs.Shape();
-  endCardGiftYouGot = new createjs.Text("YOU GOT", "50px PixelFont3", "#FFFFFF");
-  endCardGiftText = new createjs.Text("GIFT", "50px PixelFont3", "#FFFFFF");
-  endCardGiftYouGot.y = 125;
-  endCardGiftYouGot.x = -350;
-  endCardGiftText.y = 125;
-  endCardGiftText.x = -350;
+  endCardGiftYouGot = new createjs.Text("YOU GOT", "160px PixelFont3", "#FFFFFF");
+  endCardGiftText = new createjs.Text("GIFT", "160px PixelFont3", "#FFFFFF");
+  endCardGiftYouGot.y = 70;
+  endCardGiftYouGot.x = 600;
+  endCardGiftText.y = 70;
+  endCardGiftText.x = 600;
 
-  endCardGiftBanner.graphics.beginFill("F25050").drawRect(-screen_width,75,screen_width,150);
+  endCardGiftBanner.graphics.beginFill("F25050").drawRect(screen_width,90,screen_width,120);
 
   stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftText);
 
@@ -678,21 +685,21 @@ function endCardGift() {
 
   // Red banner pans across the screen
   var giftBannerAnim = createjs.Tween.get(endCardGiftBanner, {paused:true})
-                  .to({x:500},200,createjs.Ease.linear)
-                  .wait(4500)
-                  .to({x:1000},400,createjs.Ease.linear);
+  					.wait(1850)
+                	.to({x:-500},500,createjs.Ease.linear);
+                  // 
+                  // .to({x:1000},400,createjs.Ease.linear);
   // The words YOU GOT moves across the screen
   var giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot, {paused:true})
-                  .wait(200)
-                  .to({x:100},200,createjs.Ease.linear)
-                  .to({x:160},1000,createjs.Ease.linear)
-                  .to({x:500},200,createjs.Ease.linear);
+                  	.to({x:120},200,createjs.Ease.linear)
+                  	.to({x:80},1750,createjs.Ease.linear)
+                  	.to({x:-500},200,createjs.Ease.linear);
   // the gift name pans across
   var giftTextAnim = createjs.Tween.get(endCardGiftText, {paused:true})
-                  .wait(1600)
-                  .to({x:190},200,createjs.Ease.linear)
+                  .wait(2500)
+                  .to({x:200},200,createjs.Ease.linear)
                   .wait(3100)
-                  .to({x:500},400,createjs.Ease.linear)
+                  // .to({x:500},400,createjs.Ease.linear)
                   .call(endCardFinal);
 
   //Animation Timeline
@@ -703,17 +710,16 @@ function endCardGift() {
   //Third stage of the end cards
   //Display social media info and score
 function endCardFinal() {
-
   endCardGiftStatus = false;
   endCardFinalStatus = true;
 
-  stage.removeAllChildren();
+  //stage.removeAllChildren();
 
   tumblrButton = new createjs.Shape();
-  // twitterButton = new createjs.Shape();
-  // facebookButton = new createjs.Shape();
-  // lcLogo = new createjs.Shape();
-  // socialMediaInfo = new createjs.Container();
+  twitterButton = new createjs.Shape();
+  facebookButton = new createjs.Shape();
+  lcLogo = new createjs.Shape();
+  socialMediaInfo = new createjs.Container();
 
   endCardFinalBackground = new createjs.Shape();
   endCardFinalContainer = new createjs.Container();
@@ -737,8 +743,8 @@ function endCardFinal() {
 
 
   socialMediaInfo.addChild(tumblrButton, twitterButton, facebookButton, lcLogo)
-  socialMediaInfo.x = 260;
-  socialMediaInfo.y = 210;
+  socialMediaInfo.x = 265;
+  socialMediaInfo.y = 215;
 
 
 
@@ -748,7 +754,7 @@ function endCardFinal() {
   endCardFinalContainer.addChild(endCardFinalBackground);
   endCardFinalContainer.alpha = 0;
 
-  stage.addChild(endBackground, endCardFinalContainer, socialMediaInfo);
+  stage.addChild(socialMediaInfo);
   
   //test image fades in
   var FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
