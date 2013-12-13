@@ -10,6 +10,6 @@ body {
 
 /*@import src(http://fonts.googleapis.com/css?family=Dorsa);*/
 @font-face { 
-	font-family: 'PixelFont3'; 
+	font-family: 'PixelFont3', Courier, sans-serif; 
 	src:('../assets/PixelFont3.ttf') format("truetype"); 
 } 
