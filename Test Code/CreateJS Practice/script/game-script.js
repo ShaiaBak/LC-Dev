@@ -330,6 +330,8 @@ function startGame() {
   alertStatus.x = 300;
   alertStatus.y = 230;
 
+
+//Boy Selection
   if (character == 0) {
     var megamanSpriteSheet = new createjs.SpriteSheet( {
       // all main strings are reserved strings (images, frames, animations) that do a specific task
@@ -353,7 +355,7 @@ function startGame() {
                   [0,84,42,84,0,21,0],[42,84,42,84,0,21,0],
                   [0,252,42,84,0,21,0],[42,252,42,84,0,21,0],[84,252,42,84,0,21,0],[126,252,42,84,0,21,0],[168,252,42,84,0,21,0],[210,252,42,84,0,21,0],
                   [0,336,60,84,0,30,0],[60,336,60,84,0,30,0],[120,336,60,84,0,30,0],[180,336,60,84,0,30,0],[240,336,60,84,0,30,0],[300,336,60,84,0,30,0],[360,336,60,84,0,30,0],[420,336,60,84,0,30,0],[480,336,60,84,0,30,0],[540,336,60,84,0,30,0],
-                  [0,420,60,84,0,30,0],[60,420,60,84,0,30,0],[120,420,60,84,0,30,0],[180,420,60,84,0,30,0],[240,420,60,84,0,30,0],[300,420,60,84,0,30,0],[360,420,60,84,0,30,0],[420,420,60,84,0,30,0],[480,420,60,84,0,30,0],[540,420,60,84,0,30,0],
+                  [0,420,60,84,0,30,0],[60,420,60,84,0,30,0],[120,420,60,84,0,30,0],[180,420,60,84,0,30,0],[240,420,60,84,0,30,0],[300,420,60,84,0,30,0],[360,420,60,84,0,30,0],[420,420,60,84,0,30,0],[480,420,60,84,0,30,0],[540,420,60,84,0,30,0]
 
       ],
       "animations": {
@@ -367,6 +369,8 @@ function startGame() {
     });
   }
 
+
+//Girl Selection
   else if (character == 1) {
     var megamanSpriteSheet = new createjs.SpriteSheet( {
       // all main strings are reserved strings (images, frames, animations) that do a specific task
@@ -378,6 +382,33 @@ function startGame() {
         "duck": [7, 7]
       }
     });
+
+    var characterSpriteSheet = new createjs.SpriteSheet( {
+      // all main strings are reserved strings (images, frames, animations) that do a specific task
+      "images": [loader.getResult("girl")],
+      // x, y, width, height, imageIndex, regX, regY
+      "frames": [
+                  [0,0,40,96,0,20,0],[40,0,40,96,0,20,0],
+                  [0,96,40,96,0,20,0],[40,96,40,96,0,20,0],
+                  [0,192,52,96,0,26,0],[56,192,52,96,0,26,0],
+                  [0,288,40,96,0,20,0],[40,288,40,96,0,20,0],[80,288,40,96,0,20,0],[120,288,40,96,0,20,0],[160,288,40,96,0,20,0],[200,288,40,96,0,20,0],
+                  [0,384,56,96,0,28,0],[56,384,56,96,0,28,0],[112,384,56,96,0,28,0],[168,384,56,96,0,28,0],[224,384,56,96,0,28,0],[280,384,56,96,0,28,0],[336,384,56,96,0,28,0],[392,384,56,96,0,28,0],[448,384,56,96,0,28,0],[504,384,56,96,0,28,0],
+                  [0,480,56,96,0,28,0],[56,480,56,96,0,28,0],[112,480,56,96,0,28,0],[168,480,56,96,0,28,0],[224,480,56,96,0,28,0],[280,480,56,96,0,28,0],[336,480,56,96,0,28,0],[392,480,56,96,0,28,0],[448,480,56,96,0,28,0],[504,480,56,96,0,28,0],
+                  [0,576,56,96,0,28,0],[56,576,56,96,0,28,0],[112,576,56,96,0,28,0],[168,576,56,96,0,28,0],[224,576,56,96,0,28,0],[280,576,56,96,0,28,0],[336,576,56,96,0,28,0],[392,576,56,96,0,28,0],[448,576,56,96,0,28,0],[504,576,56,96,0,28,0],
+                  [0,672,56,96,0,28,0],[56,672,56,96,0,28,0],[112,672,56,96,0,28,0],[168,672,56,96,0,28,0]
+      ], 
+      "animations": {
+        "idle": [0,0,"blink",1/150],
+        "blink": [4,11,"idle",5/60],
+        "lookUp": [1],
+        "lookLeft": [3],
+        "sneak": [12,31,"sneak",6/60],
+        "duck": [32,45,"duckIdle", 20/60],
+        "duckIdle":[45],
+        "stressed":[4,5,"stressed",5/60]
+      }
+    });
+
   } else {
     charScreen();
   }
@@ -549,7 +580,8 @@ function handleKeyUp(e) {
     case KEYCODE_DOWN:
     case KEYCODE_S: {
       spacePressed = false;
-      megamanSprite.gotoAndStop("duck");
+      characterSprite.gotoAndPlay("idle");
+      megamanSprite.gotoAndStop("idle");
       anyKeyPressed = false;
       break;
     }
@@ -594,10 +626,7 @@ function stageUpdate(event) {
   //   anyKeyPressed = true;
   // }
 
-  if (rightPressed && !anyKeyPressed && !spacePressed && !upPressed && !leftPressed) {
-    characterSprite.gotoAndPlay("sneak");
-    anyKeyPressed = true;
-  }
+
 
   if (leftPressed && !anyKeyPressed && !spacePressed && !upPressed && !rightPressed) {
     characterSprite.gotoAndPlay("lookLeft");
@@ -605,6 +634,18 @@ function stageUpdate(event) {
   }
   if (upPressed && !anyKeyPressed && !spacePressed && !leftPressed && !rightPressed) {
     characterSprite.gotoAndPlay("lookUp");
+    anyKeyPressed = true;
+  }
+
+    if (rightPressed && !anyKeyPressed && !spacePressed && !upPressed && !leftPressed) {
+    characterSprite.gotoAndPlay("sneak");
+    anyKeyPressed = true;
+  }
+
+  // pressing space makes you go duck
+  if (spacePressed && !anyKeyPressed) {
+    megamanSprite.gotoAndPlay("duck");
+    characterSprite.gotoAndPlay("duck");
     anyKeyPressed = true;
   }
 
@@ -653,12 +694,7 @@ function stageUpdate(event) {
     }
   }
 
-  // pressing space makes you go duck
-  if (spacePressed) {
-    megamanSprite.gotoAndPlay("duck");
 
-    anykeypress = true;
-  }
 
   // If left and right are pressed at the same time or nothing is pressed
   // return to the standing animation
