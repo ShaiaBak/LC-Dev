@@ -8,7 +8,6 @@ var megamanSprite;
 var fireplaceSprite
 var bellSprite;
 var santaSprite;
-var santaSurpriseSprite;
 var characterSprite;
 
 var KEYCODE_ENTER = 13;   //usefull keycode
@@ -80,8 +79,7 @@ function init() {
     {src:"images/bell.png", id:"bell"},
     {src:"images/endcard_boy.png", id:"endcard_boy"},
     {src:"images/endcard_girl.png", id:"endcard_girl"},
-    {src:"images/santa_idle.png", id:"santa_idle"},
-    {src:"images/santa_surprise.png", id:"santa_surprise"},
+    {src:"images/santa_sprite.png", id:"santa"},
     {src:"assets/Test.mp3", id:"music"}
   ];
   loader = new createjs.LoadQueue(false);
@@ -199,7 +197,8 @@ function loadingScreenClick() {
 
   //remove the loading screen page and click function
   stage.removeChild(loadProgressLabel, loadingScreenFill);
-  off("tick", handleProgress);
+  createjs.Ticker.removeEventListener("tick", handleProgress);
+  
 }
 
 function startScreen() {
@@ -430,21 +429,14 @@ function startGame() {
 
   var santaSpriteSheet = new createjs.SpriteSheet( {
   // all main strings are reserved strings (images, frames, animations) that do a specific task
-    "images": [loader.getResult("santa_idle")],
+    "images": [loader.getResult("santa")],
     "frames": {height: 150, width: 190, regX: 0, regY: 0},
     "animations": {
       "idle": [0, 35,"idle", 5/60],
+      "surprise": [36, 40, "surprise", 5/60]
     }
   });
 
-  var santaSurpriseSpriteSheet = new createjs.SpriteSheet( {
-  // all main strings are reserved strings (images, frames, animations) that do a specific task
-    "images": [loader.getResult("santa_surprise")],
-    "frames": {height: 150, width: 190, regX: 0, regY: 0},
-    "animations": {
-      "idle": [0, 4,"idle", 5/60],
-    }
-  });
   characterSprite = new createjs.Sprite(characterSpriteSheet, "idle");
   characterSprite.setTransform(100,100,1,1);
   characterSprite.framerate = 60;
@@ -461,10 +453,6 @@ function startGame() {
 
   santaSprite = new createjs.Sprite(santaSpriteSheet, "idle");
   santaSprite.setTransform(810,125,1,1);
-
-  santaSurpriseSprite = new createjs.Sprite(santaSurpriseSpriteSheet, "idle");
-  santaSurpriseSprite.setTransform(810,125,1,1);
-
 
 
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
@@ -709,8 +697,7 @@ function stageUpdate(event) {
     anyKeyPressed = false;
   }
   if (megamanSprite.x >= 350){
-    backgroundContainer.removeChild(santaSprite);
-    backgroundContainer.addChild(santaSurpriseSprite);
+    santaSprite.gotoAndPlay("surprise");
   }
 
   if (megamanSprite.x >= 400){
@@ -882,6 +869,7 @@ function endCardFinal() {
 
 
   socialMediaInfo.addChild(tumblrButton, twitterButton, facebookButton, lcLogo)
+  socialMediaInfo.alpha = 0;
   socialMediaInfo.x = 265;
   socialMediaInfo.y = 215;
 
@@ -895,14 +883,18 @@ function endCardFinal() {
 
   stage.addChild(socialMediaInfo);
   
-  //test image fades in
-  var FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
-            .to({alpha:1},2000);
-  FinalAnim.setPaused(false);
+
 
   facebookButton.addEventListener('click', facebookLink);
   tumblrButton.addEventListener('click', tumblrLink);
   twitterButton.addEventListener('click', twitterLink);
+
+
+  //test image fades in
+  var FinalAnim = createjs.Tween.get(socialMediaInfo, {paused:true})
+            .to({alpha:1},1000);
+  FinalAnim.setPaused(false);
+
 
 }
 
