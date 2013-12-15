@@ -90,8 +90,11 @@ function init() {
   //the files are done loading
 
   loader.installPlugin(createjs.Sound);
-  loader.addEventListener("complete", handleComplete);
-  loader.addEventListener("progress", handleProgress);
+  loader.addEventListener("complete", loadingScreenClick);
+  //loader.addEventListener("progress", handleProgress);
+  createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
+  createjs.Ticker.setFPS(60);
+  createjs.Ticker.addEventListener("tick", handleProgress);
   // loads the manifest
   loader.loadManifest(manifest);
   stage.update();
@@ -101,7 +104,7 @@ function handleProgress() {
   //loadingBar.scaleX = loader.progress * 300;
   progressPercentage = Math.round(loader.progress*100);
   var progressPercentageInt = progressPercentage % 5;
-  bellSprite.play();
+  bellSprite.advance();
 
 
   //Text and color changes depending on percentage done
@@ -126,16 +129,13 @@ function handleProgress() {
   	loadProgressLabel.color ="#fafcfa";
     loadProgressLabel.text = "wrapping presents";
   }
-
-
-
-  stage.update();
+   stage.update();
 }
 
 //called when everything is loaded 
 function handleComplete() {
   // the canvas is now clickable and will run loadingScreenClick
-  stage.removeChild(bellSprite);
+
  stage.addEventListener("click", loadingScreenClick);
 }
 
@@ -164,7 +164,7 @@ function loadingInitialize() {
 		"images": ["images/bell.png"],
 		"frames": {height: 46, width: 42, regX: 21, regY: 0},
 		"animations": {
-			"initial": [0, 3, 5/60],
+			"initial": [0, 3, true, 5/60],
 			"ringing": [4, 5,"ringing", 5/60]
 		}
 	});
@@ -199,7 +199,7 @@ function loadingScreenClick() {
 
   //remove the loading screen page and click function
   stage.removeChild(loadProgressLabel, loadingScreenFill);
-  stage.removeEventListener("click", loadingScreenClick);
+  off("tick", handleProgress);
 }
 
 function startScreen() {
@@ -356,8 +356,9 @@ function startGame() {
       /*04-05*/   [0,168,116,84,0,58,0],[116,168,116,84,0,58,0],
       /*06-11*/   [0,252,42,84,0,21,0],[42,252,42,84,0,21,0],[84,252,42,84,0,21,0],[126,252,42,84,0,21,0],[168,252,42,84,0,21,0],[210,252,42,84,0,21,0],
       /*12-21*/   [0,336,60,84,0,30,0],[60,336,60,84,0,30,0],[120,336,60,84,0,30,0],[180,336,60,84,0,30,0],[240,336,60,84,0,30,0],[300,336,60,84,0,30,0],[360,336,60,84,0,30,0],[420,336,60,84,0,30,0],[480,336,60,84,0,30,0],[540,336,60,84,0,30,0],
-      /*22-31*/   [0,420,60,84,0,30,0],[60,420,60,84,0,30,0],[120,420,60,84,0,30,0],[180,420,60,84,0,30,0],[240,420,60,84,0,30,0],[300,420,60,84,0,30,0],[360,420,60,84,0,30,0],[420,420,60,84,0,30,0],[480,420,60,84,0,30,0],[540,420,60,84,0,30,0]
-
+      /*22-31*/   [0,420,60,84,0,30,0],[60,420,60,84,0,30,0],[120,420,60,84,0,30,0],[180,420,60,84,0,30,0],[240,420,60,84,0,30,0],[300,420,60,84,0,30,0],[360,420,60,84,0,30,0],[420,420,60,84,0,30,0],[480,420,60,84,0,30,0],[540,420,60,84,0,30,0],
+      /*32-41*/   [0,504,94,84,0,47,0],[94,504,94,84,0,47,0],[188,504,94,84,0,47,0],[282,504,94,84,0,47,0],[376,504,94,84,0,47,0],[470,504,94,84,0,47,0],[564,504,94,84,0,47,0],[658,504,94,84,0,47,0],[752,504,94,84,0,47,0],[846,504,94,84,0,47,0],
+      /*42-45*/   [0,588,94,84,0,47,0],[94,588,94,84,0,47,0],[188,588,94,84,0,47,0],[282,588,94,84,0,47,0]      
       ],
       "animations": {
         "idle": [0,0,"blink",1/150],
@@ -365,7 +366,9 @@ function startGame() {
         "lookLeft": [3],
         "stressed":[4,5,"stressed",5/60],
         "blink": [6,11,"idle",5/60],
-        "sneak": [12,31,"sneak",6/60]
+        "sneak": [12,31,"sneak",6/60],
+        "duck": [32,45,"duckIdle", 20/60],
+        "duckIdle":[45]
       }
 
     });
