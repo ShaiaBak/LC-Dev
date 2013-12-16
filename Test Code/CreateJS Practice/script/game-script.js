@@ -58,7 +58,7 @@ var alertCount = 0;
 var santaCount = 0;
 var detection;
 var alertStatus;
-var keyDisable = false;
+var keyActive = true;
 
 
 function init() {
@@ -528,8 +528,8 @@ function santaAlert() {
           break;
       }
     }
-    console.log(keyDisable);
-    if (alert == 1) {
+    console.log(keyActive);
+    if(alert == 1) {
       forceduck();
       alertCount++;
     }
@@ -541,14 +541,21 @@ function santaAlert() {
 function forceduck() {
   megamanSprite.gotoAndPlay("duck");
   characterSprite.gotoAndPlay("duck");
-  keyDisable = true;
-  console.log("WATTTTT");
+  keyActive = false;
+  console.log("Key: " + keyActive);
 
   if(alertCount == 3) {
-    megamanSprite.gotoAndStop("duck");
-    characterSprite.gotoAndStop("duck");
+    megamanSprite.gotoAndStop("idle");
+    characterSprite.gotoAndStop("idle");
     alert = 0;
     duckTrigger = false;
+    keyActive = true;
+  }
+
+  if(alertCount > 0) {
+      santaCount = 0;
+  } else if (alertCount == 0) {
+    santaAlert();
   }
 }
 
@@ -559,30 +566,33 @@ function handleKeyDown(e) {
     var e = window.event;
   }
 
-  switch(e.keyCode) {
-    
-    case KEYCODE_LEFT:
-    case KEYCODE_A: {
-      leftPressed = true;
-      break;
-    }
-    case KEYCODE_RIGHT:
-    case KEYCODE_D: {
-      rightPressed = true;
-      //add to stepsTaken
-      stepsTaken++;
-      break;
-    }
-    case KEYCODE_UP:
-    case KEYCODE_W: {
-      upPressed = true;
-      break;
-    }
-    case KEYCODE_SPACE: 
-    case KEYCODE_DOWN:
-    case KEYCODE_S: {
-      duckTrigger = true;
-      break;
+  if(keyActive != false) {
+
+    switch(e.keyCode) {
+      
+      case KEYCODE_LEFT:
+      case KEYCODE_A: {
+        leftPressed = true;
+        break;
+      }
+      case KEYCODE_RIGHT:
+      case KEYCODE_D: {
+        rightPressed = true;
+        //add to stepsTaken
+        stepsTaken++;
+        break;
+      }
+      case KEYCODE_UP:
+      case KEYCODE_W: {
+        upPressed = true;
+        break;
+      }
+      case KEYCODE_SPACE: 
+      case KEYCODE_DOWN:
+      case KEYCODE_S: {
+        duckTrigger = true;
+        break;
+      }
     }
   }
 }
@@ -593,41 +603,43 @@ function handleKeyUp(e) {
     var e = window.event;
   }
 
-  //gotoAndStop will play the animation once and stop
-  switch(e.keyCode) {
-    case KEYCODE_LEFT:
-    case KEYCODE_A: {
-      leftPressed = false;
-      megamanSprite.gotoAndStop("run");
-      characterSprite.gotoAndPlay("idle");
-      anyKeyPressed = false;
-      break;
-    }  
-    case KEYCODE_RIGHT:
-    case KEYCODE_D: {
-      rightPressed = false;
-      megamanSprite.gotoAndStop("run");
-      characterSprite.gotoAndPlay("idle");
-      
-      anyKeyPressed = false;
-      break;
-    } 
-    case KEYCODE_UP:
-    case KEYCODE_W: {
-      upPressed = false;
-      characterSprite.gotoAndPlay("idle");
-      anyKeyPressed = false;
-      break;
-    } 
+  if(keyActive != false) {
+    //gotoAndStop will play the animation once and stop
+    switch(e.keyCode) {
+      case KEYCODE_LEFT:
+      case KEYCODE_A: {
+        leftPressed = false;
+        megamanSprite.gotoAndStop("run");
+        characterSprite.gotoAndPlay("idle");
+        anyKeyPressed = false;
+        break;
+      }  
+      case KEYCODE_RIGHT:
+      case KEYCODE_D: {
+        rightPressed = false;
+        megamanSprite.gotoAndStop("run");
+        characterSprite.gotoAndPlay("idle");
+        
+        anyKeyPressed = false;
+        break;
+      } 
+      case KEYCODE_UP:
+      case KEYCODE_W: {
+        upPressed = false;
+        characterSprite.gotoAndPlay("idle");
+        anyKeyPressed = false;
+        break;
+      } 
 
-    case KEYCODE_SPACE: 
-    case KEYCODE_DOWN:
-    case KEYCODE_S: {
-      duckTrigger = false;
-      characterSprite.gotoAndPlay("idle");
-      megamanSprite.gotoAndStop("idle");
-      anyKeyPressed = false;
-      break;
+      case KEYCODE_SPACE: 
+      case KEYCODE_DOWN:
+      case KEYCODE_S: {
+        duckTrigger = false;
+        characterSprite.gotoAndPlay("idle");
+        megamanSprite.gotoAndStop("idle");
+        anyKeyPressed = false;
+        break;
+      }
     }
   }
   //During the end card photo, press esc, enter or space to skip it
