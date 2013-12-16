@@ -55,6 +55,7 @@ var alert = 0;
 
 var alertStatus;
 
+
 function init() {
   // conventional initializer
   stage = new createjs.Stage("myCanvas");
@@ -66,6 +67,7 @@ function init() {
   manifest = [
     // array of assest (images/music) that load with manifest
     // grabbing assets from the DOM
+    {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
     {src:"images/megaman.png", id:"megaman"},
     {src:"images/megamanred.png", id:"megamanred"},
     {src:"images/boy_sprite.png", id:"boy"},
@@ -205,13 +207,14 @@ function startScreen() {
   document.getElementById("loader").className = "";
   // crates new stages and properties for assets to live on
   startPage = new createjs.Shape();
-  startText = new createjs.Text("Start Button","20px PixelFont3", "#000000");
+  startText = new createjs.Text("Start Button","48px PixelFont3", "#000000");
   startButton = new createjs.Shape();
   startButtonContainer = new createjs.Container();
 
   startButtonContainer.x = screen_width/2 - 200/2;
   startButtonContainer.y = screen_height/2;
   startText.textAlign = "center";
+  startText.textBaseline = "alphabetic";
   startText.x = 200/2;
   startText.y = 50/2;
 
