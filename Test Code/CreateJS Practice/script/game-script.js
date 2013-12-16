@@ -527,16 +527,13 @@ function santaAlert() {
           alert = 0;
           break;
       }
-     }
-         console.log(keyDisable);
-  }, 1000);
-
+    }
+    console.log(keyDisable);
     if (alert == 1) {
       forceduck();
-      var alertCountFunc = setInterval(function() {
-        alertCount++;
-      }, 1000);
+      alertCount++;
     }
+  }, 1000);
 
   stageUpdate();
 }
@@ -545,6 +542,7 @@ function forceduck() {
   megamanSprite.gotoAndPlay("duck");
   characterSprite.gotoAndPlay("duck");
   keyDisable = true;
+  console.log("WATTTTT");
 
   if(alertCount == 3) {
     megamanSprite.gotoAndStop("duck");
