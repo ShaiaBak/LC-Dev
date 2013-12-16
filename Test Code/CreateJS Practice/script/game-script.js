@@ -52,7 +52,8 @@ var endCardFinalStatus = false;
 
 var stepsTaken = 0;
 var alert = 0;
-
+var alertCount = 0;
+var detection;
 var alertStatus;
 
 
@@ -490,9 +491,9 @@ function startGame() {
 
 function santaAlert() {
   //if(alert != 1) {
-    for(var i = 0; i < stepsTaken; i++) {
       if(stepsTaken % 2 == 0 && stepsTaken != 0) {
-        var detection =  Math.floor((Math.random()*10)+1);
+        detection =  Math.floor((Math.random()*10)+1);
+        console.log(detection);
         if(detection == 7) {
           alert = 1;
           return;
@@ -500,23 +501,21 @@ function santaAlert() {
           return;
         }
       }
-      console.log(detection);
-    }
-
+      
     if (alert == 1) {
       forceduck();
-      alert = 0;
+      alertCount++;
     }
   //}
 
-  console.log('wat');
   stageUpdate();
 }
 
 function forceduck() {
   spacePressed = true;
-  alert = 0;
-  if(alert == 0) {
+  
+  if(parseInt(alertCount/60) == 3) {
+    alert = 0;
     spacePressed = false;
   }
 }
@@ -717,8 +716,6 @@ function stageUpdate(event) {
   if (megamanSprite.x >= 400){
     endCardPhoto();
   }
-
-
 
   //if the end card photo is being displayed, begin counting for 5 seconds
   if(endCardPhotoStatus) {
