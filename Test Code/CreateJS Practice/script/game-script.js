@@ -25,7 +25,7 @@ var KEYCODE_ESC = 27;
 
 var leftPressed = false;
 var rightPressed = false;
-var spacePressed = false;
+var duckTrigger = false;
 var upPressed = false;
 var anyKeyPressed = false;
 
@@ -39,9 +39,6 @@ var background;
 var startPage;
 var startText;
 var scoreDisplay;
-var backgroundxDisplay;
-var spritexDisplay;
-var detectSteps;
 var score = 0;
 var backgroundvalue = 0;
 var loadProgressLabel;
@@ -50,11 +47,18 @@ var endCardPhotoCount = 0;
 var endCardGiftStatus = false;
 var endCardFinalStatus = false;
 
+var backgroundxDisplay;
+var spritexDisplay;
+var detectSteps;
+var timeDisplay;
+
 var stepsTaken = 0;
 var alert = 0;
 var alertCount = 0;
+var santaCount = 0;
 var detection;
 var alertStatus;
+var keyDisable = false;
 
 
 function init() {
@@ -331,6 +335,9 @@ function startGame() {
   detectSteps = new createjs.Text("Steps: 0", "20px PixelFont3", "#FFFFFF");
   alertStatus = new createjs.Text("Alert: false", "20px PixelFont3", "#FFFFFF");
 
+  //TODO: second count
+  timeDisplay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF")
+
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
   
@@ -348,6 +355,9 @@ function startGame() {
 
   alertStatus.x = 300;
   alertStatus.y = 230;
+
+  timeDisplay.x = 350;
+  timeDisplay.y = 230;  
 
 
 //Boy Selection
@@ -478,45 +488,69 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus, characterSprite);
-
+  stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus, characterSprite, timeDisplay);
+  santaAlert();
   // not sure what .timingMode is
   // .Ticker adds continuous timer
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
   createjs.Ticker.setFPS(60);
   createjs.Ticker.addEventListener("tick", stageUpdate);
-  createjs.Ticker.addEventListener("tick", santaAlert);
- 
 }
 
 function santaAlert() {
-  //if(alert != 1) {
-      if(stepsTaken % 2 == 0 && stepsTaken != 0) {
-        detection =  Math.floor((Math.random()*10)+1);
-        console.log(detection);
-        if(detection == 7) {
+  var santaCountFunc = setInterval(function() {
+    santaCount++;
+    if(santaCount > 3) {
+      santaCount = 0;
+    }
+    if(santaCount == 3){ 
+      detection =  Math.floor((Math.random()*10)+1);
+      console.log(detection);
+
+      switch(detection) {  
+        case 1:
           alert = 1;
-          return;
-        } else {
-          return;
-        }
+          break;
+        case 2:
+          alert = 1;
+          break;
+        case 4:
+          alert = 1;
+          break;
+        case 6:
+          alert = 1;
+          break;
+        case 3:
+          alert = 1;
+          break;
+        default:
+          alert = 0;
+          break;
       }
-      
+     }
+         console.log(keyDisable);
+  }, 1000);
+
     if (alert == 1) {
       forceduck();
-      alertCount++;
+      var alertCountFunc = setInterval(function() {
+        alertCount++;
+      }, 1000);
     }
-  //}
 
   stageUpdate();
 }
 
 function forceduck() {
-  spacePressed = true;
-  
-  if(parseInt(alertCount/60) == 3) {
+  megamanSprite.gotoAndPlay("duck");
+  characterSprite.gotoAndPlay("duck");
+  keyDisable = true;
+
+  if(alertCount == 3) {
+    megamanSprite.gotoAndStop("duck");
+    characterSprite.gotoAndStop("duck");
     alert = 0;
-    spacePressed = false;
+    duckTrigger = false;
   }
 }
 
@@ -549,7 +583,7 @@ function handleKeyDown(e) {
     case KEYCODE_SPACE: 
     case KEYCODE_DOWN:
     case KEYCODE_S: {
-      spacePressed = true;
+      duckTrigger = true;
       break;
     }
   }
@@ -591,7 +625,7 @@ function handleKeyUp(e) {
     case KEYCODE_SPACE: 
     case KEYCODE_DOWN:
     case KEYCODE_S: {
-      spacePressed = false;
+      duckTrigger = false;
       characterSprite.gotoAndPlay("idle");
       megamanSprite.gotoAndStop("idle");
       anyKeyPressed = false;
@@ -617,7 +651,7 @@ function scoretimer(event) {
   spritexDisplay.text = "sprite: " + megamanSprite.x + " ";*/
   detectSteps.text = "steps: " + stepsTaken + " ";
   alertStatus.text = "alert: " + alert + " ";
-
+  timeDisplay.text = "time: " + santaCount + " ";
 }
 
 
@@ -628,29 +662,29 @@ function stageUpdate(event) {
 
   //When an arrow key is pressed, it will play the "run" animation (which loops)
   //will remove the anykeypress flag so that the animation will be only played once
-  // if ((leftPressed||rightPressed) && !anyKeyPressed && !spacePressed) {
+  // if ((leftPressed||rightPressed) && !anyKeyPressed && !duckTrigger) {
   //   megamanSprite.gotoAndPlay("run");
   //   anyKeyPressed = true;
   // }
 
 
 
-  if (leftPressed && !anyKeyPressed && !spacePressed && !upPressed && !rightPressed) {
+  if (leftPressed && !anyKeyPressed && !duckTrigger && !upPressed && !rightPressed) {
     characterSprite.gotoAndPlay("lookLeft");
     anyKeyPressed = true;
   }
-  if (upPressed && !anyKeyPressed && !spacePressed && !leftPressed && !rightPressed) {
+  if (upPressed && !anyKeyPressed && !duckTrigger && !leftPressed && !rightPressed) {
     characterSprite.gotoAndPlay("lookUp");
     anyKeyPressed = true;
   }
 
-    if (rightPressed && !anyKeyPressed && !spacePressed && !upPressed && !leftPressed) {
+    if (rightPressed && !anyKeyPressed && !duckTrigger && !upPressed && !leftPressed) {
     characterSprite.gotoAndPlay("sneak");
     anyKeyPressed = true;
   }
 
   // pressing space makes you go duck
-  if (spacePressed && !anyKeyPressed) {
+  if (duckTrigger && !anyKeyPressed) {
     megamanSprite.gotoAndPlay("duck");
     characterSprite.gotoAndPlay("duck");
     anyKeyPressed = true;
@@ -672,7 +706,7 @@ function stageUpdate(event) {
   //character runs freely past 200 to 400
   
   //Pressed the Left Arrow Key **********
-  if (leftPressed && !rightPressed && !spacePressed) {
+  if (leftPressed && !rightPressed && !duckTrigger) {
     // flip at regular state
     megamanSprite.scaleX = 1;
     
@@ -687,7 +721,7 @@ function stageUpdate(event) {
 
 
   //Pressed the Right Arrow Key **********
-  if (!leftPressed && rightPressed && !spacePressed) {
+  if (!leftPressed && rightPressed && !duckTrigger) {
     //set the X scale to -1 to flip along the horizontal
     megamanSprite.scaleX = -1;
 
@@ -705,7 +739,7 @@ function stageUpdate(event) {
 
   // If left and right are pressed at the same time or nothing is pressed
   // return to the standing animation
-  if ((!spacePressed&&!leftPressed&&!rightPressed) || (rightPressed&&leftPressed)) {
+  if ((!duckTrigger&&!leftPressed&&!rightPressed) || (rightPressed&&leftPressed)) {
     megamanSprite.gotoAndStop("idle");
     anyKeyPressed = false;
   }
