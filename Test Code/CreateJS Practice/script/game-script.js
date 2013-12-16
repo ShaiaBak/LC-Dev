@@ -208,8 +208,25 @@ function startScreen() {
   // crates new stages and properties for assets to live on
   startPage = new createjs.Shape();
   startText = new createjs.Text("Start Button","48px PixelFont3", "#000000");
+  startTitle = new createjs.Text("Sneakin' on Santa", "100px PixelFont3", "#fafcfa");
   startButton = new createjs.Shape();
+  startBar1 = new createjs.Shape();
+  startBar2 = new createjs.Shape();
+  
   startButtonContainer = new createjs.Container();
+  startTitleContainer = new createjs.Container();
+
+  startTitle.x = screen_width/2;
+  startTitle.y = 70;
+  startTitle.textAlign = "center";
+  startTitle.textBaseline = "alphabetic";
+
+  startBar1.graphics.beginFill("#f74f4d").drawRect(0,0,screen_width,10);
+  startBar2.graphics.beginFill("#f74f4d").drawRect(0,90,screen_width,10);
+
+  startTitleContainer.addChild(startBar1, startTitle, startBar2);
+  startTitleContainer.y = 25;
+
 
   startButtonContainer.x = screen_width/2 - 200/2;
   startButtonContainer.y = screen_height/2;
@@ -219,7 +236,7 @@ function startScreen() {
   startText.y = 50/2;
 
   //Create start button graphic
-  startPage.graphics.beginFill("#6C8CD5").drawRect(0,0,500,screen_height);
+  startPage.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
   startButton.graphics.beginFill("#B0B0B0").drawRect(0,0,200,50);
   startButton.alpha = 0.5;
 
@@ -227,7 +244,7 @@ function startScreen() {
   //Link the start button and the text together
   startButtonContainer.addChild(startButton, startText);
 
-  stage.addChild(startPage,startButtonContainer);
+  stage.addChild(startPage,startButtonContainer, startTitleContainer);
   
   startButtonContainer.addEventListener("click",startButtonClick);
 
@@ -238,9 +255,8 @@ function startScreen() {
 // When the start button is clicked, remove the start page
 // Add score displays
 function startButtonClick() {
-  stage.removeChild(startPage, startButtonContainer);
+  stage.removeAllChildren();
   startButtonContainer.removeEventListener("click", startButtonClick);
-  stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
   createjs.Ticker.addEventListener("tick", scoretimer);
 
   charScreen();
@@ -593,11 +609,6 @@ function handleKeyUp(e) {
 }
 
 
-function restart() {
-  // take out EVERYTHING
-  stage.removeAllChildren();
-}
-
 function scoretimer(event) {
 
   score++;
@@ -805,7 +816,7 @@ function endCardGift() {
   endCardGiftText.y = 70;
   endCardGiftText.x = 600;
 
-  endCardGiftBanner.graphics.beginFill("F25050").drawRect(screen_width,90,screen_width,120);
+  endCardGiftBanner.graphics.beginFill("F25050").drawRect(screen_width,100,screen_width,100);
 
   stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftText);
 
@@ -841,8 +852,12 @@ function endCardGift() {
 function endCardFinal() {
   endCardGiftStatus = false;
   endCardFinalStatus = true;
-
+  stage.removeChild(endCardGiftYouGot)
   //stage.removeAllChildren();
+  replayButton = new createjs.Text("Replay?", "128px PixelFont3", "#fbaf5d");
+  replayButton.textBaseline = "alphabetic";
+  replayButton.x = 20;
+  replayButton.y = 265;
 
   tumblrButton = new createjs.Shape();
   twitterButton = new createjs.Shape();
@@ -850,7 +865,6 @@ function endCardFinal() {
   lcLogo = new createjs.Shape();
   socialMediaInfo = new createjs.Container();
 
-  endCardFinalBackground = new createjs.Shape();
   endCardFinalContainer = new createjs.Container();
   
 
@@ -866,41 +880,32 @@ function endCardFinal() {
   facebookButton.x = 64;
   facebookButton.y = 61;
 
-  // tumblrButton.addEventListener('click',tumblrLink);
-  // twitterButton.addEventListener('click',twitterLink);
-  // facebookButton.addEventListener('click',facebookLink);
-
 
   socialMediaInfo.addChild(tumblrButton, twitterButton, facebookButton, lcLogo)
-  socialMediaInfo.alpha = 0;
+
   socialMediaInfo.x = 265;
   socialMediaInfo.y = 215;
 
 
-
-
-  endCardFinalBackground.graphics.beginFill("F25050").drawRect(100,100,100,100);
   //Set to invisible 
-  endCardFinalContainer.addChild(endCardFinalBackground);
+  endCardFinalContainer.addChild(socialMediaInfo, replayButton);
   endCardFinalContainer.alpha = 0;
 
-  stage.addChild(socialMediaInfo);
+  stage.addChild(endCardFinalContainer);
+
   
 
-
+  replayButton.addEventListener('click', startScreen);
   facebookButton.addEventListener('click', facebookLink);
   tumblrButton.addEventListener('click', tumblrLink);
   twitterButton.addEventListener('click', twitterLink);
 
 
   //test image fades in
-  var FinalAnim = createjs.Tween.get(socialMediaInfo, {paused:true})
+  var FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
             .to({alpha:1},1000);
   FinalAnim.setPaused(false);
-
-
 }
-
 
 
 function tumblrLink() {
