@@ -200,6 +200,8 @@ function buildArt() {
   startTitleBG = new createjs.Shape();  
   startTitleBG.graphics.beginBitmapFill(loader.getResult("bg_TitleCard")).drawRect(0,0,screen_width,screen_height).endFill;
 
+  background = new createjs.Shape();
+  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
   megamanBlueSpriteSheet = new createjs.SpriteSheet( {
   // all main strings are reserved strings (images, frames, animations) that do a specific task
     "images": [loader.getResult("megaman")],
@@ -370,7 +372,7 @@ function startTextClick() {
 
 function startInstructionClick() {
   if (startSelectToggle) {
-    console.log("nagger");
+    instructionScreen()
   }
 }
 
@@ -386,6 +388,29 @@ function startButtonClick() {
   //TODO: MUSIC HAS TO MOVE
   //createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
+
+function instructionScreen() {
+  stage.removeAllChildren();
+
+  var instructionBanner = new createjs.Shape(); 
+  var instructionText = new createjs.Text("Tap the right arrow key to move", "48px PixelFont3", "#fafcfa");
+  instructionText.x = 10;
+  instructionText.y = 35;
+  instructionBanner.graphics.beginFill("F25050").drawRect(0,0,screen_width,60);
+  instructionBanner.alpha = 0.9;
+  instructionBanner.y = 30
+
+  var instructionBoy = new createjs.Sprite
+
+
+
+  stage.addChild(background, instructionBanner, instructionText);
+  stage.update();
+}
+
+
+
+
 
 function charScreen() {
   startScreenStatus = false; 
@@ -440,7 +465,7 @@ function charScreen() {
 // Create the starting point of the game
 function startGame() {
   stage.removeAllChildren();
-  background = new createjs.Shape();
+  
   backgroundContainer = new createjs.Container();
   scoreDisplay = new createjs.Text("Score: 0", "36px PixelFont3", "#FFFFFF");
   
@@ -456,7 +481,7 @@ function startGame() {
   timeDisplay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF")
 
   //fill the background at 0,0 to the size of the screen
-  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
+  
   
   scoreDisplay.x = 300;
   scoreDisplay.y = 100;
@@ -673,7 +698,7 @@ function handleKeyUp(e) {
       case KEYCODE_ENTER:
       case KEYCODE_SPACE:
       if (startSelectToggle) {
-        console.log('naggers');
+        instructionScreen()
         break;
       } else {
         charScreen();
