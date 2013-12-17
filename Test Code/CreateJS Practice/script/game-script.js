@@ -10,6 +10,14 @@ var bellSprite;
 var santaSprite;
 var characterSprite;
 
+var startTitleBG;
+
+var megamanBlueSpriteSheet;
+var boySpriteSheet;
+var megamanRedeSpriteSheet;
+var girlSpriteSheet;
+
+
 var KEYCODE_ENTER = 13;   //usefull keycode
 var KEYCODE_SPACE = 32;   //usefull keycode
 var KEYCODE_UP = 38;    //usefull keycode
@@ -78,6 +86,7 @@ function init() {
     // grabbing assets from the DOM
     {src:"assets/Test.mp3", id:"music"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
+    {src:"images/bg_titlecard.png", id:"bg_TitleCard"},
     {src:"images/megaman.png", id:"megaman"},
     {src:"images/megamanred.png", id:"megamanred"},
     {src:"images/boy_sprite.png", id:"boy"},
@@ -92,6 +101,7 @@ function init() {
     {src:"images/endcard_boy.png", id:"endcard_boy"},
     {src:"images/endcard_girl.png", id:"endcard_girl"},
     {src:"images/santa_sprite.png", id:"santa"}
+    
   ];
   loader = new createjs.LoadQueue(false);
   loadingInitialize();
@@ -143,13 +153,16 @@ function handleProgress() {
 
 //called when everything is loaded 
 function handleComplete() {
-  // the canvas is now clickable and will run loadingScreenClick
-  
-  //create the game
-  startScreen();
+  document.getElementById("loader").className = "";
 
+  // the canvas is now clickable and will run loadingScreenClick
+  stage.removeAllChildren();
+  //create the game
+  buildArt();
+  startScreen();
+  
   //remove the loading screen page and click function
-  stage.removeChild(loadProgressLabel, loadingScreenFill);
+  
   createjs.Ticker.removeEventListener("tick", handleProgress);
 }
 
@@ -183,27 +196,108 @@ function loadingInitialize() {
   stage.addChild(loadingScreenFill, loadProgressLabel, bellSprite);
 
 }
+function buildArt() {
+  startTitleBG = new createjs.Shape();  
+  startTitleBG.graphics.beginBitmapFill(loader.getResult("bg_TitleCard")).drawRect(0,0,screen_width,screen_height).endFill;
+
+  megamanBlueSpriteSheet = new createjs.SpriteSheet( {
+  // all main strings are reserved strings (images, frames, animations) that do a specific task
+    "images": [loader.getResult("megaman")],
+
+    "frames": {height: 30, width: 30, regX: 15, regY: 0},
+    "animations": {
+      "idle": [0, 0],
+      "run": [3, 5,"run", 5/60], //Runs Left
+      "duck": [7, 7]
+    }
+  });
+
+
+  boySpriteSheet = new createjs.SpriteSheet( {
+  // all main strings are reserved strings (images, frames, animations) that do a specific task
+    "images": [loader.getResult("boy")],
+    // x, y, width, height, imageIndex, regX, regY
+    "frames": [
+    /*00-01*/   [0,0,42,84,0,21,0],[42,0,42,84,0,21,0],
+    /*02-03*/   [0,84,42,84,0,21,0],[42,84,42,84,0,21,0],
+    /*04-05*/   [0,168,116,84,0,58,0],[116,168,116,84,0,58,0],
+    /*06-11*/   [0,252,42,84,0,21,0],[42,252,42,84,0,21,0],[84,252,42,84,0,21,0],[126,252,42,84,0,21,0],[168,252,42,84,0,21,0],[210,252,42,84,0,21,0],
+    /*12-21*/   [0,336,60,84,0,30,0],[60,336,60,84,0,30,0],[120,336,60,84,0,30,0],[180,336,60,84,0,30,0],[240,336,60,84,0,30,0],[300,336,60,84,0,30,0],[360,336,60,84,0,30,0],[420,336,60,84,0,30,0],[480,336,60,84,0,30,0],[540,336,60,84,0,30,0],
+    /*22-31*/   [0,420,60,84,0,30,0],[60,420,60,84,0,30,0],[120,420,60,84,0,30,0],[180,420,60,84,0,30,0],[240,420,60,84,0,30,0],[300,420,60,84,0,30,0],[360,420,60,84,0,30,0],[420,420,60,84,0,30,0],[480,420,60,84,0,30,0],[540,420,60,84,0,30,0],
+    /*32-41*/   [0,504,94,84,0,47,0],[94,504,94,84,0,47,0],[188,504,94,84,0,47,0],[282,504,94,84,0,47,0],[376,504,94,84,0,47,0],[470,504,94,84,0,47,0],[564,504,94,84,0,47,0],[658,504,94,84,0,47,0],[752,504,94,84,0,47,0],[846,504,94,84,0,47,0],
+    /*42-45*/   [0,588,94,84,0,47,0],[94,588,94,84,0,47,0],[188,588,94,84,0,47,0],[282,588,94,84,0,47,0]      
+    ],
+    "animations": {
+      "idle": [0,0,"blink",1/150],
+      "lookUp": [1],
+      "lookLeft": [3],
+      "stressed":[4,5,"stressed",5/60],
+      "blink": [6,11,"idle",5/60],
+      "sneak": [12,31,"sneak",6/60],
+      "duck": [32,45,"duckIdle", 20/60],
+      "duckIdle":[45]
+    }
+  });
+
+  megamanRedSpriteSheet = new createjs.SpriteSheet( {
+  // all main strings are reserved strings (images, frames, animations) that do a specific task
+    "images": [loader.getResult("megamanred")],
+
+    "frames": {height: 30, width: 30, regX: 15, regY: 0},
+    "animations": {
+      "idle": [0, 0],
+      "run": [3, 5,"run", 5/60], //Runs Left
+      "duck": [7, 7]
+    }
+  });
+
+  girlSpriteSheet = new createjs.SpriteSheet( {
+    // all main strings are reserved strings (images, frames, animations) that do a specific task
+    "images": [loader.getResult("girl")],
+    // x, y, width, height, imageIndex, regX, regY
+    "frames": [
+    /*00-01*/   [0,0,40,96,0,20,0],[40,0,40,96,0,20,0],
+    /*02-03*/   [0,96,40,96,0,20,0],[40,96,40,96,0,20,0],
+    /*04-05*/   [0,192,52,96,0,26,0],[56,192,52,96,0,26,0],
+    /*06-11*/   [0,288,40,96,0,20,0],[40,288,40,96,0,20,0],[80,288,40,96,0,20,0],[120,288,40,96,0,20,0],[160,288,40,96,0,20,0],[200,288,40,96,0,20,0],
+    /*12-21*/   [0,384,56,96,0,28,0],[56,384,56,96,0,28,0],[112,384,56,96,0,28,0],[168,384,56,96,0,28,0],[224,384,56,96,0,28,0],[280,384,56,96,0,28,0],[336,384,56,96,0,28,0],[392,384,56,96,0,28,0],[448,384,56,96,0,28,0],[504,384,56,96,0,28,0],
+    /*22-31*/   [0,480,56,96,0,28,0],[56,480,56,96,0,28,0],[112,480,56,96,0,28,0],[168,480,56,96,0,28,0],[224,480,56,96,0,28,0],[280,480,56,96,0,28,0],[336,480,56,96,0,28,0],[392,480,56,96,0,28,0],[448,480,56,96,0,28,0],[504,480,56,96,0,28,0],
+    /*32-41*/   [0,576,56,96,0,28,0],[56,576,56,96,0,28,0],[112,576,56,96,0,28,0],[168,576,56,96,0,28,0],[224,576,56,96,0,28,0],[280,576,56,96,0,28,0],[336,576,56,96,0,28,0],[392,576,56,96,0,28,0],[448,576,56,96,0,28,0],[504,576,56,96,0,28,0],
+    /*42-45*/   [0,672,56,96,0,28,0],[56,672,56,96,0,28,0],[112,672,56,96,0,28,0],[168,672,56,96,0,28,0]
+    ], 
+    "animations": {
+      "idle": [0,0,"blink",1/150],
+      "lookUp": [1],
+      "lookLeft": [3],
+      "stressed":[4,5,"stressed",5/60],
+      "blink": [6,11,"idle",5/60],
+      "sneak": [12,31,"sneak",8/60],
+      "duck": [32,45,"duckIdle", 20/60],
+      "duckIdle":[45]
+      
+    }
+  });
+
+
+
+}
 
 function startScreen() {
-  document.getElementById("loader").className = "";
+  
   // crates new stages and properties for assets to live on
   startScreenStatus = true;
 
   startPage = new createjs.Shape();
-  startText = new createjs.Text("Start","48px PixelFont3", "#fafcfa");
-  startTitle = new createjs.Text("Sneakin' on Santa", "100px PixelFont3", "#fafcfa");
-  startInstruction = new createjs.Text("Instructions","48px PixelFont3", "#fafcfa");
+  startText = new createjs.Text("Start","48px PixelFont3", "#fbaf5d");
+  startTitle = new createjs.Text("Sneakin' on Santa", "100px PixelFont3", "#fbaf5d");
+  startInstruction = new createjs.Text("Instructions","48px PixelFont3", "#fbaf5d");
   startButton = new createjs.Shape();
-  startBar1 = new createjs.Shape();
-  startBar2 = new createjs.Shape();
   startSelection = new createjs.Shape();
   var startTextBox = new createjs.Shape();
   var startInstructionBox = new createjs.Shape();
 
-
   
   startButtonContainer = new createjs.Container();
-  startTitleContainer = new createjs.Container();
   startTextContainer = new createjs.Container();
   startInstructionContainer = new createjs.Container();
   //"SNEAKIN' ON SANTA" Text
@@ -211,12 +305,6 @@ function startScreen() {
   startTitle.y = 70;
   startTitle.textAlign = "center";
   startTitle.textBaseline = "alphabetic";
-
-  startBar1.graphics.beginFill("#f74f4d").drawRect(0,0,screen_width,10);
-  startBar2.graphics.beginFill("#f74f4d").drawRect(0,90,screen_width,10);
-
-  startTitleContainer.addChild(startBar1, startTitle, startBar2);
-  startTitleContainer.y = 25;
 
   //"START" Text
   startText.textAlign = "center";
@@ -255,7 +343,7 @@ function startScreen() {
   startInstruction.addEventListener("click",startInstructionClick);
   
 
-  stage.addChild(startPage, startTitleContainer, startSelection, startText, startInstruction);
+  stage.addChild(startTitleBG, startTitle, startSelection, startText, startInstruction);
 
   stage.update();
 }
@@ -391,87 +479,18 @@ function startGame() {
 
 //Boy Selection
   if (character == 0) {
-    var megamanSpriteSheet = new createjs.SpriteSheet( {
-      // all main strings are reserved strings (images, frames, animations) that do a specific task
-      "images": [loader.getResult("megaman")],
 
-      "frames": {height: 30, width: 30, regX: 15, regY: 0},
-      "animations": {
-        "idle": [0, 0],
-        "run": [3, 5,"run", 5/60], //Runs Left
-        "duck": [7, 7]
-      }
-    });
+    megamanSprite = new createjs.Sprite(megamanBlueSpriteSheet, "idle");
+    characterSprite = new createjs.Sprite(boySpriteSheet, "idle");
+}
 
-
-    var characterSpriteSheet = new createjs.SpriteSheet( {
-      // all main strings are reserved strings (images, frames, animations) that do a specific task
-      "images": [loader.getResult("boy")],
-      // x, y, width, height, imageIndex, regX, regY
-      "frames": [
-      /*00-01*/   [0,0,42,84,0,21,0],[42,0,42,84,0,21,0],
-      /*02-03*/   [0,84,42,84,0,21,0],[42,84,42,84,0,21,0],
-      /*04-05*/   [0,168,116,84,0,58,0],[116,168,116,84,0,58,0],
-      /*06-11*/   [0,252,42,84,0,21,0],[42,252,42,84,0,21,0],[84,252,42,84,0,21,0],[126,252,42,84,0,21,0],[168,252,42,84,0,21,0],[210,252,42,84,0,21,0],
-      /*12-21*/   [0,336,60,84,0,30,0],[60,336,60,84,0,30,0],[120,336,60,84,0,30,0],[180,336,60,84,0,30,0],[240,336,60,84,0,30,0],[300,336,60,84,0,30,0],[360,336,60,84,0,30,0],[420,336,60,84,0,30,0],[480,336,60,84,0,30,0],[540,336,60,84,0,30,0],
-      /*22-31*/   [0,420,60,84,0,30,0],[60,420,60,84,0,30,0],[120,420,60,84,0,30,0],[180,420,60,84,0,30,0],[240,420,60,84,0,30,0],[300,420,60,84,0,30,0],[360,420,60,84,0,30,0],[420,420,60,84,0,30,0],[480,420,60,84,0,30,0],[540,420,60,84,0,30,0],
-      /*32-41*/   [0,504,94,84,0,47,0],[94,504,94,84,0,47,0],[188,504,94,84,0,47,0],[282,504,94,84,0,47,0],[376,504,94,84,0,47,0],[470,504,94,84,0,47,0],[564,504,94,84,0,47,0],[658,504,94,84,0,47,0],[752,504,94,84,0,47,0],[846,504,94,84,0,47,0],
-      /*42-45*/   [0,588,94,84,0,47,0],[94,588,94,84,0,47,0],[188,588,94,84,0,47,0],[282,588,94,84,0,47,0]      
-      ],
-      "animations": {
-        "idle": [0,0,"blink",1/150],
-        "lookUp": [1],
-        "lookLeft": [3],
-        "stressed":[4,5,"stressed",5/60],
-        "blink": [6,11,"idle",5/60],
-        "sneak": [12,31,"sneak",6/60],
-        "duck": [32,45,"duckIdle", 20/60],
-        "duckIdle":[45]
-      }
-
-    });
-  }
 
 
 //Girl Selection
   else if (character == 1) {
-    var megamanSpriteSheet = new createjs.SpriteSheet( {
-      // all main strings are reserved strings (images, frames, animations) that do a specific task
-      "images": [loader.getResult("megamanred")],
-      "frames": {height: 30, width: 30, regX: 15, regY: 0},
-      "animations": {
-        "idle": [0, 0],
-        "run": [3, 5,"run", 5/60], //Runs Left
-        "duck": [7, 7]
-      }
-    });
 
-    var characterSpriteSheet = new createjs.SpriteSheet( {
-      // all main strings are reserved strings (images, frames, animations) that do a specific task
-      "images": [loader.getResult("girl")],
-      // x, y, width, height, imageIndex, regX, regY
-      "frames": [
-      /*00-01*/   [0,0,40,96,0,20,0],[40,0,40,96,0,20,0],
-      /*02-03*/   [0,96,40,96,0,20,0],[40,96,40,96,0,20,0],
-      /*04-05*/   [0,192,52,96,0,26,0],[56,192,52,96,0,26,0],
-      /*06-11*/   [0,288,40,96,0,20,0],[40,288,40,96,0,20,0],[80,288,40,96,0,20,0],[120,288,40,96,0,20,0],[160,288,40,96,0,20,0],[200,288,40,96,0,20,0],
-      /*12-21*/   [0,384,56,96,0,28,0],[56,384,56,96,0,28,0],[112,384,56,96,0,28,0],[168,384,56,96,0,28,0],[224,384,56,96,0,28,0],[280,384,56,96,0,28,0],[336,384,56,96,0,28,0],[392,384,56,96,0,28,0],[448,384,56,96,0,28,0],[504,384,56,96,0,28,0],
-      /*22-31*/   [0,480,56,96,0,28,0],[56,480,56,96,0,28,0],[112,480,56,96,0,28,0],[168,480,56,96,0,28,0],[224,480,56,96,0,28,0],[280,480,56,96,0,28,0],[336,480,56,96,0,28,0],[392,480,56,96,0,28,0],[448,480,56,96,0,28,0],[504,480,56,96,0,28,0],
-      /*32-41*/   [0,576,56,96,0,28,0],[56,576,56,96,0,28,0],[112,576,56,96,0,28,0],[168,576,56,96,0,28,0],[224,576,56,96,0,28,0],[280,576,56,96,0,28,0],[336,576,56,96,0,28,0],[392,576,56,96,0,28,0],[448,576,56,96,0,28,0],[504,576,56,96,0,28,0],
-      /*42-45*/   [0,672,56,96,0,28,0],[56,672,56,96,0,28,0],[112,672,56,96,0,28,0],[168,672,56,96,0,28,0]
-      ], 
-      "animations": {
-        "idle": [0,0,"blink",1/150],
-        "lookUp": [1],
-        "lookLeft": [3],
-        "stressed":[4,5,"stressed",5/60],
-        "blink": [6,11,"idle",5/60],
-        "sneak": [12,31,"sneak",8/60],
-        "duck": [32,45,"duckIdle", 20/60],
-        "duckIdle":[45]
-        
-      }
-    });
+    megamanSprite = new createjs.Sprite(megamanRedSpriteSheet, "idle");
+    characterSprite = new createjs.Sprite(girlSpriteSheet, "idle");
 
   } else {
     charScreen();
@@ -496,7 +515,7 @@ function startGame() {
     }
   });
 
-  characterSprite = new createjs.Sprite(characterSpriteSheet, "idle");
+  
   characterSprite.setTransform(100,100,1,1);
   characterSprite.framerate = 60;
   
@@ -505,7 +524,7 @@ function startGame() {
   fireplaceSprite.framerate = 60;
 
 
-  megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
+  
     // setTransform sets sprites x and y coordinates and scale
   megamanSprite.setTransform(120,250,1,1);
   megamanSprite.framerate = 60;
