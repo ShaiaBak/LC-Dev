@@ -4,18 +4,23 @@ var screen_width;
 var screen_height;
 var bmpAnimation;
 var megaman;
+
+//Sprites
 var megamanSprite;
 var fireplaceSprite
 var bellSprite;
 var santaSprite;
 var characterSprite;
 
-var startTitleBG;
 
+//Sprite Sheets
 var megamanBlueSpriteSheet;
 var boySpriteSheet;
 var megamanRedeSpriteSheet;
 var girlSpriteSheet;
+
+
+
 
 
 var KEYCODE_ENTER = 13;   //usefull keycode
@@ -30,9 +35,21 @@ var KEYCODE_S = 83;     //useful keycode
 var KEYCODE_D = 68;     //usefull keycode
 var KEYCODE_ESC = 27;    
 
+
+//Start Screen
 var startScreenStatus = false;
-var characterSelectStatus = false;
 var startSelectToggle = false;
+
+//Character Select
+var characterSelectStatus = false;
+var charSelectBoy;
+var charSelectGirl;
+
+//Instruction Page
+var instructionScreenStatus = false;
+var instructionScreenCount = 0;
+var instructionBoy;
+var instructionText;
 
 
 var leftPressed = false;
@@ -47,13 +64,17 @@ document.onkeyup = handleKeyUp;
 
 var character = -1;
 
+var startTitleBG;
 var background;
+
 var startPage;
 var startText;
 var scoreDisplay;
 var score = 0;
 var backgroundvalue = 0;
 var loadProgressLabel;
+
+//End Card
 var endCardPhotoStatus = false;
 var endCardPhotoCount = 0;
 var endCardGiftStatus = false;
@@ -235,7 +256,7 @@ function buildArt() {
       "lookLeft": [3],
       "stressed":[4,5,"stressed",5/60],
       "blink": [6,11,"idle",5/60],
-      "sneak": [12,31,"sneak",6/60],
+      "sneak": [12,31,"sneak",8/60],
       "duck": [32,45,"duckIdle", 20/60],
       "duckIdle":[45]
     }
@@ -391,24 +412,62 @@ function startButtonClick() {
 
 function instructionScreen() {
   stage.removeAllChildren();
+  instructionScreenStatus = true;
+  instructionScreenCount = 0;
 
   var instructionBanner = new createjs.Shape(); 
-  var instructionText = new createjs.Text("Tap the right arrow key to move", "48px PixelFont3", "#fafcfa");
-  instructionText.x = 10;
+  instructionText = new createjs.Text("Tap the right arrow key to move", "48px PixelFont3", "#fafcfa");
+  instructionText.x = 250;
   instructionText.y = 35;
+  instructionText.textAlign = "center";
   instructionBanner.graphics.beginFill("F25050").drawRect(0,0,screen_width,60);
   instructionBanner.alpha = 0.9;
   instructionBanner.y = 30
+  instructionBoy = new createjs.Sprite(boySpriteSheet, "sneak");
+  instructionBoy.x = 45;
+  instructionBoy.y = 200;
 
-  var instructionBoy = new createjs.Sprite
+  // Boy moves across the screen 3 times
+  var instructionBoyAnim = new createjs.Tween.get(instructionBoy, {paused:true})
+            .to({x:275},2000)
+            .to({x:45},0)
+            .to({x:275},2000)
+            .to({x:45},0)
+            .to({x:275},2000);
+  instructionBoyAnim.setPaused(false);
+  createjs.Ticker.addEventListener("tick", instructionScreenAnimation);
 
-
-
-  stage.addChild(background, instructionBanner, instructionText);
+  stage.addChild(background, instructionBanner, instructionText, instructionBoy);
   stage.update();
 }
+//This is will be called to another ticker to allow for the sprites and text to change in the instruction screen
+function instructionScreenAnimation() {
 
+  if(instructionScreenStatus) {
+    //Count in fps, currently set to 60
+    instructionScreenCount++;
+  }
 
+  // Convect the fps to seconds 
+  if ( parseInt(instructionScreenCount/60) == 6) {
+
+    instructionBoy.gotoAndPlay("duck");
+    instructionText.text = "Press down or space to duck";
+
+  } else if ( parseInt(instructionScreenCount/60) == 8) {
+    instructionText.text = "Beware of Santa's gaze!";
+  } else if ( parseInt(instructionScreenCount/60) == 10) {
+    instructionText.text = "Duck to avoid being noticed";
+  } else if ( parseInt(instructionScreenCount/60) == 12) {
+    instructionText.text = "or else...";
+  } else if ( parseInt(instructionScreenCount/60) == 14) {
+    //Return to start screen and remove ticker
+    startScreen();
+    createjs.Ticker.removeEventListener("tick", instructionScreenAnimation);
+  }
+
+  stage.update();
+}
 
 
 
@@ -416,7 +475,7 @@ function charScreen() {
   startScreenStatus = false; 
   // create shapes and containers
   var charPage = new createjs.Shape();
-  var charTitle = new createjs.Text("Select Your Character", "24px PixelFont3", "#666");
+  var charTitle = new createjs.Text("Select Your Character", "48px PixelFont3", "#666");
   var boyDisplay = new createjs.Shape();
   var boyDisplayContainer = new createjs.Container();
   var girlDisplay = new createjs.Shape();
@@ -427,6 +486,8 @@ function charScreen() {
   charTitle.y = 15;
   charTitle.textAlign = "center";
 
+  charSelectBoy = new createjs.Sprite(boySpriteSheet, "idle");
+  charSelectGirl = new createjs.Sprite(girlSpriteSheet, "idle");
   // where are they
   boyDisplayContainer.x = 50;
   boyDisplayContainer.y = 50;
@@ -887,7 +948,7 @@ function stageUpdate(event) {
     // // Red banner pans across the screen
     // if (endCardGiftBanner.x < 500) {
     //   endCardGiftBanner.x = endCardGiftBanner.x + 20;
-7    // }
+    // }
     // // After red banner pans across
     // // "YOU GOT" Text pans across quickly at first then slowly and exits quickly
     // if (endCardGiftBanner.x == 500) {
