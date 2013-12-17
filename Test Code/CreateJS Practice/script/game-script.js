@@ -41,10 +41,11 @@ var startScreenStatus = false;
 var startSelectToggle = false;
 
 //Character Select
-var characterSelectStatus = false;
+var charSelectStatus = false;
 var charSelectBoy;
 var charSelectGirl;
-
+var charSelectFrame;
+var charSelectToggle;
 //Instruction Page
 var instructionScreenStatus = false;
 var instructionScreenCount = 0;
@@ -84,6 +85,9 @@ var backgroundxDisplay;
 var spritexDisplay;
 var detectSteps;
 var timeDisplay;
+
+var gameStatus = false;
+
 
 var stepsTaken = 0;
 var alert = 0;
@@ -302,7 +306,6 @@ function buildArt() {
   });
 
 
-
 }
 
 function startScreen() {
@@ -397,18 +400,9 @@ function startInstructionClick() {
   }
 }
 
+
 // When the start button is clicked, remove the start page
 // Add score displays
-function startButtonClick() {
-  stage.removeAllChildren();
-  startButtonContainer.removeEventListener("click", startButtonClick);
-  createjs.Ticker.addEventListener("tick", scoretimer);
-
-  charScreen();
-
-  //TODO: MUSIC HAS TO MOVE
-  //createjs.Sound.play("music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
-}
 
 function instructionScreen() {
   stage.removeAllChildren();
@@ -473,13 +467,20 @@ function instructionScreenAnimation() {
 
 function charScreen() {
   startScreenStatus = false; 
+  charSelectStatus = true;
   // create shapes and containers
+  charSelectFrame = new createjs.Shape();
   var charPage = new createjs.Shape();
   var charTitle = new createjs.Text("Select Your Character", "48px PixelFont3", "#666");
   var boyDisplay = new createjs.Shape();
   var boyDisplayContainer = new createjs.Container();
   var girlDisplay = new createjs.Shape();
   var girlDisplayContainer = new createjs.Container();
+  var charDisplayWidth = 100;
+  var charDisplayHeight = 150;
+
+
+
 
   // how big are they
   charTitle.x = screen_width/2;
@@ -488,45 +489,119 @@ function charScreen() {
 
   charSelectBoy = new createjs.Sprite(boySpriteSheet, "idle");
   charSelectGirl = new createjs.Sprite(girlSpriteSheet, "idle");
+
+
   // where are they
-  boyDisplayContainer.x = 50;
-  boyDisplayContainer.y = 50;
-  girlDisplayContainer.x = 300;
-  girlDisplayContainer.y = 50;
+  boyDisplayContainer.x = 125;
+  boyDisplayContainer.y = 150;
+  girlDisplayContainer.x = 375;
+  girlDisplayContainer.y = 150;
+
+  charSelectBoy.x = 125;
+  charSelectBoy.y = 110; 
+  charSelectGirl.x = 375;
+  charSelectGirl.y = 102; 
 
   // draw it and fill it
   charPage.graphics.beginFill("#B26BE8").drawRect(0,0,500,screen_height);
-  boyDisplay.graphics.beginFill("#6B97E8").drawRect(0,0,150,200);
-  girlDisplay.graphics.beginFill("#F0596A").drawRect(0,0,150,200);
+  boyDisplay.graphics.beginFill("#6B97E8").drawRect(0,0,charDisplayWidth,charDisplayHeight);
+  girlDisplay.graphics.beginFill("#F0596A").drawRect(0,0,charDisplayWidth,charDisplayHeight);
+  boyDisplay.regX = charDisplayWidth/2;
+  boyDisplay.regY = charDisplayHeight/2;
+  girlDisplay.regX = charDisplayWidth/2;
+  girlDisplay.regY = charDisplayHeight/2;
+  boyDisplay.alpha = 0.75;
+  girlDisplay.alpha = 0.75;
+
+  charSelectFrame.graphics.beginStroke("#fbaf5d").setStrokeStyle(4).drawRect(0,0,charDisplayWidth+10,charDisplayHeight+10);
+  charSelectFrame.regX = (charDisplayWidth+10)/2;
+  charSelectFrame.regY = (charDisplayHeight+10)/2;
+  charSelectFrame.x = 125;
+  charSelectFrame.y = 150;
+
+
+
 
   //put stuff into its containers
   boyDisplayContainer.addChild(boyDisplay);
   girlDisplayContainer.addChild(girlDisplay);
 
   //put is all on the main screen
-  stage.addChild(charPage, boyDisplayContainer, girlDisplayContainer, charTitle);
+  stage.addChild(startTitleBG, boyDisplayContainer, girlDisplayContainer, charTitle, charSelectBoy, charSelectGirl, charSelectFrame);
 
   //add eventListeners (hover, clikc etc..)
-  boyDisplayContainer.addEventListener("click", boySelect);
-  girlDisplayContainer.addEventListener("click", girlSelect);
+  charSelectBoy.addEventListener("rollover",charBoyMouseOver);
+  charSelectGirl.addEventListener("rollover",charGirlMouseOver);
+  charSelectBoy.addEventListener("click",charBoyClick);
+  charSelectGirl.addEventListener("click",charGirlClick);
 
-  function boySelect() {
-    character = 0;
-    startGame();
-  }
 
-  function girlSelect() {
-    character = 1;
-    startGame();
-  }
 
   stage.update();
 }
+function boySelect() {
+  character = 0;
+  startGame();
+}
+
+function girlSelect() {
+  character = 1;
+  startGame();
+}
+
+
+function charBoyMouseOver() {
+  charSelectToggle = false;
+  charSelectFrame.x = 125;
+  stage.update();
+}
+
+function charGirlMouseOver() {
+  charSelectToggle = true;
+  charSelectFrame.x = 375;
+  stage.update();
+}
+
+function charBoyClick() {
+  if (!charSelectToggle) {
+
+    boySelect()
+  }
+}
+
+function charGirlClick() {
+  if (charSelectToggle) {
+    girlSelect()
+  }
+}
+
+function charSelectAnim() {
+  var charSelectFrameAnim = createjs.Tween.get(charSelectFrame, {paused:true})
+                        .to({alpha:0},1)
+                        .to({alpha:1},1)                         
+                        .to({alpha:0},1)
+                        .to({alpha:1},1)
+                        .to({alpha:0},1)
+                        .to({alpha:1},1)
+                        .to({alpha:0},1)
+                        .to({alpha:1},1)
+                        .to({alpha:0},1)
+                        .to({alpha:1},1);
+
+  charSelectFrameAnim.setPaused(false);
+  stage.update();
+}
+
+
 
 // Create the starting point of the game
 function startGame() {
   stage.removeAllChildren();
-  
+  charSelectStatus = false;
+  gameStatus = true;
+  // createjs.Ticker.removeAllEventListeners("tick");
+  // stage.removeAllEventListeners("click");
+  // stage.removeAllEventListeners("rollover");
   backgroundContainer = new createjs.Container();
   scoreDisplay = new createjs.Text("Score: 0", "36px PixelFont3", "#FFFFFF");
   
@@ -574,7 +649,7 @@ function startGame() {
 
 //Girl Selection
   else if (character == 1) {
-
+    
     megamanSprite = new createjs.Sprite(megamanRedSpriteSheet, "idle");
     characterSprite = new createjs.Sprite(girlSpriteSheet, "idle");
 
@@ -699,7 +774,7 @@ function handleKeyDown(e) {
     var e = window.event;
   }
 
-  if(!startScreenStatus) {
+  if(gameStatus) {
     switch(e.keyCode) {
       
       case KEYCODE_LEFT:
@@ -734,41 +809,7 @@ function handleKeyUp(e) {
   if(!e){
     var e = window.event;
   }
-  if (startScreenStatus) {
-    switch(e.keyCode) {
-      case KEYCODE_UP:
-      case KEYCODE_W:
-      case KEYCODE_DOWN:
-      case KEYCODE_S:
-      
-      startSelectToggle = !startSelectToggle; 
-      
-      // IF startSelectToggle is true, cursor on "Instructions"
-      if (startSelectToggle) {
-        console.log(1);
-        startSelection.y = 272;
-        stage.update();
-        break;
-      } else {
-        console.log(2);
-        startSelection.y = 242;
-        stage.update();
-        break;
-      }     
-      
-      case KEYCODE_ENTER:
-      case KEYCODE_SPACE:
-      if (startSelectToggle) {
-        instructionScreen()
-        break;
-      } else {
-        charScreen();
-        break;
-      } 
-    }
-  }
-  
-  if (!startScreenStatus) {
+  if (gameStatus) {
     //gotoAndStop will play the animation once and stop
     switch(e.keyCode) {
       case KEYCODE_LEFT:
@@ -813,6 +854,79 @@ function handleKeyUp(e) {
         endCardPhotoTransition()
       }
   }
+
+
+
+
+  if (charSelectStatus) {
+    switch(e.keyCode) {
+
+      case KEYCODE_LEFT:
+      case KEYCODE_A:
+      case KEYCODE_RIGHT:
+      case KEYCODE_D:
+
+      charSelectToggle = !charSelectToggle; 
+      
+      // IF startSelectToggle is true, cursor on "Instructions"
+      if (charSelectToggle) {
+        charSelectFrame.x = 375;
+
+        stage.update();
+        break;
+      } else {
+        charSelectFrame.x = 125;
+        stage.update();
+        break;
+      }     
+      
+      case KEYCODE_ENTER:
+      case KEYCODE_SPACE:
+      if (charSelectToggle) {
+        girlSelect();
+        break;
+      } else {
+        boySelect();
+        break;
+      } 
+    }
+  }
+
+  if (startScreenStatus ) {
+    switch(e.keyCode) {
+      case KEYCODE_UP:
+      case KEYCODE_W:
+      case KEYCODE_DOWN:
+      case KEYCODE_S:
+      
+      startSelectToggle = !startSelectToggle; 
+      
+      // IF startSelectToggle is true, cursor on "Instructions"
+      if (startSelectToggle) {
+        console.log(1);
+        startSelection.y = 272;
+        stage.update();
+        break;
+      } else {
+        console.log(2);
+        startSelection.y = 242;
+        stage.update();
+        break;
+      }     
+      
+      case KEYCODE_ENTER:
+      case KEYCODE_SPACE:
+      if (startSelectToggle) {
+        instructionScreen();
+        break;
+      } else {
+        charScreen();
+        break;
+      } 
+    }
+  }
+  
+
 }
 
 
