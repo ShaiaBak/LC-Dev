@@ -5,6 +5,10 @@ var screen_height;
 var bmpAnimation;
 var megaman;
 var megamanSprite;
+var fireplaceSprite
+var bellSprite;
+var santaSprite;
+var characterSprite;
 
 var KEYCODE_ENTER = 13;   //usefull keycode
 var KEYCODE_SPACE = 32;   //usefull keycode
@@ -18,9 +22,11 @@ var KEYCODE_S = 83;     //useful keycode
 var KEYCODE_D = 68;     //usefull keycode
 var KEYCODE_ESC = 27;    
 
+
 var leftPressed = false;
 var rightPressed = false;
-var spacePressed = false;
+var duckTrigger = false;
+var upPressed = false;
 var anyKeyPressed = false;
 
 
@@ -33,8 +39,6 @@ var background;
 var startPage;
 var startText;
 var scoreDisplay;
-var backgroundxDisplay;
-var spritexDisplay;
 var score = 0;
 var backgroundvalue = 0;
 var loadProgressLabel;
@@ -43,39 +47,94 @@ var endCardPhotoCount = 0;
 var endCardGiftStatus = false;
 var endCardFinalStatus = false;
 
+var backgroundxDisplay;
+var spritexDisplay;
+var detectSteps;
+var timeDisplay;
+
+var stepsTaken = 0;
+var alert = 0;
+var alertCount = 0;
+var santaCount = 0;
+var detection;
+var alertStatus;
+var keyActive = true;
+
+
 function init() {
   // conventional initializer
   stage = new createjs.Stage("myCanvas");
   screen_height = stage.canvas.height;
   screen_width = stage.canvas.width;
 
-  loadingInitialize();
+ 
 
   manifest = [
     // array of assest (images/music) that load with manifest
+    // grabbing assets from the DOM
+    {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
     {src:"images/megaman.png", id:"megaman"},
-    {src:"images/ChristmasBG.png", id:"background"},
-    {src:"assests/Test.mp3", id:"music"}
+    {src:"images/megamanred.png", id:"megamanred"},
+    {src:"images/boy_sprite.png", id:"boy"},
+    {src:"images/girl_sprite.png", id:"girl"},
+    {src:"images/ChristmasBG_70.png", id:"background"},
+    {src:"images/bg_firesprites.png", id:"fireplace"},
+    {src:"images/endcard_info_tumblr.png", id:"tumblrButtonImg"},
+    {src:"images/endcard_info_twitter.png", id:"twitterButtonImg"},
+    {src:"images/endcard_info_facebook.png", id:"facebookButtonImg"},
+    {src:"images/endcard_logo.png", id:"lcLogoImg"},
+    {src:"images/bell.png", id:"bell"},
+    {src:"images/endcard_boy.png", id:"endcard_boy"},
+    {src:"images/endcard_girl.png", id:"endcard_girl"},
+    {src:"images/santa_sprite.png", id:"santa"},
+    {src:"assets/Test.mp3", id:"music"}
   ];
-
-
+  loader = new createjs.LoadQueue(false);
+  loadingInitialize();
   //Not completely sure what this does. I think it runs handlerComplete when
   //the files are done loading
-  loader = new createjs.LoadQueue(false);
+
   loader.installPlugin(createjs.Sound);
-  loader.addEventListener("complete", handleComplete);
-  loader.addEventListener("progress", handleProgress);
+  loader.addEventListener("complete", loadingScreenClick);
+  //loader.addEventListener("progress", handleProgress);
+  createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
+  createjs.Ticker.setFPS(60);
+  createjs.Ticker.addEventListener("tick", handleProgress);
   // loads the manifest
   loader.loadManifest(manifest);
   stage.update();
 }
-
 //this function is called everytime the progress of our loading changes
 function handleProgress() {
-  loadingBar.scaleX = loader.progress * 300;
+  //loadingBar.scaleX = loader.progress * 300;
   progressPercentage = Math.round(loader.progress*100);
-  loadProgressLabel.text = progressPercentage +"% Loaded";
-  stage.update();
+  var progressPercentageInt = progressPercentage % 5;
+  bellSprite.advance();
+
+
+  //Text and color changes depending on percentage done
+  if (progressPercentage >= 80) {
+  	loadProgressLabel.color ="#7cc576";
+    loadProgressLabel.text = "baking cookies";
+
+  } else if (progressPercentage >= 60) {
+	  loadProgressLabel.color ="#f74f4d";
+    loadProgressLabel.text = "knitting sweaters";
+
+  } else if (progressPercentage >= 40) {
+  	loadProgressLabel.color ="#7cc576";
+    loadProgressLabel.text = "catching snowflakes";
+
+  } else if (progressPercentage >= 20) {
+  	loadProgressLabel.color ="#f74f4d";
+    loadProgressLabel.text = "making snowangels";
+
+  } else if (progressPercentage >= 0) {
+
+  	loadProgressLabel.color ="#fafcfa";
+    loadProgressLabel.text = "wrapping presents";
+  }
+   stage.update();
 }
 
 //called when everything is loaded 
@@ -89,37 +148,51 @@ function handleComplete() {
 function loadingInitialize() {
   
   //define loading screen graphics
-  loadProgressLabel = new createjs.Text("","20px Arial","black");
+  loadProgressLabel = new createjs.Text("","48px PixelFont3","black");
   loadingScreenFill = new createjs.Shape();
-  loadingBar = new createjs.Shape();
-  loadingBarFrame = new createjs.Shape();
-  loadingBarContainer = new createjs.Container();
-  loadingBarHeight = 20;
-  loadingBarWidth = 300;
+  // loadingBar = new createjs.Shape();
+  // loadingBarFrame = new createjs.Shape();
+  // loadingBarContainer = new createjs.Container();
+  // loadingBarHeight = 20;
+  // loadingBarWidth = 300;
 
-  loadProgressLabel.lineWidth = 200;
+  loadProgressLabel.lineWidth = 2000;
   loadProgressLabel.textAlign = "center";
   loadProgressLabel.x = screen_width/2;
-  loadProgressLabel.y = screen_height/2;
+  loadProgressLabel.y = screen_height/2 - 20;
 
   //Fill background with gray
-  loadingScreenFill.graphics.beginFill("#B0B0B0").drawRect(0,0,screen_width,screen_height).endFill();
+  loadingScreenFill.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height).endFill();
+
+	var bellSpriteSheet = new createjs.SpriteSheet( {
+	// all main strings are reserved strings (images, frames, animations) that do a specific task
+		"images": ["images/bell.png"],
+		"frames": {height: 46, width: 42, regX: 21, regY: 0},
+		"animations": {
+			"initial": [0, 3, true, 5/60],
+			"ringing": [4, 5,"ringing", 5/60]
+		}
+	});
+
+	bellSprite = new createjs.Sprite(bellSpriteSheet, "ringing");
+  bellSprite.setTransform(screen_width/2,screen_height/2 + 20,1,1);
+
 
   //Create the progression part of the loading screen
-  loadingBar.graphics.beginFill("#000000").drawRect(0,0,1,20).endFill();
+  // loadingBar.graphics.beginFill("#000000").drawRect(0,0,1,20).endFill();
   
   //Creates a frame around the loading bar. Used 3 as a padding value
   //the frame is 3px larger and is offset by 1.5
-  loadingBarFrame.graphics.setStrokeStyle(1).beginStroke("#000000").drawRect(-3/2, -3/2, loadingBarWidth+3, loadingBarHeight+3).endStroke();
+  //loadingBarFrame.graphics.setStrokeStyle(1).beginStroke("#000000").drawRect(-3/2, -3/2, loadingBarWidth+3, loadingBarHeight+3).endStroke();
   
   //Combine the frame and the bar into 1 object
-  loadingBarContainer.addChild(loadingBar, loadingBarFrame);
+  //loadingBarContainer.addChild(loadingBar, loadingBarFrame);
   
   //center the loading bar
-  loadingBarContainer.x = screen_width/2 - loadingBarWidth/2;
-  loadingBarContainer.y = screen_height/2 + 50;
+  //loadingBarContainer.x = screen_width/2 - loadingBarWidth/2;
+  //loadingBarContainer.y = screen_height/2 + 50;
 
-  stage.addChild(loadingScreenFill, loadProgressLabel, loadingBarContainer);
+  stage.addChild(loadingScreenFill, loadProgressLabel, bellSprite);
 
 }
 
@@ -130,26 +203,45 @@ function loadingScreenClick() {
   startScreen();
 
   //remove the loading screen page and click function
-  stage.removeChild(loadProgressLabel, loadingBarContainer, loadingScreenFill);
-  stage.removeEventListener("click", loadingScreenClick);
+  stage.removeChild(loadProgressLabel, loadingScreenFill);
+  createjs.Ticker.removeEventListener("tick", handleProgress);
+  
 }
 
 function startScreen() {
   document.getElementById("loader").className = "";
   // crates new stages and properties for assets to live on
   startPage = new createjs.Shape();
-  startText = new createjs.Text("Start Button","20px Arial", "#000000");
+  startText = new createjs.Text("Start Button","48px PixelFont3", "#000000");
+  startTitle = new createjs.Text("Sneakin' on Santa", "100px PixelFont3", "#fafcfa");
   startButton = new createjs.Shape();
+  startBar1 = new createjs.Shape();
+  startBar2 = new createjs.Shape();
+  
   startButtonContainer = new createjs.Container();
+  startTitleContainer = new createjs.Container();
+
+  startTitle.x = screen_width/2;
+  startTitle.y = 70;
+  startTitle.textAlign = "center";
+  startTitle.textBaseline = "alphabetic";
+
+  startBar1.graphics.beginFill("#f74f4d").drawRect(0,0,screen_width,10);
+  startBar2.graphics.beginFill("#f74f4d").drawRect(0,90,screen_width,10);
+
+  startTitleContainer.addChild(startBar1, startTitle, startBar2);
+  startTitleContainer.y = 25;
+
 
   startButtonContainer.x = screen_width/2 - 200/2;
   startButtonContainer.y = screen_height/2;
   startText.textAlign = "center";
+  startText.textBaseline = "alphabetic";
   startText.x = 200/2;
   startText.y = 50/2;
 
   //Create start button graphic
-  startPage.graphics.beginFill("#6C8CD5").drawRect(0,0,500,screen_height);
+  startPage.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
   startButton.graphics.beginFill("#B0B0B0").drawRect(0,0,200,50);
   startButton.alpha = 0.5;
 
@@ -157,7 +249,7 @@ function startScreen() {
   //Link the start button and the text together
   startButtonContainer.addChild(startButton, startText);
 
-  stage.addChild(startPage,startButtonContainer);
+  stage.addChild(startPage,startButtonContainer, startTitleContainer);
   
   startButtonContainer.addEventListener("click",startButtonClick);
 
@@ -168,10 +260,9 @@ function startScreen() {
 // When the start button is clicked, remove the start page
 // Add score displays
 function startButtonClick() {
-  stage.removeChild(startPage, startButtonContainer);
+  stage.removeAllChildren();
   startButtonContainer.removeEventListener("click", startButtonClick);
-  stage.addChild(scoreDisplay,backgroundxDisplay,spritexDisplay);
-  createjs.Ticker.addEventListener("tick",scoretimer);
+  createjs.Ticker.addEventListener("tick", scoretimer);
 
   charScreen();
 
@@ -183,7 +274,7 @@ function charScreen() {
 
   // create shapes and containers
   var charPage = new createjs.Shape();
-  var charTitle = new createjs.Text("Select Your Character", "24px Arial", "#666");
+  var charTitle = new createjs.Text("Select Your Character", "24px PixelFont3", "#666");
   var boyDisplay = new createjs.Shape();
   var boyDisplayContainer = new createjs.Container();
   var girlDisplay = new createjs.Shape();
@@ -233,21 +324,20 @@ function charScreen() {
 function startGame() {
   stage.removeAllChildren();
   background = new createjs.Shape();
-  backgroundxDisplay = new createjs.Text("bg: 0", "20px Arial", "#FFFFFF");
-  spritexDisplay = new createjs.Text("sprite: 0", "20px Arial", "#FFFFFF");
-  scoreDisplay = new createjs.Text("Score: 0", "36px Arial", "#FFFFFF");
+  backgroundContainer = new createjs.Container();
+  scoreDisplay = new createjs.Text("Score: 0", "36px PixelFont3", "#FFFFFF");
   
-  // display which character in text (for now)
-  //TODO: change to actual sprite and remove text
-  var characterDisplay;
-  if(character == 0) {
-    characterDisplay = new createjs.Text("It's a Boy", "20px Arial", "#FFFFFF");
-  } else if (character == 1) {
-    characterDisplay = new createjs.Text("It's a Girl", "20px Arial", "#FFFFFF");
-  }
-  characterDisplay.x = 200;
-  characterDisplay.y = 50;
+  //TODO: for testing movment and score
+  backgroundxDisplay = new createjs.Text("bg: 0", "20px PixelFont3", "#FFFFFF");
+  spritexDisplay = new createjs.Text("sprite: 0", "20px PixelFont3", "#FFFFFF"); 
   
+  //TODO: for testing alert
+  detectSteps = new createjs.Text("Steps: 0", "20px PixelFont3", "#FFFFFF");
+  alertStatus = new createjs.Text("Alert: false", "20px PixelFont3", "#FFFFFF");
+
+  //TODO: second count
+  timeDisplay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF")
+
   //fill the background at 0,0 to the size of the screen
   background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0,0,1000,screen_height);
   
@@ -260,34 +350,213 @@ function startGame() {
   spritexDisplay.x = 300;
   spritexDisplay.y = 180;
 
+  detectSteps.x = 300;
+  detectSteps.y = 210;
+
+  alertStatus.x = 300;
+  alertStatus.y = 230;
+
+  timeDisplay.x = 350;
+  timeDisplay.y = 230;  
 
 
-  var megamanSpriteSheet = new createjs.SpriteSheet( {
-    // all main strings are reserved strings (images, frames, animations) that do a specific task
-    "images": [loader.getResult("megaman")],
-    "frames": {height: 30, width: 30, regX: 15, regY: 0},
+//Boy Selection
+  if (character == 0) {
+    var megamanSpriteSheet = new createjs.SpriteSheet( {
+      // all main strings are reserved strings (images, frames, animations) that do a specific task
+      "images": [loader.getResult("megaman")],
+
+      "frames": {height: 30, width: 30, regX: 15, regY: 0},
+      "animations": {
+        "idle": [0, 0],
+        "run": [3, 5,"run", 5/60], //Runs Left
+        "duck": [7, 7]
+      }
+    });
+
+
+    var characterSpriteSheet = new createjs.SpriteSheet( {
+      // all main strings are reserved strings (images, frames, animations) that do a specific task
+      "images": [loader.getResult("boy")],
+      // x, y, width, height, imageIndex, regX, regY
+      "frames": [
+      /*00-01*/   [0,0,42,84,0,21,0],[42,0,42,84,0,21,0],
+      /*02-03*/   [0,84,42,84,0,21,0],[42,84,42,84,0,21,0],
+      /*04-05*/   [0,168,116,84,0,58,0],[116,168,116,84,0,58,0],
+      /*06-11*/   [0,252,42,84,0,21,0],[42,252,42,84,0,21,0],[84,252,42,84,0,21,0],[126,252,42,84,0,21,0],[168,252,42,84,0,21,0],[210,252,42,84,0,21,0],
+      /*12-21*/   [0,336,60,84,0,30,0],[60,336,60,84,0,30,0],[120,336,60,84,0,30,0],[180,336,60,84,0,30,0],[240,336,60,84,0,30,0],[300,336,60,84,0,30,0],[360,336,60,84,0,30,0],[420,336,60,84,0,30,0],[480,336,60,84,0,30,0],[540,336,60,84,0,30,0],
+      /*22-31*/   [0,420,60,84,0,30,0],[60,420,60,84,0,30,0],[120,420,60,84,0,30,0],[180,420,60,84,0,30,0],[240,420,60,84,0,30,0],[300,420,60,84,0,30,0],[360,420,60,84,0,30,0],[420,420,60,84,0,30,0],[480,420,60,84,0,30,0],[540,420,60,84,0,30,0],
+      /*32-41*/   [0,504,94,84,0,47,0],[94,504,94,84,0,47,0],[188,504,94,84,0,47,0],[282,504,94,84,0,47,0],[376,504,94,84,0,47,0],[470,504,94,84,0,47,0],[564,504,94,84,0,47,0],[658,504,94,84,0,47,0],[752,504,94,84,0,47,0],[846,504,94,84,0,47,0],
+      /*42-45*/   [0,588,94,84,0,47,0],[94,588,94,84,0,47,0],[188,588,94,84,0,47,0],[282,588,94,84,0,47,0]      
+      ],
+      "animations": {
+        "idle": [0,0,"blink",1/150],
+        "lookUp": [1],
+        "lookLeft": [3],
+        "stressed":[4,5,"stressed",5/60],
+        "blink": [6,11,"idle",5/60],
+        "sneak": [12,31,"sneak",6/60],
+        "duck": [32,45,"duckIdle", 20/60],
+        "duckIdle":[45]
+      }
+
+    });
+  }
+
+
+//Girl Selection
+  else if (character == 1) {
+    var megamanSpriteSheet = new createjs.SpriteSheet( {
+      // all main strings are reserved strings (images, frames, animations) that do a specific task
+      "images": [loader.getResult("megamanred")],
+      "frames": {height: 30, width: 30, regX: 15, regY: 0},
+      "animations": {
+        "idle": [0, 0],
+        "run": [3, 5,"run", 5/60], //Runs Left
+        "duck": [7, 7]
+      }
+    });
+
+    var characterSpriteSheet = new createjs.SpriteSheet( {
+      // all main strings are reserved strings (images, frames, animations) that do a specific task
+      "images": [loader.getResult("girl")],
+      // x, y, width, height, imageIndex, regX, regY
+      "frames": [
+      /*00-01*/   [0,0,40,96,0,20,0],[40,0,40,96,0,20,0],
+      /*02-03*/   [0,96,40,96,0,20,0],[40,96,40,96,0,20,0],
+      /*04-05*/   [0,192,52,96,0,26,0],[56,192,52,96,0,26,0],
+      /*06-11*/   [0,288,40,96,0,20,0],[40,288,40,96,0,20,0],[80,288,40,96,0,20,0],[120,288,40,96,0,20,0],[160,288,40,96,0,20,0],[200,288,40,96,0,20,0],
+      /*12-21*/   [0,384,56,96,0,28,0],[56,384,56,96,0,28,0],[112,384,56,96,0,28,0],[168,384,56,96,0,28,0],[224,384,56,96,0,28,0],[280,384,56,96,0,28,0],[336,384,56,96,0,28,0],[392,384,56,96,0,28,0],[448,384,56,96,0,28,0],[504,384,56,96,0,28,0],
+      /*22-31*/   [0,480,56,96,0,28,0],[56,480,56,96,0,28,0],[112,480,56,96,0,28,0],[168,480,56,96,0,28,0],[224,480,56,96,0,28,0],[280,480,56,96,0,28,0],[336,480,56,96,0,28,0],[392,480,56,96,0,28,0],[448,480,56,96,0,28,0],[504,480,56,96,0,28,0],
+      /*32-41*/   [0,576,56,96,0,28,0],[56,576,56,96,0,28,0],[112,576,56,96,0,28,0],[168,576,56,96,0,28,0],[224,576,56,96,0,28,0],[280,576,56,96,0,28,0],[336,576,56,96,0,28,0],[392,576,56,96,0,28,0],[448,576,56,96,0,28,0],[504,576,56,96,0,28,0],
+      /*42-45*/   [0,672,56,96,0,28,0],[56,672,56,96,0,28,0],[112,672,56,96,0,28,0],[168,672,56,96,0,28,0]
+      ], 
+      "animations": {
+        "idle": [0,0,"blink",1/150],
+        "lookUp": [1],
+        "lookLeft": [3],
+        "stressed":[4,5,"stressed",5/60],
+        "blink": [6,11,"idle",5/60],
+        "sneak": [12,31,"sneak",8/60],
+        "duck": [32,45,"duckIdle", 20/60],
+        "duckIdle":[45]
+        
+      }
+    });
+
+  } else {
+    charScreen();
+  }
+
+  var fireplaceSpriteSheet = new createjs.SpriteSheet( {
+  // all main strings are reserved strings (images, frames, animations) that do a specific task
+    "images": [loader.getResult("fireplace")],
+    "frames": {height: 300, width: 1000, regX: 0, regY: 0},
     "animations": {
-      "idle": [0, 0],
-      "run": [3, 5,"run", 5/60], //Runs Left
-      "duck": [7, 7]
+      "idle": [0, 5,"idle", 5/60],
     }
   });
-  megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
+
+  var santaSpriteSheet = new createjs.SpriteSheet( {
+  // all main strings are reserved strings (images, frames, animations) that do a specific task
+    "images": [loader.getResult("santa")],
+    "frames": {height: 150, width: 190, regX: 0, regY: 0},
+    "animations": {
+      "idle": [0, 35,"idle", 5/60],
+      "surprise": [36, 40, "surprise", 5/60]
+    }
+  });
+
+  characterSprite = new createjs.Sprite(characterSpriteSheet, "idle");
+  characterSprite.setTransform(100,100,1,1);
+  characterSprite.framerate = 60;
   
-  // setTransform sets sprites x and y coordinates and scale
+  fireplaceSprite = new createjs.Sprite(fireplaceSpriteSheet, "idle");
+  fireplaceSprite.setTransform(0,0,1,1);
+  fireplaceSprite.framerate = 60;
+
+
+  megamanSprite = new createjs.Sprite(megamanSpriteSheet, "idle");
+    // setTransform sets sprites x and y coordinates and scale
   megamanSprite.setTransform(120,250,1,1);
   megamanSprite.framerate = 60;
 
+  santaSprite = new createjs.Sprite(santaSpriteSheet, "idle");
+  santaSprite.setTransform(810,125,1,1);
+
+
+  backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(background, megamanSprite, /*TODO: TAKE OUT*/characterDisplay);
-
+  stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus, characterSprite, timeDisplay);
+  santaAlert();
   // not sure what .timingMode is
   // .Ticker adds continuous timer
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
   createjs.Ticker.setFPS(60);
   createjs.Ticker.addEventListener("tick", stageUpdate);
- 
+}
+
+function santaAlert() {
+  var santaCountFunc = setInterval(function() {
+    santaCount++;
+    if(santaCount > 3) {
+      santaCount = 0;
+    }
+    if(santaCount == 3){ 
+      detection =  Math.floor((Math.random()*10)+1);
+      console.log(detection);
+
+      switch(detection) {  
+        case 1:
+          alert = 1;
+          break;
+        case 2:
+          alert = 1;
+          break;
+        case 4:
+          alert = 1;
+          break;
+        case 6:
+          alert = 1;
+          break;
+        case 3:
+          alert = 1;
+          break;
+        default:
+          alert = 0;
+          break;
+      }
+    }
+    console.log(keyActive);
+    if(alert == 1) {
+      forceduck();
+      alertCount++;
+    }
+  }, 1000);
+
+  stageUpdate();
+}
+
+function forceduck() {
+  megamanSprite.gotoAndPlay("duck");
+  characterSprite.gotoAndPlay("duck");
+  keyActive = false;
+  console.log("Key: " + keyActive);
+
+  if(alertCount == 3) {
+    megamanSprite.gotoAndStop("idle");
+    characterSprite.gotoAndStop("idle");
+    alert = 0;
+    duckTrigger = false;
+    keyActive = true;
+  }
+
+  if(alertCount > 0) {
+      santaCount = 0;
+  } else if (alertCount == 0) {
+    santaAlert();
+  }
 }
 
 // press key down
@@ -297,23 +566,33 @@ function handleKeyDown(e) {
     var e = window.event;
   }
 
-  switch(e.keyCode) {
-    
-    case KEYCODE_LEFT:
-    case KEYCODE_A: {
-      leftPressed = true;
-      break;
-    }
-    case KEYCODE_RIGHT:
-    case KEYCODE_D: {
-      rightPressed = true;
-      break;
-    }
-    case KEYCODE_SPACE: 
-    case KEYCODE_DOWN:
-    case KEYCODE_S: {
-      spacePressed = true;
-      break;
+  if(keyActive != false) {
+
+    switch(e.keyCode) {
+      
+      case KEYCODE_LEFT:
+      case KEYCODE_A: {
+        leftPressed = true;
+        break;
+      }
+      case KEYCODE_RIGHT:
+      case KEYCODE_D: {
+        rightPressed = true;
+        //add to stepsTaken
+        stepsTaken++;
+        break;
+      }
+      case KEYCODE_UP:
+      case KEYCODE_W: {
+        upPressed = true;
+        break;
+      }
+      case KEYCODE_SPACE: 
+      case KEYCODE_DOWN:
+      case KEYCODE_S: {
+        duckTrigger = true;
+        break;
+      }
     }
   }
 }
@@ -324,63 +603,112 @@ function handleKeyUp(e) {
     var e = window.event;
   }
 
-  //gotoAndStop will play the animation once and stop
-  switch(e.keyCode) {
-    case KEYCODE_LEFT:
-    case KEYCODE_A: {
-      leftPressed = false;
-      megamanSprite.gotoAndStop("run");
-      anyKeyPressed = false;
-      break;
-    }  
-    case KEYCODE_RIGHT:
-    case KEYCODE_D: {
-      rightPressed = false;
-      megamanSprite.gotoAndStop("run");
-      anyKeyPressed = false;
-      break;
-    } 
-    case KEYCODE_SPACE: 
-    case KEYCODE_DOWN:
-    case KEYCODE_S: {
-      spacePressed = false;
-      megamanSprite.gotoAndStop("duck");
-      anyKeyPressed = false;
-      break;
+  if(keyActive != false) {
+    //gotoAndStop will play the animation once and stop
+    switch(e.keyCode) {
+      case KEYCODE_LEFT:
+      case KEYCODE_A: {
+        leftPressed = false;
+        megamanSprite.gotoAndStop("run");
+        characterSprite.gotoAndPlay("idle");
+        anyKeyPressed = false;
+        break;
+      }  
+      case KEYCODE_RIGHT:
+      case KEYCODE_D: {
+        rightPressed = false;
+        megamanSprite.gotoAndStop("run");
+        characterSprite.gotoAndPlay("idle");
+        
+        anyKeyPressed = false;
+        break;
+      } 
+      case KEYCODE_UP:
+      case KEYCODE_W: {
+        upPressed = false;
+        characterSprite.gotoAndPlay("idle");
+        anyKeyPressed = false;
+        break;
+      } 
+
+      case KEYCODE_SPACE: 
+      case KEYCODE_DOWN:
+      case KEYCODE_S: {
+        duckTrigger = false;
+        characterSprite.gotoAndPlay("idle");
+        megamanSprite.gotoAndStop("idle");
+        anyKeyPressed = false;
+        break;
+      }
     }
   }
   //During the end card photo, press esc, enter or space to skip it
   if(endCardPhotoStatus)
     if(e.keyCode == KEYCODE_ESC || e.keyCode == KEYCODE_ENTER || e.keyCode == KEYCODE_SPACE  ) {
-      endCardGift();
+      endCardPhotoStatus = false;
+      endCardPhotoTransition()
     }
 
 }
 
 
+<<<<<<< HEAD
 function restart() {
   // take out EVERYTHING
   stage.removeAllChildren();
   startScreen();
 }
 
+=======
+>>>>>>> f7f12552f227943e5cf4b68a11ab353ab038a296
 function scoretimer(event) {
 
   score++;
 
-  scoreDisplay.text = "Score: "+score+" ";
-  backgroundxDisplay.text = "bg: "+background.x+" ";
-  spritexDisplay.text = "sprite: "+megamanSprite.x+" ";
-
+  /*scoreDisplay.text = "Score: " + score + " ";
+  backgroundxDisplay.text = "bg: " + background.x + " ";
+  spritexDisplay.text = "sprite: " + megamanSprite.x + " ";*/
+  detectSteps.text = "steps: " + stepsTaken + " ";
+  alertStatus.text = "alert: " + alert + " ";
+  timeDisplay.text = "time: " + santaCount + " ";
 }
 
 
 function stageUpdate(event) {
 
+<<<<<<< HEAD
+=======
+  // run santa alert function
+  //santaAlert();
+
+>>>>>>> f7f12552f227943e5cf4b68a11ab353ab038a296
   //When an arrow key is pressed, it will play the "run" animation (which loops)
   //will remove the anykeypress flag so that the animation will be only played once
-  if ((leftPressed||rightPressed) && !anyKeyPressed && !spacePressed) {
-    megamanSprite.gotoAndPlay("run");
+  // if ((leftPressed||rightPressed) && !anyKeyPressed && !duckTrigger) {
+  //   megamanSprite.gotoAndPlay("run");
+  //   anyKeyPressed = true;
+  // }
+
+
+
+  if (leftPressed && !anyKeyPressed && !duckTrigger && !upPressed && !rightPressed) {
+    characterSprite.gotoAndPlay("lookLeft");
+    anyKeyPressed = true;
+  }
+  if (upPressed && !anyKeyPressed && !duckTrigger && !leftPressed && !rightPressed) {
+    characterSprite.gotoAndPlay("lookUp");
+    anyKeyPressed = true;
+  }
+
+    if (rightPressed && !anyKeyPressed && !duckTrigger && !upPressed && !leftPressed) {
+    characterSprite.gotoAndPlay("sneak");
+    anyKeyPressed = true;
+  }
+
+  // pressing space makes you go duck
+  if (duckTrigger && !anyKeyPressed) {
+    megamanSprite.gotoAndPlay("duck");
+    characterSprite.gotoAndPlay("duck");
     anyKeyPressed = true;
   }
 
@@ -400,58 +728,49 @@ function stageUpdate(event) {
   //character runs freely past 200 to 400
   
   //Pressed the Left Arrow Key **********
-  if (leftPressed && !rightPressed && !spacePressed) {
+  if (leftPressed && !rightPressed && !duckTrigger) {
     // flip at regular state
     megamanSprite.scaleX = 1;
     
-    if ((megamanSprite.x > 15 && megamanSprite.x <= 200 && background.x == 0) || 
-    (megamanSprite.x > 200 && megamanSprite.x <= 400 && background.x == -500)) {
+    if ((megamanSprite.x > 15 && megamanSprite.x <= 200 && backgroundContainer.x == 0) || 
+    (megamanSprite.x > 200 && megamanSprite.x <= 400 && backgroundContainer.x == -500)) {
       megamanSprite.x--;
     } 
-    if (megamanSprite.x == 200 && background.x >= -500 && background.x <= 0) {
-      background.x++;
+    if (megamanSprite.x == 200 && backgroundContainer.x >= -500 && backgroundContainer.x <= 0) {
+      backgroundContainer.x++;
     }
   }
 
 
   //Pressed the Right Arrow Key **********
-  if (!leftPressed && rightPressed && !spacePressed) {
+  if (!leftPressed && rightPressed && !duckTrigger) {
     //set the X scale to -1 to flip along the horizontal
     megamanSprite.scaleX = -1;
 
-    //So the background will move till it hits the end.
-    if ((megamanSprite.x >= 15 && megamanSprite.x < 200 && background.x == 0) || 
-    (megamanSprite.x >= 200 && megamanSprite.x < 400 && background.x == -500)) {
+    //So the backgroundContainer will move till it hits the end.
+    if ((megamanSprite.x >= 15 && megamanSprite.x < 200 && backgroundContainer.x == 0) || 
+    (megamanSprite.x >= 200 && megamanSprite.x < 400 && backgroundContainer.x == -500)) {
       megamanSprite.x++;
-    megamanSprite.x++;
-    megamanSprite.x++;
-    megamanSprite.x++;
-    megamanSprite.x++;
     } 
-    if (megamanSprite.x == 200 && -500 <= background.x && background.x <= 0) {
-      background.x--;
-background.x--;
-background.x--;
-background.x--;
-background.x--;
+    if (megamanSprite.x == 200 && -500 <= backgroundContainer.x && backgroundContainer.x <= 0) {
+      backgroundContainer.x--;
     }
   }
 
-  // pressing space makes you go duck
-  if (spacePressed) {
-    megamanSprite.gotoAndPlay("duck");
-    anykeypress = true;
-  }
+
 
   // If left and right are pressed at the same time or nothing is pressed
   // return to the standing animation
-  if ((!spacePressed&&!leftPressed&&!rightPressed) || (rightPressed&&leftPressed)) {
+  if ((!duckTrigger&&!leftPressed&&!rightPressed) || (rightPressed&&leftPressed)) {
     megamanSprite.gotoAndStop("idle");
     anyKeyPressed = false;
   }
+  if (megamanSprite.x >= 350){
+    santaSprite.gotoAndPlay("surprise");
+  }
 
   if (megamanSprite.x >= 400){
-   endCardPhoto();
+    endCardPhoto();
   }
 
   //if the end card photo is being displayed, begin counting for 5 seconds
@@ -464,13 +783,17 @@ background.x--;
   if ( parseInt(endCardPhotoCount/60) == 5){
 
     //When the time is 5 seconds, continue to the next end card
+<<<<<<< HEAD
      endCardGift();
+=======
+    endCardPhotoTransition()
+>>>>>>> f7f12552f227943e5cf4b68a11ab353ab038a296
   }
 
     // // Red banner pans across the screen
     // if (endCardGiftBanner.x < 500) {
     //   endCardGiftBanner.x = endCardGiftBanner.x + 20;
-    // }
+7    // }
     // // After red banner pans across
     // // "YOU GOT" Text pans across quickly at first then slowly and exits quickly
     // if (endCardGiftBanner.x == 500) {
@@ -488,6 +811,7 @@ background.x--;
   
   stage.update();
 }
+
 //First stage of the end cards
 //displays the photo of character and santa for 5 seconds
 function endCardPhoto() {
@@ -496,6 +820,7 @@ function endCardPhoto() {
   stage.removeAllChildren();
   endPhoto = new createjs.Shape();
   endBackground = new createjs.Shape();
+<<<<<<< HEAD
   endEnterSkip = new createjs.Text("Press Enter to skip >", "15px Arial", "#FFFFFF");
   endPhoto.graphics.beginStroke("#ff0000").beginFill("#F25050").drawRect(0,0,250,250);
   endBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
@@ -509,7 +834,44 @@ function endCardPhoto() {
   endPhoto.y = 50;
   stage.addChild(endBackground, endPhoto, endEnterSkip);
   
+=======
+  endCardFlash = new createjs.Shape();
+
+  endCardEnterSkip = new createjs.Text("Press Enter to skip >", "32px PixelFont3", "#FFFFFF");
+  endPhotoContainer = new createjs.Container();
+
+	if (character == 0) {
+		endPhoto.graphics.beginBitmapFill(loader.getResult("endcard_boy")).drawRect(0,0,500,300);
+	} else if (character == 1) {
+		endPhoto.graphics.beginBitmapFill(loader.getResult("endcard_girl")).drawRect(0,0,500,300);
+	}
+
+  endBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
+  endCardFlash.graphics.beginFill("#FFFFFF").drawRect(0,0,screen_width,screen_height);
+
+  var endCardFlashAnim = createjs.Tween.get(endCardFlash, {paused:true})
+          .to({alpha:0},75)
+
+  endCardFlashAnim.setPaused(false);
+
+  endCardEnterSkip.x = 310;
+  endCardEnterSkip.y = 270;
+
+  endPhotoContainer.addChild(endPhoto, endCardEnterSkip);
+
+  stage.addChild(endBackground, endPhotoContainer, endCardFlash);
+
 }
+
+function endCardPhotoTransition() {
+  //Photo and text fade away and move to the Gift end card 
+  var endPhotoContainerAnim = createjs.Tween.get(endPhotoContainer, {paused:true})
+          .to({alpha:0},500)
+          .call(endCardGift);
+  endPhotoContainerAnim.setPaused(false);
+>>>>>>> f7f12552f227943e5cf4b68a11ab353ab038a296
+}
+
 //Second stage of the end cards
 //Display the gift the player receives based on their score
 function endCardGift() {
@@ -525,19 +887,23 @@ function endCardGift() {
 
 
   endCardGiftBanner = new createjs.Shape();
-  endCardGiftYouGot = new createjs.Text("YOU GOT", "50px Arial", "#FFFFFF");
-  endCardGiftText = new createjs.Text("GIFT", "50px Arial", "#FFFFFF");
-  endCardGiftYouGot.y = 125;
-  endCardGiftYouGot.x = -350;
-  endCardGiftText.y = 125;
-  endCardGiftText.x = -350;
+  endCardGiftYouGot = new createjs.Text("YOU GOT", "160px PixelFont3", "#FFFFFF");
+  endCardGiftText = new createjs.Text("GIFT", "160px PixelFont3", "#FFFFFF");
+  endCardGiftYouGot.y = 70;
+  endCardGiftYouGot.x = 600;
+  endCardGiftText.y = 70;
+  endCardGiftText.x = 600;
 
-  endCardGiftBanner.graphics.beginFill("F25050").drawRect(-screen_width,75,screen_width,150);
-  
+  endCardGiftBanner.graphics.beginFill("F25050").drawRect(screen_width,100,screen_width,100);
+
   stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftText);
+
+
+  //Gift Card Animation
 
   // Red banner pans across the screen
   var giftBannerAnim = createjs.Tween.get(endCardGiftBanner, {paused:true})
+<<<<<<< HEAD
                     .to({x:500},200,createjs.Ease.linear)
                     .wait(3000)
                     .to({x:1000},300,createjs.Ease.linear);
@@ -560,27 +926,107 @@ function endCardGift() {
   giftTimeline = new createjs.Timeline([giftBannerAnim, giftYouGotAnim, giftTextAnim],{paused:true});
   giftTimeline.setPaused(false);
 
+=======
+  					.wait(1850)
+                	.to({x:-500},500,createjs.Ease.linear);
+                  // 
+                  // .to({x:1000},400,createjs.Ease.linear);
+  // The words YOU GOT moves across the screen
+  var giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot, {paused:true})
+                  	.to({x:120},200,createjs.Ease.linear)
+                  	.to({x:80},1750,createjs.Ease.linear)
+                  	.to({x:-500},200,createjs.Ease.linear);
+  // the gift name pans across
+  var giftTextAnim = createjs.Tween.get(endCardGiftText, {paused:true})
+                  .wait(2500)
+                  .to({x:200},200,createjs.Ease.linear)
+                  .wait(3100)
+                  // .to({x:500},400,createjs.Ease.linear)
+                  .call(endCardFinal);
+
+  //Animation Timeline
+  var giftTimeline = new createjs.Timeline([giftBannerAnim, giftYouGotAnim, giftTextAnim], {paused:true})
+  giftTimeline.setPaused(false);
+>>>>>>> f7f12552f227943e5cf4b68a11ab353ab038a296
 } 
 
-//Third stage of the end cards
-//Display social media info and score
+  //Third stage of the end cards
+  //Display social media info and score
 function endCardFinal() {
-
   endCardGiftStatus = false;
   endCardFinalStatus = true;
+  stage.removeChild(endCardGiftYouGot)
+  //stage.removeAllChildren();
+  replayButton = new createjs.Text("Replay?", "128px PixelFont3", "#fbaf5d");
+  replayButton.textBaseline = "alphabetic";
+  replayButton.x = 20;
+  replayButton.y = 265;
 
-  stage.removeAllChildren();
-  endCardFinalBackground = new createjs.Shape();
+  tumblrButton = new createjs.Shape();
+  twitterButton = new createjs.Shape();
+  facebookButton = new createjs.Shape();
+  lcLogo = new createjs.Shape();
+  socialMediaInfo = new createjs.Container();
+
   endCardFinalContainer = new createjs.Container();
   
-  endCardFinalBackground.graphics.beginFill("F25050").drawRect(100,100,100,100);
 
-  endCardFinalContainer.addChild(endCardFinalBackground);
+  tumblrButton.graphics.beginBitmapFill(loader.getResult("tumblrButtonImg")).drawRect(0,0,147,21);
+  twitterButton.graphics.beginBitmapFill(loader.getResult("twitterButtonImg")).drawRect(0,0,150,21);
+  facebookButton.graphics.beginBitmapFill(loader.getResult("facebookButtonImg")).drawRect(0,0,163,21);
+  lcLogo.graphics.beginBitmapFill(loader.getResult("lcLogoImg")).drawRect(0,0,59,82);
+  
+  tumblrButton.x = 64;
+  tumblrButton.y = 15;
+  twitterButton.x = 64;
+  twitterButton.y = 38;
+  facebookButton.x = 64;
+  facebookButton.y = 61;
+
+
+  socialMediaInfo.addChild(tumblrButton, twitterButton, facebookButton, lcLogo)
+
+  socialMediaInfo.x = 265;
+  socialMediaInfo.y = 215;
+
+
+  //Set to invisible 
+  endCardFinalContainer.addChild(socialMediaInfo, replayButton);
   endCardFinalContainer.alpha = 0;
 
+<<<<<<< HEAD
   stage.addChild(endBackground, endCardFinalContainer);
   endCardFinalContainer.addEventListener('click', restart);
   //test image fades in
   var FinalAnim = createjs.Tween.get(endCardFinalContainer)
                 .to({alpha:1},2000);
+=======
+  stage.addChild(endCardFinalContainer);
+
+  
+
+  replayButton.addEventListener('click', startScreen);
+  facebookButton.addEventListener('click', facebookLink);
+  tumblrButton.addEventListener('click', tumblrLink);
+  twitterButton.addEventListener('click', twitterLink);
+
+
+  //test image fades in
+  var FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
+            .to({alpha:1},1000);
+  FinalAnim.setPaused(false);
+}
+
+
+function tumblrLink() {
+  window.open("http://lanterncubed.tumblr.com","_blank");
+}
+
+function twitterLink() {
+  window.open("https://www.twitter.com/LanternCubed","_blank");
+}
+
+function facebookLink() {
+  window.open("https://www.facebook.com/LanternCubed","_blank");
+>>>>>>> f7f12552f227943e5cf4b68a11ab353ab038a296
 }
