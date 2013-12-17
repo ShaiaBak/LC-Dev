@@ -85,6 +85,7 @@ var backgroundxDisplay;
 var spritexDisplay;
 var detectSteps;
 var timeDisplay;
+var timeDelay
 
 var gameStatus = false;
 
@@ -610,8 +611,9 @@ function startGame() {
   spritexDisplay = new createjs.Text("sprite: 0", "20px PixelFont3", "#FFFFFF"); 
   
   //TODO: for testing alert
-  detectSteps = new createjs.Text("Steps: 0", "20px PixelFont3", "#FFFFFF");
-  alertStatus = new createjs.Text("Alert: false", "20px PixelFont3", "#FFFFFF");
+  detectSteps = new createjs.Text("Steps: 0", "32px PixelFont3", "#FFFFFF");
+  alertStatus = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF");
+  timeDelay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF");
 
   //TODO: second count
   timeDisplay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF")
@@ -619,20 +621,23 @@ function startGame() {
   //fill the background at 0,0 to the size of the screen
   
   
-  scoreDisplay.x = 300;
+  scoreDisplay.x = 275;
   scoreDisplay.y = 100;
 
-  backgroundxDisplay.x = 300;
+  backgroundxDisplay.x = 275;
   backgroundxDisplay.y = 150;
 
-  spritexDisplay.x = 300;
+  spritexDisplay.x = 275;
   spritexDisplay.y = 180;
 
-  detectSteps.x = 300;
+  detectSteps.x = 275;
   detectSteps.y = 210;
 
-  alertStatus.x = 300;
+  alertStatus.x = 275;
   alertStatus.y = 230;
+
+  timeDelay.x = 350;
+  timeDelay.y = 210;
 
   timeDisplay.x = 350;
   timeDisplay.y = 230;  
@@ -697,7 +702,7 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus, characterSprite, timeDisplay);
+  stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay);
   santaAlert();
   // not sure what .timingMode is
   // .Ticker adds continuous timer
@@ -709,7 +714,10 @@ function startGame() {
 function santaAlert() {
   var santaCountFunc = setInterval(function() {
     santaCount++;
-    if(santaCount > 3) {
+    if(santaCount >= 4) {
+      santaCount = 0;
+    }
+    if(alertCount > 0) {
       santaCount = 0;
     }
     if(santaCount == 3){ 
@@ -737,9 +745,11 @@ function santaAlert() {
           break;
       }
     }
-    console.log(keyActive);
+    console.log("Key active: " + keyActive);
+
     if(alert == 1) {
       forceduck();
+      santaCount = 0;
       alertCount++;
     }
   }, 1000);
@@ -751,54 +761,52 @@ function forceduck() {
   megamanSprite.gotoAndPlay("duck");
   characterSprite.gotoAndPlay("duck");
   keyActive = false;
-  console.log("Key: " + keyActive);
+  rightPressed = false;
 
-  if(alertCount == 3) {
+  if(alertCount == 5) {
     megamanSprite.gotoAndStop("idle");
     characterSprite.gotoAndStop("idle");
     alert = 0;
-    duckTrigger = false;
+    alertCount = -1;
     keyActive = true;
-  }
-
-  if(alertCount > 0) {
-      santaCount = 0;
-  } else if (alertCount == 0) {
-    santaAlert();
+    duckTrigger = false;
   }
 }
 // press key down
 function handleKeyDown(e) {
+
   //cross browser issues exist
   if(!e){ 
     var e = window.event;
   }
 
   if(gameStatus) {
-    switch(e.keyCode) {
-      
-      case KEYCODE_LEFT:
-      case KEYCODE_A: {
-        leftPressed = true;
-        break;
-      }
-      case KEYCODE_RIGHT:
-      case KEYCODE_D: {
-        rightPressed = true;
-        //add to stepsTaken
-        stepsTaken++;
-        break;
-      }
-      case KEYCODE_UP:
-      case KEYCODE_W: {
-        upPressed = true;
-        break;
-      }
-      case KEYCODE_SPACE: 
-      case KEYCODE_DOWN:
-      case KEYCODE_S: {
-        duckTrigger = true;
-        break;
+    if(keyActive) {
+      switch(e.keyCode) {
+        
+        case KEYCODE_LEFT:
+        case KEYCODE_A: {
+          leftPressed = true;
+          break;
+        }
+        case KEYCODE_RIGHT:
+        case KEYCODE_D: {
+          rightPressed = true;
+          //add to stepsTaken
+          stepsTaken++;
+          break;
+        }
+        case KEYCODE_UP:
+        case KEYCODE_W: {
+          upPressed = true;
+          break;
+        }
+        case KEYCODE_SPACE: 
+        case KEYCODE_DOWN:
+        case KEYCODE_S: {
+          duckTrigger = true;
+          break;
+        }
       }
     }
   }
@@ -810,41 +818,42 @@ function handleKeyUp(e) {
     var e = window.event;
   }
   if (gameStatus) {
-    //gotoAndStop will play the animation once and stop
-    switch(e.keyCode) {
-      case KEYCODE_LEFT:
-      case KEYCODE_A: {
-        leftPressed = false;
-        megamanSprite.gotoAndStop("run");
-        characterSprite.gotoAndPlay("idle");
-        anyKeyPressed = false;
-        break;
-      }  
-      case KEYCODE_RIGHT:
-      case KEYCODE_D: {
-        rightPressed = false;
-        megamanSprite.gotoAndStop("run");
-        characterSprite.gotoAndPlay("idle");
-        
-        anyKeyPressed = false;
-        break;
-      } 
-      case KEYCODE_UP:
-      case KEYCODE_W: {
-        upPressed = false;
-        characterSprite.gotoAndPlay("idle");
-        anyKeyPressed = false;
-        break;
-      } 
+    if(keyActive) {
+      //gotoAndStop will play the animation once and stop
+      switch(e.keyCode) {
+        case KEYCODE_LEFT:
+        case KEYCODE_A: {
+          leftPressed = false;
+          megamanSprite.gotoAndStop("run");
+          characterSprite.gotoAndPlay("idle");
+          anyKeyPressed = false;
+          break;
+        }  
+        case KEYCODE_RIGHT:
+        case KEYCODE_D: {
+          rightPressed = false;
+          megamanSprite.gotoAndStop("run");
+          characterSprite.gotoAndPlay("idle");       
+          anyKeyPressed = false;
+          break;
+        } 
+        case KEYCODE_UP:
+        case KEYCODE_W: {
+          upPressed = false;
+          characterSprite.gotoAndPlay("idle");
+          anyKeyPressed = false;
+          break;
+        } 
 
-      case KEYCODE_SPACE: 
-      case KEYCODE_DOWN:
-      case KEYCODE_S: {
-        duckTrigger = false;
-        characterSprite.gotoAndPlay("idle");
-        megamanSprite.gotoAndStop("idle");
-        anyKeyPressed = false;
-        break;
+        case KEYCODE_SPACE: 
+        case KEYCODE_DOWN:
+        case KEYCODE_S: {
+          duckTrigger = false;
+          characterSprite.gotoAndPlay("idle");
+          megamanSprite.gotoAndStop("idle");
+          anyKeyPressed = false;
+          break;
+        }
       }
     }
     //During the end card photo, press esc, enter or space to skip it
@@ -943,9 +952,6 @@ function scoretimer(event) {
   /*scoreDisplay.text = "Score: " + score + " ";
   backgroundxDisplay.text = "bg: " + background.x + " ";
   spritexDisplay.text = "sprite: " + megamanSprite.x + " ";*/
-  detectSteps.text = "steps: " + stepsTaken + " ";
-  alertStatus.text = "alert: " + alert + " ";
-  timeDisplay.text = "time: " + santaCount + " ";
 }
 
 
@@ -961,6 +967,11 @@ function stageUpdate(event) {
   //   anyKeyPressed = true;
   // }
 
+  // TODO: get this outta here when done, TESTING
+  detectSteps.text = "steps: " + stepsTaken + " ";
+  alertStatus.text = "alert: " + alert + " ";
+  timeDelay.text = "delay: " + alertCount + " ";
+  timeDisplay.text = "time: " + santaCount + " ";
 
 
   if (leftPressed && !anyKeyPressed && !duckTrigger && !upPressed && !rightPressed) {
