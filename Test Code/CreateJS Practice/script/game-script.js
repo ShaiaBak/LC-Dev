@@ -20,19 +20,17 @@ var megamanRedeSpriteSheet;
 var girlSpriteSheet;
 
 
-
-
-
-var KEYCODE_ENTER = 13;   //usefull keycode
-var KEYCODE_SPACE = 32;   //usefull keycode
-var KEYCODE_UP = 38;    //usefull keycode
-var KEYCODE_LEFT = 37;    //usefull keycode
-var KEYCODE_RIGHT = 39;   //usefull keycode
-var KEYCODE_DOWN = 40;   //usefull keycode
-var KEYCODE_W = 87;     //usefull keycode
-var KEYCODE_A = 65;     //usefull keycode
-var KEYCODE_S = 83;     //useful keycode
-var KEYCODE_D = 68;     //usefull keycode
+//Key Codes
+var KEYCODE_ENTER = 13;
+var KEYCODE_SPACE = 32;
+var KEYCODE_UP = 38; 
+var KEYCODE_LEFT = 37; 
+var KEYCODE_RIGHT = 39;
+var KEYCODE_DOWN = 40;
+var KEYCODE_W = 87;  
+var KEYCODE_A = 65;  
+var KEYCODE_S = 83;
+var KEYCODE_D = 68;  
 var KEYCODE_ESC = 27;    
 
 
@@ -40,12 +38,15 @@ var KEYCODE_ESC = 27;
 var startScreenStatus = false;
 var startSelectToggle = false;
 
+
 //Character Select
 var charSelectStatus = false;
 var charSelectBoy;
 var charSelectGirl;
 var charSelectFrame;
 var charSelectToggle;
+
+
 //Instruction Page
 var instructionScreenStatus = false;
 var instructionScreenCount = 0;
@@ -307,6 +308,11 @@ function buildArt() {
   });
 
 
+}
+
+function createSnow() {
+  var bigSnow = new Image();
+  var smallSnow = new Image();
 }
 
 function startScreen() {
@@ -1222,7 +1228,7 @@ function endCardFinal() {
   socialMediaInfo.addChild(tumblrButton, twitterButton, facebookButton, lcLogo)
 
   socialMediaInfo.x = 265;
-  socialMediaInfo.y = 215;
+  socialMediaInfo.y = 210;
 
 
   //Set to invisible 
