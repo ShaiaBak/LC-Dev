@@ -53,6 +53,9 @@ var instructionScreenCount = 0;
 var instructionBoy;
 var instructionText;
 
+//Snow Stuff
+var snowList;
+
 
 var leftPressed = false;
 var rightPressed = false;
@@ -106,7 +109,7 @@ function init() {
   screen_height = stage.canvas.height;
   screen_width = stage.canvas.width;
   stage.enableMouseOver(50);
- 
+
 
   manifest = [
     // array of assest (images/music) that load with manifest
@@ -127,7 +130,9 @@ function init() {
     {src:"images/bell.png", id:"bell"},
     {src:"images/endcard_boy.png", id:"endcard_boy"},
     {src:"images/endcard_girl.png", id:"endcard_girl"},
-    {src:"images/santa_sprite.png", id:"santa"}
+    {src:"images/santa_sprite.png", id:"santa"},
+    {src:"images/flake_big.png", id:"bigSnow"},
+    {src:"images/flake_small.png", id:"smallSnow"}
     
   ];
   loader = new createjs.LoadQueue(false);
@@ -311,8 +316,20 @@ function buildArt() {
 }
 
 function createSnow() {
-  var bigSnow = new Image();
-  var smallSnow = new Image();
+
+  var bsnowContainer = new Container();
+  var ssnowContainer = new Container();
+  stage.addchild(bSnowContainer);
+  stage.addchild(sSnowContainer);
+
+  var snowNum = 15;
+  var snowImage = event.target;
+  for(var i = 0; i < snowNum; i++) {
+    var snowBitmap = new Bitmap(snowImage);
+    bsnowContainer.addchild(snowBitmap);
+    snowBitmap.name = "big snow flake"+snowNum;
+  }
+
 }
 
 function startScreen() {
