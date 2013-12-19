@@ -590,12 +590,14 @@ function boySelect() {
   character = 0;
   charSelectBoy.gotoAndPlay("pickMe");
   createjs.Ticker.addEventListener("tick",charSelectAnim);
+  startGame();
 }
 
 function girlSelect() {
   character = 1;
   charSelectGirl.gotoAndPlay("pickMe");
   createjs.Ticker.addEventListener("tick",charSelectAnim);
+  startGame();
 }
 
 
@@ -638,8 +640,7 @@ function charSelectAnim() {
                         .to({alpha:1},50)
                         .to({alpha:0},50)
                         .to({alpha:1},50)
-                        .wait(1250)
-                        .call(startGame);
+                        .wait(1250);
 
   charSelectFrameAnim.setPaused(false);
   stage.update();
@@ -652,9 +653,9 @@ function startGame() {
   stage.removeAllChildren();
   charSelectStatus = false;
   gameStatus = true;
-  // createjs.Ticker.removeAllEventListeners("tick");
-  // stage.removeAllEventListeners("click");
-  // stage.removeAllEventListeners("rollover");
+  createjs.Ticker.removeAllEventListeners("tick");
+  stage.removeAllEventListeners("click");
+  stage.removeAllEventListeners("rollover");
   backgroundContainer = new createjs.Container();
   scoreDisplay = new createjs.Text("Score: 0", "36px PixelFont3", "#FFFFFF");
   
@@ -755,7 +756,7 @@ function startGame() {
 
   // .addchild put everythign on the screen
   stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay);
-  //santaAlert();
+  santaAlert();
   // not sure what .timingMode is
   // .Ticker adds continuous timer
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
