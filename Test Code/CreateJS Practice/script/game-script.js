@@ -448,10 +448,13 @@ function instructionScreen() {
   // Boy moves across the screen 3 times
   var instructionBoyAnim = new createjs.Tween.get(instructionBoy, {paused:true})
             .to({x:275},2000)
+            .wait(500)
             .to({x:45},0)
             .to({x:275},2000)
+            .wait(500)
             .to({x:45},0)
-            .to({x:275},2000);
+            .to({x:275},2000)
+            .wait(500);
   instructionBoyAnim.setPaused(false);
   createjs.Ticker.addEventListener("tick", instructionScreenAnimation);
 
@@ -466,19 +469,28 @@ function instructionScreenAnimation() {
     instructionScreenCount++;
   }
 
-  // Convect the fps to seconds 
-  if ( parseInt(instructionScreenCount/60) == 6) {
+  if ( instructionScreenCount == 2*60) {
+    instructionBoy.gotoAndPlay("idle");
+  } else if ( instructionScreenCount == 2*60 + 30) {
+    instructionBoy.gotoAndPlay("sneak");
+  } else if ( instructionScreenCount == 4*60 + 30) {
+    instructionBoy.gotoAndPlay("idle");
+  } else if ( instructionScreenCount == 5*60) {
+    instructionBoy.gotoAndPlay("sneak");
+  } else if ( instructionScreenCount == 7*60) {
+    instructionBoy.gotoAndPlay("idle");
+  } else if ( instructionScreenCount == 7.5*60) {
 
     instructionBoy.gotoAndPlay("duck");
     instructionText.text = "Press down or space to duck";
 
-  } else if ( parseInt(instructionScreenCount/60) == 8) {
+  } else if ( instructionScreenCount == 9.5*60) {
     instructionText.text = "Beware of Santa's gaze!";
-  } else if ( parseInt(instructionScreenCount/60) == 10) {
+  } else if ( instructionScreenCount == 11.5*60) {
     instructionText.text = "Duck to avoid being noticed";
-  } else if ( parseInt(instructionScreenCount/60) == 12) {
+  } else if ( instructionScreenCount == 13.5*60) {
     instructionText.text = "or else...";
-  } else if ( parseInt(instructionScreenCount/60) == 14) {
+  } else if ( instructionScreenCount == 15.5*60) {
     //Return to start screen and remove ticker
     startScreen();
     createjs.Ticker.removeEventListener("tick", instructionScreenAnimation);
@@ -486,7 +498,6 @@ function instructionScreenAnimation() {
 
   stage.update();
 }
-
 
 
 function charScreen() {
