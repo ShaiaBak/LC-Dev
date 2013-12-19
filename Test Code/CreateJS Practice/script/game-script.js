@@ -18,7 +18,7 @@ var megamanBlueSpriteSheet;
 var boySpriteSheet;
 var megamanRedeSpriteSheet;
 var girlSpriteSheet;
-
+var bellSpriteSheet;
 
 //Key Codes
 var KEYCODE_ENTER = 13;
@@ -52,7 +52,7 @@ var instructionScreenStatus = false;
 var instructionScreenCount = 0;
 var instructionBoy;
 var instructionText;
-
+var instructionBell;
 //Snow Stuff
 var snowList;
 
@@ -212,10 +212,10 @@ function loadingInitialize() {
   //Fill background with gray
   loadingScreenFill.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height).endFill();
 
-	var bellSpriteSheet = new createjs.SpriteSheet( {
+	bellSpriteSheet = new createjs.SpriteSheet( {
 	// all main strings are reserved strings (images, frames, animations) that do a specific task
 		"images": ["images/bell.png"],
-		"frames": {height: 46, width: 42, regX: 21, regY: 0},
+		"frames": {height: 46, width: 44, regX: 21, regY: 0},
 		"animations": {
 			"initial": [0, 3, true, 5/60],
 			"ringing": [4, 5,"ringing", 5/60]
@@ -259,7 +259,8 @@ function buildArt() {
     /*12-21*/   [0,336,60,84,0,30,0],[60,336,60,84,0,30,0],[120,336,60,84,0,30,0],[180,336,60,84,0,30,0],[240,336,60,84,0,30,0],[300,336,60,84,0,30,0],[360,336,60,84,0,30,0],[420,336,60,84,0,30,0],[480,336,60,84,0,30,0],[540,336,60,84,0,30,0],
     /*22-31*/   [0,420,60,84,0,30,0],[60,420,60,84,0,30,0],[120,420,60,84,0,30,0],[180,420,60,84,0,30,0],[240,420,60,84,0,30,0],[300,420,60,84,0,30,0],[360,420,60,84,0,30,0],[420,420,60,84,0,30,0],[480,420,60,84,0,30,0],[540,420,60,84,0,30,0],
     /*32-41*/   [0,504,94,84,0,47,0],[94,504,94,84,0,47,0],[188,504,94,84,0,47,0],[282,504,94,84,0,47,0],[376,504,94,84,0,47,0],[470,504,94,84,0,47,0],[564,504,94,84,0,47,0],[658,504,94,84,0,47,0],[752,504,94,84,0,47,0],[846,504,94,84,0,47,0],
-    /*42-45*/   [0,588,94,84,0,47,0],[94,588,94,84,0,47,0],[188,588,94,84,0,47,0],[282,588,94,84,0,47,0]      
+    /*42-45*/   [0,588,94,84,0,47,0],[94,588,94,84,0,47,0],[188,588,94,84,0,47,0],[282,588,94,84,0,47,0]
+    // /*46-51*/   [0,672,46,94,0,23,0],[46,672,46,94,0,23,0],[92,672,46,94,0,23,0],[138,672,46,94,0,23,0],[184,672,46,94,0,23,0],[230,672,46,94,0,23,0]    
     ],
     "animations": {
       "idle": [0,0,"blink",1/150],
@@ -292,7 +293,7 @@ function buildArt() {
     "frames": [
     /*00-01*/   [0,0,40,96,0,20,0],[40,0,40,96,0,20,0],
     /*02-03*/   [0,96,40,96,0,20,0],[40,96,40,96,0,20,0],
-    /*04-05*/   [0,192,52,96,0,26,0],[56,192,52,96,0,26,0],
+    /*04-05*/   [0,192,52,96,0,26,0],[52,192,52,96,0,26,0],
     /*06-11*/   [0,288,40,96,0,20,0],[40,288,40,96,0,20,0],[80,288,40,96,0,20,0],[120,288,40,96,0,20,0],[160,288,40,96,0,20,0],[200,288,40,96,0,20,0],
     /*12-21*/   [0,384,56,96,0,28,0],[56,384,56,96,0,28,0],[112,384,56,96,0,28,0],[168,384,56,96,0,28,0],[224,384,56,96,0,28,0],[280,384,56,96,0,28,0],[336,384,56,96,0,28,0],[392,384,56,96,0,28,0],[448,384,56,96,0,28,0],[504,384,56,96,0,28,0],
     /*22-31*/   [0,480,56,96,0,28,0],[56,480,56,96,0,28,0],[112,480,56,96,0,28,0],[168,480,56,96,0,28,0],[224,480,56,96,0,28,0],[280,480,56,96,0,28,0],[336,480,56,96,0,28,0],[392,480,56,96,0,28,0],[448,480,56,96,0,28,0],[504,480,56,96,0,28,0],
@@ -441,20 +442,24 @@ function instructionScreen() {
   instructionBanner.graphics.beginFill("F25050").drawRect(0,0,screen_width,60);
   instructionBanner.alpha = 0.9;
   instructionBanner.y = 30
-  instructionBoy = new createjs.Sprite(boySpriteSheet, "sneak");
+  instructionBoy = new createjs.Sprite(boySpriteSheet, "idle");
   instructionBoy.x = 45;
   instructionBoy.y = 200;
+  instructionBell = new createjs.Sprite(bellSpriteSheet, "initial");
+  instructionBell.x = 450;
+  instructionBell.y = 100;
+
+
 
   // Boy moves across the screen 3 times
   var instructionBoyAnim = new createjs.Tween.get(instructionBoy, {paused:true})
-            .to({x:275},2000)
-            .wait(500)
-            .to({x:45},0)
-            .to({x:275},2000)
-            .wait(500)
-            .to({x:45},0)
-            .to({x:275},2000)
-            .wait(500);
+            .wait(500)          //500
+            .to({x:275},2000)   //2500
+            .wait(500)          //3000
+            .to({x:45},0)       
+            .to({x:275},2000)   //5000
+            .wait(500);         //5500
+
   instructionBoyAnim.setPaused(false);
   createjs.Ticker.addEventListener("tick", instructionScreenAnimation);
 
@@ -463,40 +468,41 @@ function instructionScreen() {
 }
 //This is will be called to another ticker to allow for the sprites and text to change in the instruction screen
 function instructionScreenAnimation() {
-
+  stage.update();
   if(instructionScreenStatus) {
     //Count in fps, currently set to 60
     instructionScreenCount++;
   }
-
-  if ( instructionScreenCount == 2*60) {
+  if ( instructionScreenCount == 0.5*60) {
+    instructionBoy.gotoAndPlay("sneak")
+  } else if ( instructionScreenCount == 2.5*60) {
     instructionBoy.gotoAndPlay("idle");
-  } else if ( instructionScreenCount == 2*60 + 30) {
+  } else if ( instructionScreenCount == 3*60) {
     instructionBoy.gotoAndPlay("sneak");
-  } else if ( instructionScreenCount == 4*60 + 30) {
-    instructionBoy.gotoAndPlay("idle");
   } else if ( instructionScreenCount == 5*60) {
-    instructionBoy.gotoAndPlay("sneak");
-  } else if ( instructionScreenCount == 7*60) {
     instructionBoy.gotoAndPlay("idle");
-  } else if ( instructionScreenCount == 7.5*60) {
+  } else if ( instructionScreenCount == 5.5*60) {
 
     instructionBoy.gotoAndPlay("duck");
     instructionText.text = "Press down or space to duck";
 
-  } else if ( instructionScreenCount == 9.5*60) {
+  } else if ( instructionScreenCount == 7.5*60) {
+    stage.addChild(instructionBell);
+    instructionBoy.gotoAndPlay("idle");
     instructionText.text = "Beware of Santa's gaze!";
-  } else if ( instructionScreenCount == 11.5*60) {
+  } else if ( instructionScreenCount == 9.5*60) {
+    instructionBoy.gotoAndPlay("duck");
     instructionText.text = "Duck to avoid being noticed";
-  } else if ( instructionScreenCount == 13.5*60) {
+  } else if ( instructionScreenCount == 11.5*60) {
+    instructionBoy.gotoAndPlay("stressed");
     instructionText.text = "or else...";
-  } else if ( instructionScreenCount == 15.5*60) {
+  } else if ( instructionScreenCount == 13.5*60) {
     //Return to start screen and remove ticker
     startScreen();
     createjs.Ticker.removeEventListener("tick", instructionScreenAnimation);
   }
 
-  stage.update();
+  
 }
 
 
@@ -569,19 +575,19 @@ function charScreen() {
   charSelectGirl.addEventListener("rollover",charGirlMouseOver);
   charSelectBoy.addEventListener("click",charBoyClick);
   charSelectGirl.addEventListener("click",charGirlClick);
-
+  
 
 
   stage.update();
 }
 function boySelect() {
   character = 0;
-  startGame();
+  createjs.Ticker.addEventListener("tick",charSelectAnim);
 }
 
 function girlSelect() {
   character = 1;
-  startGame();
+  createjs.Ticker.addEventListener("tick",charSelectAnim);
 }
 
 
@@ -612,16 +618,17 @@ function charGirlClick() {
 
 function charSelectAnim() {
   var charSelectFrameAnim = createjs.Tween.get(charSelectFrame, {paused:true})
-                        .to({alpha:0},1)
-                        .to({alpha:1},1)                         
-                        .to({alpha:0},1)
-                        .to({alpha:1},1)
-                        .to({alpha:0},1)
-                        .to({alpha:1},1)
-                        .to({alpha:0},1)
-                        .to({alpha:1},1)
-                        .to({alpha:0},1)
-                        .to({alpha:1},1);
+                        .to({alpha:0},50)
+                        .to({alpha:1},50)                         
+                        .to({alpha:0},50)
+                        .to({alpha:1},50)
+                        .to({alpha:0},50)
+                        .to({alpha:1},50)
+                        .to({alpha:0},50)
+                        .to({alpha:1},50)
+                        .to({alpha:0},50)
+                        .to({alpha:1},50)
+                        .call(startGame);
 
   charSelectFrameAnim.setPaused(false);
   stage.update();
