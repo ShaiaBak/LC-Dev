@@ -757,7 +757,6 @@ function startGame() {
 //Boy Selection
   if (character == 0) {
 
-    megamanSprite = new createjs.Sprite(megamanBlueSpriteSheet, "idle");
     characterSprite = new createjs.Sprite(boySpriteSheet, "idle");
 }
 
@@ -766,7 +765,6 @@ function startGame() {
 //Girl Selection
   else if (character == 1) {
     
-    megamanSprite = new createjs.Sprite(megamanRedSpriteSheet, "idle");
     characterSprite = new createjs.Sprite(girlSpriteSheet, "idle");
 
   } else {
@@ -781,10 +779,6 @@ function startGame() {
       "idle": [0, 5,"idle", 5/60],
     }
   });
-
-  
-  characterSprite.setTransform(100,100,1,1);
-  characterSprite.framerate = 60;
   
   fireplaceSprite = new createjs.Sprite(fireplaceSpriteSheet, "idle");
   fireplaceSprite.setTransform(0,0,1,1);
@@ -793,8 +787,8 @@ function startGame() {
 
   
     // setTransform sets sprites x and y coordinates and scale
-  megamanSprite.setTransform(120,250,1,1);
-  megamanSprite.framerate = 60;
+  characterSprite.setTransform(120,200,1,1);
+  characterSprite.framerate = 60;
 
   santaSprite = new createjs.Sprite(santaSpriteSheet, "idle");
   santaSprite.setTransform(810,125,1,1);
@@ -803,7 +797,7 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay, warningDisplay, wanringCountDisplay);
+  stage.addChild(backgroundContainer, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay, warningDisplay, wanringCountDisplay);
   santaAlert();
   // not sure what .timingMode is
   // .Ticker adds continuous timer
@@ -858,7 +852,6 @@ function santaAlert() {
 
     if(alert == 1) {
       forceduck();
-      santaSprite.gotoAndPlay("surprise");
       santaCount = 0;
       alertCount++;
       warning = 0;
@@ -871,16 +864,17 @@ function santaAlert() {
 function forceduck() {
   keyActive = false;
   rightPressed = false;
+  upPressed = false;
+  leftPressed = false;
+  santaSprite.gotoAndPlay("surprise");
 
   if(!duckAnim && duckTrigger ==  false) {
-    megamanSprite.gotoAndPlay("forceDuck");
     characterSprite.gotoAndPlay("forceDuck");
     duckAnim = true;
     return;
   }
 
   if(alertCount == 5) {
-    megamanSprite.gotoAndStop("idle");
     characterSprite.gotoAndStop("idle");
     santaSprite.gotoAndStop("idle");
     alert = 0;
@@ -942,7 +936,6 @@ function handleKeyUp(e) {
         case KEYCODE_LEFT:
         case KEYCODE_A: {
           leftPressed = false;
-          megamanSprite.gotoAndStop("run");
           characterSprite.gotoAndPlay("idle");
           anyKeyPressed = false;
           break;
@@ -950,7 +943,6 @@ function handleKeyUp(e) {
         case KEYCODE_RIGHT:
         case KEYCODE_D: {
           rightPressed = false;
-          megamanSprite.gotoAndStop("run");
           characterSprite.gotoAndPlay("idle");       
           anyKeyPressed = false;
           break;
@@ -968,7 +960,6 @@ function handleKeyUp(e) {
         case KEYCODE_S: {
           duckTrigger = false;
           characterSprite.gotoAndPlay("idle");
-          megamanSprite.gotoAndStop("idle");
           anyKeyPressed = false;
           break;
         }
@@ -1110,7 +1101,6 @@ function stageUpdate(event) {
 
   // pressing space makes you go duck
   if (duckTrigger && !anyKeyPressed) {
-    megamanSprite.gotoAndPlay("duck");
     characterSprite.gotoAndPlay("duck");
     anyKeyPressed = true;
   }
@@ -1146,16 +1136,15 @@ function stageUpdate(event) {
 
 
   //Pressed the Right Arrow Key **********
-  if (!leftPressed && rightPressed && !duckTrigger) {
+  if (!leftPressed && rightPressed && !duckTrigger && !upPressed) {
     //set the X scale to -1 to flip along the horizontal
-    megamanSprite.scaleX = -1;
 
     //So the backgroundContainer will move till it hits the end.
-    if ((megamanSprite.x >= 15 && megamanSprite.x < 200 && backgroundContainer.x == 0) || 
-    (megamanSprite.x >= 200 && megamanSprite.x < 400 && backgroundContainer.x == -500)) {
-      megamanSprite.x++;
+    if ((characterSprite.x >= 15 && characterSprite.x < 200 && backgroundContainer.x == 0) || 
+    (characterSprite.x >= 200 && characterSprite.x < 400 && backgroundContainer.x == -500)) {
+      characterSprite.x++;
     } 
-    if (megamanSprite.x == 200 && -500 <= backgroundContainer.x && backgroundContainer.x <= 0) {
+    if (characterSprite.x == 200 && -500 <= backgroundContainer.x && backgroundContainer.x <= 0) {
       backgroundContainer.x--;
     }
   }
@@ -1164,22 +1153,22 @@ function stageUpdate(event) {
 
   // If left and right are pressed at the same time or nothing is pressed
   // return to the standing animation
-  if ((!duckTrigger&&!leftPressed&&!rightPressed) || (rightPressed&&leftPressed)) {
-    megamanSprite.gotoAndStop("idle");
+  if (((!duckTrigger&&!leftPressed&&!rightPressed) || (rightPressed&&leftPressed) || (rightPressed&&upPressed)) && alert != 1) {
+    characterSprite.gotoAndStop("idle");
     anyKeyPressed = false;
   }
-  if (megamanSprite.x >= 350){
+  if (characterSprite.x >= 395){
     santaSprite.gotoAndPlay("surprise");
   }
 
-  if (megamanSprite.x >= 400){
+  if (characterSprite.x >= 400){
     endCardPhoto();
   }
 
   //if the end card photo is being displayed, begin counting for 5 seconds
   if(endCardPhotoStatus) {
     //Count in fps, currently set to 60
-    endCardPhotoCount++
+    endCardPhotoCount++;
   }
 
   // Convect the fps to seconds 
@@ -1216,7 +1205,7 @@ function stageUpdate(event) {
 //displays the photo of character and santa for 5 seconds
 function endCardPhoto() {
   endCardPhotoStatus = true;
-  megamanSprite.x = 120;
+  characterSprite.x = 120;
   stage.removeAllChildren();
   endPhoto = new createjs.Shape();
   endBackground = new createjs.Shape();
