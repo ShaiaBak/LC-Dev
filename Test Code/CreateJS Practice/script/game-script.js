@@ -44,9 +44,10 @@ var startSelectToggle = false;
 var charSelectStatus = false;
 var charSelectBoy;
 var charSelectGirl;
-var charSelectFrame;
+var charSelectFrame1;
+var charSelectFrame2;
 var charSelectToggle;
-
+var charSelectCount = 0;
 
 //Instruction Page
 var instructionScreenStatus = false;
@@ -123,6 +124,24 @@ function init() {
     // grabbing assets from the DOM
     {src:"assets/Test.mp3", id:"music"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
+    {src:"images/presents/present_bear.png", id:"pBear"},
+    {src:"images/presents/present_bunny.png", id:"pBunny"},
+    {src:"images/presents/present_coal.png", id:"pCoal"},
+    {src:"images/presents/present_cowmandobot.png", id:"pCowmandobot"},
+    {src:"images/presents/present_eraser.png", id:"pEraser"},
+    {src:"images/presents/present_gamebox01.png", id:"pGameBox01"},
+    {src:"images/presents/present_gamebox02.png", id:"pGameBox01"},
+    {src:"images/presents/present_guy.png", id:"pGuy"},
+    {src:"images/presents/present_kitty.png", id:"pKitty"},
+    {src:"images/presents/present_poop.png", id:"pPoop"},
+    {src:"images/presents/present_powerguy.png", id:"pPowerguy"},
+    {src:"images/presents/present_puppy.png", id:"pPuppy"},
+    {src:"images/presents/present_socks.png", id:"pSocks"},
+    {src:"images/presents/present_sweater01.png", id:"pSweater01"},
+    {src:"images/presents/present_sweater02.png", id:"pSweater02"},
+    {src:"images/presents/present_sweater03.png", id:"pSweater03"},
+    {src:"images/presents/present_sweater04.png", id:"pSweater04"},
+    {src:"images/presents/present_sweater05.png", id:"pSweater05"},
     {src:"images/bg_titlecard.png", id:"bg_TitleCard"},
     {src:"images/megaman.png", id:"megaman"},
     {src:"images/megamanred.png", id:"megamanred"},
@@ -395,7 +414,11 @@ function startScreen() {
 
   //Start Selection Square
   startSelection.graphics.beginFill("#f74f4d").drawRect(screen_width/2,0,150,30);
-  startSelection.y = 242;
+  if (startSelectToggle) {
+    startSelection.y = 272;
+  } else {
+    startSelection.y = 242;
+  }
   startSelection.regX = 150/2;
   startSelection.regY = 30/2;
   startSelection.alpha = 0.75;
@@ -535,7 +558,8 @@ function charScreen() {
   startScreenStatus = false; 
   charSelectStatus = true;
   // create shapes and containers
-  charSelectFrame = new createjs.Shape();
+  charSelectFrame1 = new createjs.Shape();
+  charSelectFrame2 = new createjs.Shape();
   var charPage = new createjs.Shape();
   var charTitle = new createjs.Text("Select Your Character", "48px PixelFont3", "#666");
   var boyDisplay = new createjs.Shape();
@@ -579,11 +603,17 @@ function charScreen() {
   boyDisplay.alpha = 0.75;
   girlDisplay.alpha = 0.75;
 
-  charSelectFrame.graphics.beginStroke("#fbaf5d").setStrokeStyle(4).drawRect(0,0,charDisplayWidth+10,charDisplayHeight+10);
-  charSelectFrame.regX = (charDisplayWidth+10)/2;
-  charSelectFrame.regY = (charDisplayHeight+10)/2;
-  charSelectFrame.x = 125;
-  charSelectFrame.y = 150;
+  charSelectFrame1.graphics.beginStroke("#F25050").setStrokeStyle(4).drawRect(0,0,charDisplayWidth+10,charDisplayHeight+10);
+  charSelectFrame1.regX = (charDisplayWidth+10)/2;
+  charSelectFrame1.regY = (charDisplayHeight+10)/2;
+  charSelectFrame1.x = 125;
+  charSelectFrame1.y = 150;
+
+  charSelectFrame2.graphics.beginStroke("#FFFFFF").setStrokeStyle(4).drawRect(0,0,charDisplayWidth+10,charDisplayHeight+10);
+  charSelectFrame2.regX = (charDisplayWidth+10)/2;
+  charSelectFrame2.regY = (charDisplayHeight+10)/2;
+  charSelectFrame2.x = 125;
+  charSelectFrame2.y = 150;
 
 
 
@@ -593,7 +623,7 @@ function charScreen() {
   girlDisplayContainer.addChild(girlDisplay);
 
   //put is all on the main screen
-  stage.addChild(startTitleBG, boyDisplayContainer, girlDisplayContainer, charTitle, charSelectBoy, charSelectGirl, charSelectFrame);
+  stage.addChild(startTitleBG, boyDisplayContainer, girlDisplayContainer, charTitle, charSelectBoy, charSelectGirl, charSelectFrame2, charSelectFrame1);
 
   //add eventListeners (hover, clikc etc..)
   charSelectBoy.addEventListener("rollover",charBoyMouseOver);
