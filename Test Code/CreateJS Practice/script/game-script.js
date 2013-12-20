@@ -19,6 +19,7 @@ var boySpriteSheet;
 var megamanRedeSpriteSheet;
 var girlSpriteSheet;
 var bellSpriteSheet;
+var santaSpriteSheet;
 
 //Key Codes
 var KEYCODE_ENTER = 13;
@@ -89,7 +90,9 @@ var backgroundxDisplay;
 var spritexDisplay;
 var detectSteps;
 var timeDisplay;
-var timeDelay
+var timeDelay;
+var warningDisplay;
+var wanringCountDisplay;
 
 var gameStatus = false;
 
@@ -97,9 +100,13 @@ var gameStatus = false;
 var stepsTaken = 0;
 var alert = 0;
 var alertCount = 0;
+var warning = 0;
+var warningCount = 0;
 var santaCount = 0;
 var detection;
 var alertStatus;
+var duckAnim = false;
+
 var keyActive = true;
 
 
@@ -273,7 +280,8 @@ function buildArt() {
       "duck": [32,46,"duckIdle", 20/60],
       "duckIdle":[46],
       "dive": [47,51,false,8/60],
-      "pickMe": [52,57,false,8/60]
+      "pickMe": [52,57,false,8/60],
+      "forceDuck": [32, 45, "stressed", 20/60]
     }
   });
 
@@ -315,7 +323,18 @@ function buildArt() {
       "duck": [32,45,"duckIdle", 20/60],
       "duckIdle":[45],
       "dive": [46,50,false,8/60],
-      "pickMe": [51,56,false,8/60]
+      "pickMe": [51,56,false,8/60],
+      "forceDuck": [32, 45, "stressed", 20/60]
+    }
+  });
+
+  santaSpriteSheet = new createjs.SpriteSheet( {
+  // all main strings are reserved strings (images, frames, animations) that do a specific task
+    "images": [loader.getResult("santa")],
+    "frames": {height: 150, width: 190, regX: 0, regY: 0},
+    "animations": {
+      "idle": [0, 35,"idle", 5/60],
+      "surprise": [36, 40, "surprise", 20/60]
     }
   });
 
@@ -668,6 +687,9 @@ function startGame() {
   alertStatus = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF");
   timeDelay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF");
 
+  warningDisplay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF");
+  wanringCountDisplay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF");
+
   //TODO: second count
   timeDisplay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF")
 
@@ -693,7 +715,13 @@ function startGame() {
   timeDelay.y = 210;
 
   timeDisplay.x = 350;
-  timeDisplay.y = 230;  
+  timeDisplay.y = 230;
+
+  warningDisplay.x = 350;
+  warningDisplay.y = 100;
+
+  wanringCountDisplay.x = 350;
+  wanringCountDisplay.y = 120;
 
 
 //Boy Selection
@@ -724,16 +752,6 @@ function startGame() {
     }
   });
 
-  var santaSpriteSheet = new createjs.SpriteSheet( {
-  // all main strings are reserved strings (images, frames, animations) that do a specific task
-    "images": [loader.getResult("santa")],
-    "frames": {height: 150, width: 190, regX: 0, regY: 0},
-    "animations": {
-      "idle": [0, 35,"idle", 5/60],
-      "surprise": [36, 40, "surprise", 5/60]
-    }
-  });
-
   
   characterSprite.setTransform(100,100,1,1);
   characterSprite.framerate = 60;
@@ -755,7 +773,7 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay);
+  stage.addChild(backgroundContainer, megamanSprite, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay, warningDisplay, wanringCountDisplay);
   santaAlert();
   // not sure what .timingMode is
   // .Ticker adds continuous timer
@@ -777,33 +795,43 @@ function santaAlert() {
       detection =  Math.floor((Math.random()*10)+1);
       console.log(detection);
 
-      switch(detection) {  
+      switch(detection) {
         case 1:
-          alert = 1;
+          warning = 1;
           break;
         case 2:
-          alert = 1;
+          warning = 1;
           break;
         case 4:
-          alert = 1;
+          warning = 1;
           break;
         case 6:
-          alert = 1;
+          warning = 1;
           break;
         case 3:
-          alert = 1;
+          warning = 1;
           break;
         default:
-          alert = 0;
+          warning = 0;
           break;
       }
     }
     console.log("Key active: " + keyActive);
 
+    if(warning == 1) {
+      warningCount++;
+      if(warningCount == 3) {
+        alert = 1;
+        warningCount = 0;
+      }
+    }
+
     if(alert == 1) {
       forceduck();
+      santaSprite.gotoAndPlay("surprise");
       santaCount = 0;
       alertCount++;
+      warning = 0;
     }
   }, 1000);
 
@@ -811,18 +839,25 @@ function santaAlert() {
 }
 
 function forceduck() {
-  megamanSprite.gotoAndPlay("duck");
-  characterSprite.gotoAndPlay("duck");
   keyActive = false;
   rightPressed = false;
+
+  if(!duckAnim && duckTrigger ==  false) {
+    megamanSprite.gotoAndPlay("forceDuck");
+    characterSprite.gotoAndPlay("forceDuck");
+    duckAnim = true;
+    return;
+  }
 
   if(alertCount == 5) {
     megamanSprite.gotoAndStop("idle");
     characterSprite.gotoAndStop("idle");
+    santaSprite.gotoAndStop("idle");
     alert = 0;
     alertCount = -1;
     keyActive = true;
     duckTrigger = false;
+    duckAnim = false;
   }
 }
 // press key down
@@ -1025,6 +1060,8 @@ function stageUpdate(event) {
   alertStatus.text = "alert: " + alert + " ";
   timeDelay.text = "delay: " + alertCount + " ";
   timeDisplay.text = "time: " + santaCount + " ";
+  wanringCountDisplay.text = "warningCount: " + warningCount;
+  warningDisplay.text = "warning: " + warning;
 
 
   if (leftPressed && !anyKeyPressed && !duckTrigger && !upPressed && !rightPressed) {
@@ -1064,7 +1101,7 @@ function stageUpdate(event) {
   //character runs freely past 200 to 400
   
   //Pressed the Left Arrow Key **********
-  if (leftPressed && !rightPressed && !duckTrigger) {
+/*  if (leftPressed && !rightPressed && !duckTrigger) {
     // flip at regular state
     megamanSprite.scaleX = 1;
     
@@ -1075,7 +1112,7 @@ function stageUpdate(event) {
     if (megamanSprite.x == 200 && backgroundContainer.x >= -500 && backgroundContainer.x <= 0) {
       backgroundContainer.x++;
     }
-  }
+  }*/
 
 
   //Pressed the Right Arrow Key **********
