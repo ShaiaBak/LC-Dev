@@ -86,6 +86,7 @@ var endCardPhotoStatus = false;
 var endCardPhotoCount = 0;
 var endCardGiftStatus = false;
 var endCardFinalStatus = false;
+var endCardGiftReward;
 
 var backgroundxDisplay;
 var spritexDisplay;
@@ -448,14 +449,12 @@ function startScreen() {
 }
 
 function startTextMouseOver() {
-  console.log(4);
   startSelectToggle = false;
   startSelection.y = 242;
   stage.update();
 }
 
 function startInstructionMouseOver() {
-  console.log(5);
   startSelectToggle = true;
   startSelection.y = 272;
   stage.update();
@@ -499,7 +498,7 @@ function instructionScreen() {
 
 
 
-  // Boy moves across the screen 3 times
+  // Boy moves across the screen 2 times
   var instructionBoyAnim = new createjs.Tween.get(instructionBoy, {paused:true})
             .wait(500)          //500
             .to({x:275},2000)   //2500
@@ -639,26 +638,26 @@ function boySelect() {
   character = 0;
   charSelectBoy.gotoAndPlay("pickMe");
   createjs.Ticker.addEventListener("tick",charSelectAnim);
-  startGame();
 }
 
 function girlSelect() {
   character = 1;
   charSelectGirl.gotoAndPlay("pickMe");
   createjs.Ticker.addEventListener("tick",charSelectAnim);
-  startGame();
 }
 
 
 function charBoyMouseOver() {
   charSelectToggle = false;
-  charSelectFrame.x = 125;
+  charSelectFrame1.x = 125;
+  charSelectFrame2.x = 125;
   stage.update();
 }
 
 function charGirlMouseOver() {
   charSelectToggle = true;
-  charSelectFrame.x = 375;
+  charSelectFrame1.x = 375;
+  charSelectFrame2.x = 375;
   stage.update();
 }
 
@@ -678,7 +677,7 @@ function charGirlClick() {
 function charSelectAnim() {
 
 
-  var charSelectFrameAnim = createjs.Tween.get(charSelectFrame, {paused:true})
+  var charSelectFrameAnim = createjs.Tween.get(charSelectFrame1, {paused:true})
                         .to({alpha:0},50)
                         .to({alpha:1},50)                         
                         .to({alpha:0},50)
@@ -689,8 +688,12 @@ function charSelectAnim() {
                         .to({alpha:1},50)
                         .to({alpha:0},50)
                         .to({alpha:1},50)
-                        .wait(1250);
+                        .wait(1000);
 
+  charSelectCount++;
+  if (charSelectCount == 1*60 ) {
+    startGame();
+  }
   charSelectFrameAnim.setPaused(false);
   stage.update();
 }
@@ -1257,13 +1260,15 @@ function endCardGift() {
 
   endCardGiftBanner = new createjs.Shape();
   endCardGiftYouGot = new createjs.Text("YOU GOT", "160px PixelFont3", "#FFFFFF");
-  endCardGiftText = new createjs.Text("GIFT", "160px PixelFont3", "#FFFFFF");
+  endCardGiftReward = new createjs.Shape();
   endCardGiftYouGot.y = 70;
   endCardGiftYouGot.x = 600;
-  endCardGiftText.y = 70;
-  endCardGiftText.x = 600;
+
 
   endCardGiftBanner.graphics.beginFill("F25050").drawRect(screen_width,100,screen_width,100);
+  
+  endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pBear")).drawRect(0,0,500,131);
+  endCardGiftReward.y = 85;
 
   stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftText);
 
@@ -1282,7 +1287,7 @@ function endCardGift() {
                     .to({x:80},1750,createjs.Ease.linear)
                     .to({x:-500},200,createjs.Ease.linear);
   // the gift name pans across
-  var giftTextAnim = createjs.Tween.get(endCardGiftText, {paused:true})
+  var giftReweardAnim = createjs.Tween.get(endCardGiftReward, {paused:true})
                   .wait(2500)
                   .to({x:200},200,createjs.Ease.linear)
                   .wait(3100)
@@ -1290,7 +1295,7 @@ function endCardGift() {
                   .call(endCardFinal);
 
   //Animation Timeline
-  var giftTimeline = new createjs.Timeline([giftBannerAnim, giftYouGotAnim, giftTextAnim], {paused:true})
+  var giftTimeline = new createjs.Timeline([giftBannerAnim, giftYouGotAnim, giftRewardAnim], {paused:true})
   giftTimeline.setPaused(false);
 } 
 
