@@ -856,8 +856,8 @@ function santaAlert() {
     if(alert == 1) {
       forceduck();
       santaCount = 0;
-      alertCount++;
       warning = 0;
+      alertCount++;
     }
   }, 1000);
 
@@ -888,13 +888,13 @@ function forceduck() {
       duckTrigger = false;
       duckAnim    = false;
     }
-  } else {
+  }
+  else {
     if(alertCount == 2) {
       santaSprite.gotoAndStop("idle");
       alert       = 0;
       alertCount  = -1;
       keyActive   = true;
-      duckTrigger = false;
       duckAnim    = false;
     }
   }
