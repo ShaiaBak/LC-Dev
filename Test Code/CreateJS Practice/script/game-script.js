@@ -98,7 +98,6 @@ var wanringCountDisplay;
 
 var gameStatus = false;
 
-
 var stepsTaken = 0;
 var alert = 0;
 var alertCount = 0;
@@ -108,6 +107,7 @@ var santaCount = 0;
 var detection;
 var alertStatus;
 var duckAnim = false;
+var dodgeTrigger = false;
 
 var keyActive = true;
 
@@ -296,7 +296,7 @@ function buildArt() {
       "lookLeft": [3],
       "stressed":[4,5,"stressed",5/60],
       "blink": [6,11,"idle",5/60],
-      "sneak": [12,31,"sneak",8/60],
+      "sneak": [12,31,"sneak",10/60],
       "duck": [32,46,"duckIdle", 20/60],
       "duckIdle":[46],
       "dive": [47,51,false,8/60],
@@ -865,27 +865,42 @@ function santaAlert() {
 }
 
 function forceduck() {
-  keyActive = false;
-  rightPressed = false;
-  upPressed = false;
-  leftPressed = false;
   santaSprite.gotoAndPlay("surprise");
 
-  if(!duckAnim && duckTrigger ==  false) {
-    characterSprite.gotoAndPlay("forceDuck");
-    duckAnim = true;
-    return;
-  }
+  if(dodgeTrigger == false) {
+    keyActive     = false;
+    rightPressed  = false;
+    upPressed     = false;
+    leftPressed   = false;
 
-  if(alertCount == 5) {
-    characterSprite.gotoAndStop("idle");
-    santaSprite.gotoAndStop("idle");
-    alert = 0;
-    alertCount = -1;
-    keyActive = true;
-    duckTrigger = false;
-    duckAnim = false;
+    if(!duckAnim) {
+      characterSprite.gotoAndPlay("forceDuck");
+      duckAnim    = true;
+      return;
+    }
+
+    if(alertCount == 5) {
+      characterSprite.gotoAndStop("idle");
+      santaSprite.gotoAndStop("idle");
+      alert       = 0;
+      alertCount  = -1;
+      keyActive   = true;
+      duckTrigger = false;
+      duckAnim    = false;
+    }
+  } else {
+    if(alertCount == 2) {
+      santaSprite.gotoAndStop("idle");
+      alert       = 0;
+      alertCount  = -1;
+      keyActive   = true;
+      duckTrigger = false;
+      duckAnim    = false;
+    }
   }
+  
+  stage.update();
+
 }
 // press key down
 function handleKeyDown(e) {
@@ -920,6 +935,7 @@ function handleKeyDown(e) {
         case KEYCODE_DOWN:
         case KEYCODE_S: {
           duckTrigger = true;
+          dodgeTrigger = true;
           break;
         }
       }
@@ -962,6 +978,7 @@ function handleKeyUp(e) {
         case KEYCODE_DOWN:
         case KEYCODE_S: {
           duckTrigger = false;
+          dodgeTrigger = false;
           characterSprite.gotoAndPlay("idle");
           anyKeyPressed = false;
           break;
