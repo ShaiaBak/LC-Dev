@@ -87,6 +87,9 @@ var endCardPhotoCount = 0;
 var endCardGiftStatus = false;
 var endCardFinalStatus = false;
 var endCardGiftReward;
+var endcardFlash;
+var endBackground;
+var endPhoto; 
 
 var backgroundxDisplay;
 var spritexDisplay;
@@ -677,24 +680,26 @@ function charGirlClick() {
 function charSelectAnim() {
 
 
-  var charSelectFrameAnim = createjs.Tween.get(charSelectFrame1, {paused:true})
-                        .to({alpha:0},50)
-                        .to({alpha:1},50)                         
-                        .to({alpha:0},50)
-                        .to({alpha:1},50)
-                        .to({alpha:0},50)
-                        .to({alpha:1},50)
-                        .to({alpha:0},50)
-                        .to({alpha:1},50)
-                        .to({alpha:0},50)
-                        .to({alpha:1},50)
-                        .wait(1000);
-
+  // var charSelectFrameAnim = createjs.Tween.get(charSelectFrame1, {paused:true})
+  //                       .to({alpha:0},50)
+  //                       .to({alpha:1},50)                         
+  //                       .to({alpha:0},50)
+  //                       .to({alpha:1},50)
+  //                       .to({alpha:0},50)
+  //                       .to({alpha:1},50)
+  //                       .to({alpha:0},50)
+  //                       .to({alpha:1},50)
+  //                       .to({alpha:0},50)
+  //                       .to({alpha:1},50)
+  //                       .wait(450);
+  // charSelectFrameAnim.setPaused(false);
   charSelectCount++;
   if (charSelectCount == 1*60 ) {
+    createjs.Tween.removeAllTweens();
     startGame();
+
   }
-  charSelectFrameAnim.setPaused(false);
+  
   stage.update();
 }
 
@@ -998,7 +1003,7 @@ function handleKeyUp(e) {
     if(endCardPhotoStatus)
       if(e.keyCode == KEYCODE_ESC || e.keyCode == KEYCODE_ENTER || e.keyCode == KEYCODE_SPACE  ) {
         endCardPhotoStatus = false;
-        endCardPhotoTransition()
+        endCardPhotoTransition();
       }
   }
 
@@ -1017,12 +1022,13 @@ function handleKeyUp(e) {
       
       // IF startSelectToggle is true, cursor on "Instructions"
       if (charSelectToggle) {
-        charSelectFrame.x = 375;
-
+        charSelectFrame1.x = 375;
+        charSelectFrame2.x = 375;
         stage.update();
         break;
       } else {
-        charSelectFrame.x = 125;
+        charSelectFrame1.x = 125;
+        charSelectFrame2.x = 125;
         stage.update();
         break;
       }     
@@ -1190,52 +1196,24 @@ function stageUpdate(event) {
     santaSprite.gotoAndPlay("surprise");
   }
 
-  if (characterSprite.x >= 400){
+  if (characterSprite.x >= 200){
+
     endCardPhoto();
   }
 
-  //if the end card photo is being displayed, begin counting for 5 seconds
-  if(endCardPhotoStatus) {
-    //Count in fps, currently set to 60
-    endCardPhotoCount++;
-  }
-
-  // Convect the fps to seconds 
-  if ( parseInt(endCardPhotoCount/60) == 5){
-
-    //When the time is 5 seconds, continue to the next end card
-    endCardPhotoTransition()
-
-  }
-
-    // // Red banner pans across the screen
-    // if (endCardGiftBanner.x < 500) {
-    //   endCardGiftBanner.x = endCardGiftBanner.x + 20;
-    // }
-    // // After red banner pans across
-    // // "YOU GOT" Text pans across quickly at first then slowly and exits quickly
-    // if (endCardGiftBanner.x == 500) {
-    //   if (endCardGiftYouGot.x < 100) {
-    //     endCardGiftYouGot.x = endCardGiftYouGot.x + 30;
-    //   }
-    //   if (endCardGiftYouGot.x < 160 && endCardGiftYouGot.x >= 100) {
-    //     endCardGiftYouGot.x = endCardGiftYouGot.x + 1;
-    //   }
-    //   if (endCardGiftYouGot.x >= 160) {
-    //     endCardGiftYouGot.x = endCardGiftYouGot.x + 30;
-    //   }
-    // }
-
-  
   stage.update();
 }
 
 //First stage of the end cards
 //displays the photo of character and santa for 5 seconds
 function endCardPhoto() {
+
+  createjs.Tween.removeAllTweens();
+
   endCardPhotoStatus = true;
   characterSprite.x = 120;
   stage.removeAllChildren();
+
   endPhoto = new createjs.Shape();
   endBackground = new createjs.Shape();
   endCardFlash = new createjs.Shape();
@@ -1253,21 +1231,39 @@ function endCardPhoto() {
   endCardFlash.graphics.beginFill("#FFFFFF").drawRect(0,0,screen_width,screen_height);
 
   var endCardFlashAnim = createjs.Tween.get(endCardFlash, {paused:true})
-          .to({alpha:0},75)
+          .to({alpha:0},75);
 
   endCardFlashAnim.setPaused(false);
 
   endCardEnterSkip.x = 310;
   endCardEnterSkip.y = 270;
-
+ 
   endPhotoContainer.addChild(endPhoto, endCardEnterSkip);
 
-  stage.addChild(endBackground, endPhotoContainer, endCardFlash);
+  stage.addChild(endBackground, endPhotoContainer, endPhoto, endCardFlash);
+
+  createjs.Ticker.addEventListener("tick", endCardUpdate);
 
 }
 
+function endCardUpdate() {
+    endCardPhotoCount++;
+   
+  // Convect the fps to seconds 
+  if (endCardPhotoStatus && endCardPhotoCount  == 5*60) {
+    //When the time is 5 seconds, continue to the next end card
+
+    endCardPhotoTransition();
+  }
+
+
+  stage.update();
+}
+
+
 function endCardPhotoTransition() {
-  //Photo and text fade away and move to the Gift end card 
+  //Photo and text fade away and move to the Gift end card   
+  console.log("banana");
   var endPhotoContainerAnim = createjs.Tween.get(endPhotoContainer, {paused:true})
           .to({alpha:0},500)
           .call(endCardGift);
@@ -1288,15 +1284,16 @@ function endCardGift() {
   endCardGiftYouGot = new createjs.Text("YOU GOT", "160px PixelFont3", "#FFFFFF");
   endCardGiftReward = new createjs.Shape();
   endCardGiftYouGot.y = 70;
-  endCardGiftYouGot.x = 600;
+  endCardGiftYouGot.x = 500;
 
 
   endCardGiftBanner.graphics.beginFill("F25050").drawRect(screen_width,100,screen_width,100);
   
   endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pBear")).drawRect(0,0,500,131);
   endCardGiftReward.y = 85;
+  endCardGiftReward.x = 500;
 
-  stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftText);
+  stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftReward);
 
 
   //Gift Card Animation
@@ -1313,9 +1310,9 @@ function endCardGift() {
                     .to({x:80},1750,createjs.Ease.linear)
                     .to({x:-500},200,createjs.Ease.linear);
   // the gift name pans across
-  var giftReweardAnim = createjs.Tween.get(endCardGiftReward, {paused:true})
+  var giftRewardAnim = createjs.Tween.get(endCardGiftReward, {paused:true})
                   .wait(2500)
-                  .to({x:200},200,createjs.Ease.linear)
+                  .to({x:0},200,createjs.Ease.linear)
                   .wait(3100)
                   // .to({x:500},400,createjs.Ease.linear)
                   .call(endCardFinal);
