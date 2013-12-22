@@ -867,6 +867,7 @@ function santaAlert() {
 function forceduck() {
   santaSprite.gotoAndPlay("surprise");
 
+  // if the playing is not ducking or if player stops ducking while santa is looking, do this
   if(dodgeTrigger == false) {
     keyActive     = false;
     rightPressed  = false;
@@ -878,7 +879,6 @@ function forceduck() {
       duckAnim    = true;
       return;
     }
-
     if(alertCount == 5) {
       characterSprite.gotoAndStop("idle");
       santaSprite.gotoAndStop("idle");
@@ -889,6 +889,7 @@ function forceduck() {
       duckAnim    = false;
     }
   }
+  // if player IS ducking, do this
   else {
     if(alertCount == 2) {
       santaSprite.gotoAndStop("idle");
