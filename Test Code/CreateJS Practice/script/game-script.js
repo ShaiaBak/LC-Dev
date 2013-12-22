@@ -818,10 +818,14 @@ function santaAlert() {
     if(alertCount > 0) {
       santaCount = 0;
     }
+    // when santa counts to this number, check if hes alerted
     if(santaCount == 3){ 
+      // selects a number from 1 - 10
       detection =  Math.floor((Math.random()*10)+1);
       console.log(detection);
 
+      // if detection is any of these numbers
+      //TODO - frequency of detection up
       switch(detection) {
         case 1:
           warning = 1;
@@ -835,7 +839,7 @@ function santaAlert() {
         case 6:
           warning = 1;
           break;
-        case 3:
+        case 8:
           warning = 1;
           break;
         default:
@@ -845,6 +849,9 @@ function santaAlert() {
     }
     console.log("Key active: " + keyActive);
 
+    // warns player before santa is alerted
+    // change warning count to make shorter or longer
+    // minus 1 from warning count for accuracy 
     if(warning == 1) {
       warningCount++;
       if(warningCount == 3) {
@@ -874,6 +881,7 @@ function forceduck() {
     upPressed     = false;
     leftPressed   = false;
 
+    // make sure duck animation plays only once
     if(!duckAnim) {
       characterSprite.gotoAndPlay("forceDuck");
       duckAnim    = true;
