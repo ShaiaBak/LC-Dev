@@ -252,6 +252,7 @@ function loadingInitialize() {
     "images": ["images/bell.png"],
     "frames": {height: 46, width: 44, regX: 21, regY: 0},
     "animations": {
+      "idle": [0],
       "initial": [0, 3, true, 5/60],
       "ringing": [4, 5,"ringing", 5/60]
     }
@@ -786,7 +787,6 @@ function startGame() {
 
   bellSprite.x = 450;
   bellSprite.y = 10;
-  bellSprite.alpha = 0;
   bellSprite.gotoAndStop("initial");
 
 
@@ -838,7 +838,7 @@ function santaAlert() {
 
       // if detection is any of these numbers
       //TODO - frequency of detection up
-      if (characterSprite.x >= 100 && backgroundContainer.x > 100) {
+      if (characterSprite.x >= 100 && backgroundContainer.x <= 0 ) {
         console.log("-100");
         switch(detection) {
           case 2:
@@ -846,7 +846,7 @@ function santaAlert() {
           case 6:
           case 8:
           case 10:
-            bellSprite.alpha = 1;
+            
             bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
@@ -864,7 +864,7 @@ function santaAlert() {
           case 6:
           case 8:
           case 10:
-            bellSprite.alpha = 1;
+            
             bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
@@ -883,7 +883,7 @@ function santaAlert() {
           case 8:
           case 9:
           case 10:
-            bellSprite.alpha = 1;
+            
             bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
@@ -903,7 +903,7 @@ function santaAlert() {
           case 8:
           case 9:
           case 10:
-            bellSprite.alpha = 1;
+            
             bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
@@ -924,7 +924,6 @@ function santaAlert() {
           case 8:
           case 9:
           case 10:
-            bellSprite.alpha = 1;
             bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
@@ -934,14 +933,13 @@ function santaAlert() {
         }
       }
     }
-    console.log("Key active: " + keyActive);
 
     // warns player before santa is alerted
     // change warning count to make shorter or longer
     // minus 1 from warning count for accuracy 
     if(warning == 1) {
       warningCount++;
-      if(warningCount == 3/2) {
+      if(warningCount == 2) {
         bellSprite.gotoAndPlay("ringing");
         alert = 1;
         warningCount = 0;
@@ -979,7 +977,7 @@ function forceduck() {
     if(alertCount == 6) {
       characterSprite.gotoAndStop("idle");
       santaSprite.gotoAndStop("idle");
-      bellSprite.alpha  = 0;
+      bellSprite.gotoAndStop("initial");
       alert             = 0;
       alertCount        = -1;
       keyActive         = true;
@@ -992,7 +990,7 @@ function forceduck() {
   else {
     if(alertCount == 2) {
       santaSprite.gotoAndStop("idle");
-      bellSprite.alpha  = 0;
+      bellSprite.gotoAndStop("initial");
       alert             = 0;
       alertCount        = -1;
       keyActive         = true;
