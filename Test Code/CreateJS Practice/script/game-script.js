@@ -836,7 +836,7 @@ function gameScore() {
 function santaAlert() {
   santaCountFunc = setInterval(function() {
     santaCount++;
-    if(santaCount >= 3) {
+    if(santaCount >= 2) {
       santaCount = 0;
     }
     if(alertCount > 0) {
@@ -851,7 +851,7 @@ function santaAlert() {
       // if detection is any of these numbers
       //TODO - frequency of detection up
       if (characterSprite.x >= 100 && backgroundContainer.x >= 0 ) {
-        console.log("1");
+        console.log("Q1");
         switch(detection) {
           case 2:
           case 4:
@@ -868,7 +868,7 @@ function santaAlert() {
         }
       }
       else if (backgroundContainer.x <= -100 && backgroundContainer.x > -300) {
-        console.log("2");
+        console.log("Q2");
         switch(detection) {
           case 1:
           case 2:
@@ -886,7 +886,7 @@ function santaAlert() {
         }
       }
       else if (backgroundContainer.x <= -300 && backgroundContainer.x > -500) {
-        console.log("3");
+        console.log("Q3");
         switch(detection) {
           case 1:
           case 2:
@@ -905,7 +905,7 @@ function santaAlert() {
         }
       }
       else if (backgroundContainer.x <= -500 && characterSprite.x > -300) {
-        console.log("4");
+        console.log("Q4");
         switch(detection) {
           case 1:
           case 2:
@@ -925,7 +925,7 @@ function santaAlert() {
         }
       }
       else if (characterSprite.x <= -300) {
-        console.log("400");
+        console.log("Q5");
         switch(detection) {
           case 1:
           case 2:
@@ -1304,7 +1304,7 @@ function stageUpdate(event) {
   }
 
   // pressing space makes you go duck
-  if (duckTrigger && !anyKeyPressed) {
+  if ((duckTrigger && !anyKeyPressed) || (duckTrigger && upPressed) || (duckTrigger && leftPressed) || (duckTrigger && rightPressed)) {
     characterSprite.gotoAndPlay("duck");
     anyKeyPressed = true;
   }
