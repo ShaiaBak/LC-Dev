@@ -469,7 +469,7 @@ function instructionScreen() {
   instructionScreenCount = 0;
 
   var instructionBanner = new createjs.Shape(); 
-  instructionText = new createjs.Text("Tap the right arrow key to move", "48px PixelFont3", "#fafcfa");
+  instructionText = new createjs.Text("Press the right arrow key to move", "48px PixelFont3", "#fafcfa");
   instructionText.x = 250;
   instructionText.y = 35;
   instructionText.textAlign = "center";
@@ -497,7 +497,8 @@ function instructionScreen() {
   instructionBoyAnim.setPaused(false);
   createjs.Ticker.addEventListener("tick", instructionScreenAnimation);
 
-  stage.addChild(background, instructionBanner, instructionText, instructionBoy);
+  stage.addChild(background, instructionBanner, instructionText, instructionBoy, instructionBell);
+  instructionBell.gotoAndStop("initial");
   stage.update();
 }
 //This is will be called to another ticker to allow for the sprites and text to change in the instruction screen
@@ -521,10 +522,11 @@ function instructionScreenAnimation() {
     instructionText.text = "Press down or space to duck";
 
   } else if ( instructionScreenCount == 7.5*60) {
-    stage.addChild(instructionBell);
+    instructionBell.gotoAndPlay("initial");
     instructionBoy.gotoAndPlay("idle");
     instructionText.text = "Beware of Santa's gaze!";
   } else if ( instructionScreenCount == 9.5*60) {
+    instructionBell.gotoAndPlay("ringing");
     instructionBoy.gotoAndPlay("duck");
     instructionText.text = "Duck to avoid being noticed";
   } else if ( instructionScreenCount == 11.5*60) {
@@ -532,7 +534,7 @@ function instructionScreenAnimation() {
     instructionText.text = "or else...";
   } else if ( instructionScreenCount == 13.5*60) {
     //Return to start screen and remove ticker
-    startScreen();
+    restart();
     createjs.Ticker.removeEventListener("tick", instructionScreenAnimation);
   }
 
@@ -664,16 +666,16 @@ function charSelectAnim() {
   charSelectStatus = false;
 
   var charSelectFrameAnim = createjs.Tween.get(charSelectFrame1)
-                        .to({alpha:0},50)
-                        .to({alpha:1},50)
-                        .to({alpha:0},50)
-                        .to({alpha:1},50)
-                        .to({alpha:0},50)
-                        .to({alpha:1},50)
-                        .to({alpha:0},50)
-                        .to({alpha:1},50)
-                        .to({alpha:0},50)
-                        .to({alpha:1},50);
+                        .to({alpha:0},75)
+                        .to({alpha:1},75)
+                        .to({alpha:0},75)
+                        .to({alpha:1},75)
+                        .to({alpha:0},75)
+                        .to({alpha:1},75)
+                        .to({alpha:0},75)
+                        .to({alpha:1},75)
+                        .to({alpha:0},75)
+                        .to({alpha:1},75);
   charSelectFrameAnim.setPaused(false);
   if (charSelectCount == 1*60 ) {
     // charSelectFrameAnim.setPaused(true);
@@ -1390,7 +1392,6 @@ function endCardUpdate() {
 
 function endCardPhotoTransition() {
   //Photo and text fade away and move to the Gift end card   
-  console.log("banana");
   var endPhotoContainerAnim = createjs.Tween.get(endPhotoContainer, {paused:true})
           .to({alpha:0},500)
           .call(endCardGift);
