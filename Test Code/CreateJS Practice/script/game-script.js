@@ -376,7 +376,8 @@ function startScreen() {
   
   // crates new stages and properties for assets to live on
   startScreenStatus = true;
-
+  charSelectStatus = false;
+  instructionScreenStatus = false;
   startPage = new createjs.Shape();
   startText = new createjs.Text("Start","48px PixelFont3", "#000000");
   startTitle = new createjs.Text("Sneakin' on Santa", "100px PixelFont3", "#fbaf5d");
