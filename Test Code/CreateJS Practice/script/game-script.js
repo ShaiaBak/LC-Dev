@@ -850,8 +850,8 @@ function santaAlert() {
 
       // if detection is any of these numbers
       //TODO - frequency of detection up
-      if (characterSprite.x >= 100 && backgroundContainer.x <= 0 ) {
-        console.log("-100");
+      if (characterSprite.x >= 100 && backgroundContainer.x >= 0 ) {
+        console.log("1");
         switch(detection) {
           case 2:
           case 4:
@@ -868,7 +868,7 @@ function santaAlert() {
         }
       }
       else if (backgroundContainer.x <= -100 && backgroundContainer.x > -300) {
-        console.log("100");
+        console.log("2");
         switch(detection) {
           case 1:
           case 2:
@@ -886,7 +886,7 @@ function santaAlert() {
         }
       }
       else if (backgroundContainer.x <= -300 && backgroundContainer.x > -500) {
-        console.log("300");
+        console.log("3");
         switch(detection) {
           case 1:
           case 2:
@@ -904,8 +904,8 @@ function santaAlert() {
             break;
         }
       }
-      else if (backgroundContainer.x <= -500 && characterSprite.x > -400) {
-        console.log("500");
+      else if (backgroundContainer.x <= -500 && characterSprite.x > -300) {
+        console.log("4");
         switch(detection) {
           case 1:
           case 2:
@@ -924,7 +924,7 @@ function santaAlert() {
             break;
         }
       }
-      else if (characterSprite.x <= -400) {
+      else if (characterSprite.x <= -300) {
         console.log("400");
         switch(detection) {
           case 1:
