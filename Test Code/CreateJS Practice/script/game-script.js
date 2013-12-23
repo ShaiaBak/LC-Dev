@@ -80,7 +80,7 @@ var characterDiveCount  = 0;
 var scoreDisplay;
 var score       = 0;
 var finalScore  = 0;
-var scoreTimer  = 25;
+var scoreTimer  = 30;
 var multiplier  = 4; 
 
 //End Card
@@ -119,7 +119,16 @@ var keyActive     = true;
 
 var replayButton2;
 var replayButton1;
+var scoreTimerFunc;
+var santaCountFunc;
 
+//Animations
+var endCardFlashAnim;
+var endPhotoContainerAnim;
+var giftBannerAnim;
+var giftYouGotAnim;
+var giftRewardAnim;
+var FinalAnim;
 
 function init() {
   // conventional initializer
@@ -253,7 +262,7 @@ function loadingInitialize() {
     "frames": {height: 46, width: 44, regX: 21, regY: 0},
     "animations": {
       "idle": [0],
-      "initial": [0, 3, true, 5/60],
+      "initial": [0, 3, true, 10/60],
       "ringing": [4, 5,"ringing", 5/60]
     }
   });
@@ -535,6 +544,7 @@ function instructionScreenAnimation() {
   } else if ( instructionScreenCount == 13.5*60) {
     //Return to start screen and remove ticker
     restart();
+    createjs.Tween.removeTweens(instructionBoy);
     createjs.Ticker.removeEventListener("tick", instructionScreenAnimation);
   }
 
@@ -797,13 +807,13 @@ function startGame() {
 
 
   santaSprite = new createjs.Sprite(santaSpriteSheet, "idle");
-  santaSprite.setTransform(810,125,1,1);
+  santaSprite.setTransform(830,125,1,1);
 
 
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay, warningDisplay, warningCountDisplay, scoreDisplay, scoreTimeDisplay, bellSprite);
+  stage.addChild(backgroundContainer, characterSprite, bellSprite);
   
   if(gameStatus) {
     santaAlert();
@@ -818,13 +828,13 @@ function startGame() {
 }
 
 function gameScore() {
-  var scoreTimerFunc = setInterval(function() {
+  scoreTimerFunc = setInterval(function() {
     scoreTimer--;
   }, 1000);
 }
 
 function santaAlert() {
-  var santaCountFunc = setInterval(function() {
+  santaCountFunc = setInterval(function() {
     santaCount++;
     if(santaCount >= 3) {
       santaCount = 0;
@@ -1179,46 +1189,65 @@ function handleKeyUp(e) {
       } 
     }
   }
-  
+  if ( endCardFinalStatus) {
+    switch(e.keyCode) {
+      case KEYCODE_ENTER:
+      restart();
+      break;
+    }
+  }
+
 
 }
 
 
 function restart() {
   score = 0;
-  scoreTime = 25;
-  createjs.Ticker.removeAllEventListeners();
-//Restore default values
-  // instructionScreenCount = 0;
-  // charSelectCount = 0;
-  // startScreenStatus = false;
-  // startSelectToggle = false;
-  // charSelectStatus = false;
-  // instructionScreenStatus = false;
-  // instructionScreenCount = 0;
-  // character = -1;
-  // score = 0;
-  // backgroundvalue = 0;
-  // characterDiveCount = 0;
-  // endCardPhotoStatus = false;
-  // endCardPhotoCount = 0;
-  // endCardGiftStatus = false;
-  // endCardFinalStatus = false;
+  stepsTaken = 0;
+  scoreTimer = 30;
+  
 
-  // gameStatus = false;
-  // stepsTaken = 0;
-  // alert = 0;
-  // alertCount = 0;
-  // warning = 0;
-  // warningCount = 0;
-  // santaCount = 0;
-  // detection;
-  // alertStatus;
-  // duckAnim = false;
-  // dodgeTrigger = false;
-  // keyActive = true;
-  // characterSprite.x = 100;
-  // backgroundContainer.x = 0;
+
+  createjs.Tween.removeTweens(endCardFlash);
+  createjs.Tween.removeTweens(endPhotoContainer);
+  createjs.Tween.removeTweens(endCardGiftBanner);
+  createjs.Tween.removeTweens(endCardGiftYouGot);
+  createjs.Tween.removeTweens(endCardGiftReward);
+  createjs.Tween.removeTweens(endCardFinalContainer);
+  createjs.Ticker.removeAllEventListeners();
+  clearInterval(scoreTimerFunc);
+  clearInterval(santaCountFunc);
+//Restore default values
+  instructionScreenCount = 0;
+  charSelectCount = 0;
+  startScreenStatus = false;
+  startSelectToggle = false;
+  charSelectStatus = false;
+  instructionScreenStatus = false;
+  instructionScreenCount = 0;
+  character = -1;
+  score = 0;
+  backgroundvalue = 0;
+  characterDiveCount = 0;
+  endCardPhotoStatus = false;
+  endCardPhotoCount = 0;
+  endCardGiftStatus = false;
+  endCardFinalStatus = false;
+
+  gameStatus = false;
+  stepsTaken = 0;
+  alert = 0;
+  alertCount = 0;
+  warning = 0;
+  warningCount = 0;
+  santaCount = 0;
+  detection;
+  alertStatus;
+  duckAnim = false;
+  dodgeTrigger = false;
+  keyActive = true;
+  characterSprite.x = 100;
+  backgroundContainer.x = 0;
 
   // take out EVERYTHING
   stage.removeAllChildren();
@@ -1239,14 +1268,22 @@ function stageUpdate(event) {
 
   score = stepsTaken;
 
-  if(scoreTimer <= 13 && scoreTimer >= 11) {
+  if(scoreTimer <= 30 && scoreTimer >= 27) {
     multiplier = 4;
-  }else if(scoreTimer <= 10 && scoreTimer >= 8) {
+  }else if(scoreTimer <= 26 && scoreTimer >= 22) {
+    multiplier = 3.5;
+  }else if(scoreTimer <= 21 && scoreTimer >= 18) {
     multiplier = 3;
-  }else if(scoreTimer <= 7 && scoreTimer >= 4) {
+  }else if(scoreTimer <= 17 && scoreTimer >= 14) {
+    multiplier = 2.5;
+  }else if(scoreTimer <= 13 && scoreTimer >= 10) {
     multiplier = 2;
-  }else if(scoreTimer <= 3 && scoreTimer >= 1) {
+  }else if(scoreTimer <= 9 && scoreTimer >= 6) {
+    multiplier = 1.5;
+  }else if(scoreTimer <= 5 && scoreTimer >= 2) {
     multiplier = 1;
+  }else if(scoreTimer <= 2 && scoreTimer >= 1) {
+    multiplier = 0.5;
   }else if(scoreTimer <= 0) {
     multiplier = 0;
   }
@@ -1322,7 +1359,7 @@ function stageUpdate(event) {
     } else if (characterDiveCount == 0.75*60) {
       endCardPhoto();
     }
-    var characterDiveAnim = createjs.Tween.get(characterSprite, {paused:true})
+    characterDiveAnim = createjs.Tween.get(characterSprite, {paused:true})
                           .to({x:390, y:160},300);
     characterDiveAnim.setPaused(false);
   }
@@ -1336,7 +1373,7 @@ function endCardPhoto() {
   /*if(scoreTimer < )*/
 
   if(!gameStatus) {
-    finalScore = score * multiplier;
+    finalScore = parseInt(score * multiplier);
   }
 
   endCardPhotoStatus = true;
@@ -1361,7 +1398,7 @@ function endCardPhoto() {
   endBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
   endCardFlash.graphics.beginFill("#FFFFFF").drawRect(0,0,screen_width,screen_height);
 
-  var endCardFlashAnim = createjs.Tween.get(endCardFlash, {paused:true})
+  endCardFlashAnim = createjs.Tween.get(endCardFlash, {paused:true})
           .to({alpha:0},500);
 
   endCardFlashAnim.setPaused(false);
@@ -1397,7 +1434,7 @@ function endCardUpdate() {
 
 function endCardPhotoTransition() {
   //Photo and text fade away and move to the Gift end card   
-  var endPhotoContainerAnim = createjs.Tween.get(endPhotoContainer, {paused:true})
+  endPhotoContainerAnim = createjs.Tween.get(endPhotoContainer, {paused:true})
           .to({alpha:0},500)
           .call(endCardGift);
   endPhotoContainerAnim.setPaused(false);
@@ -1419,16 +1456,16 @@ function endCardGift() {
   endCardGiftYouGot.y = 70;
   endCardGiftYouGot.x = 500;
 
-  if (finalScore >= 80) {
+  if (finalScore >= 1000) {
     //Game Box
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pGameBox01")).drawRect(0,0,500,131);
-  } else if (finalScore >= 60) {
+  } else if (finalScore >= 750) {
     //Pet
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pKitty")).drawRect(0,0,500,131);
-  } else if (finalScore >= 40) {
-    //Action Figure
+  } else if (finalScore >= 625) {
+    //Action Figure100
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pCowmandobot")).drawRect(0,0,500,131);
-  } else if (finalScore >= 20) {
+  } else if (finalScore >= 500) {
     //Sweater
     switch(Math.floor((Math.random()*5)+1)) {
       case 1:
@@ -1452,13 +1489,13 @@ function endCardGift() {
       break;
     }
 
-  } else if (finalScore >= 0) {
+  } else if (finalScore >= 375) {
     //Socks
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pSocks")).drawRect(0,0,500,131);
-  } else if (finalScore >= 0) {
+  } else if (finalScore >= 250) {
     //Eraser
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pEraser")).drawRect(0,0,500,131);
-  } else if (finalScore >= 0) {
+  } else if (finalScore >= 125) {
     //Coal
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pCoal")).drawRect(0,0,500,131);  
   } else if (finalScore >= 0) {
@@ -1477,18 +1514,18 @@ function endCardGift() {
   //Gift Card Animation
 
   // Red banner pans across the screen
-  var giftBannerAnim = createjs.Tween.get(endCardGiftBanner, {paused:true})
+  giftBannerAnim = createjs.Tween.get(endCardGiftBanner, {paused:true})
             .wait(1850)
                   .to({x:-500},500,createjs.Ease.linear);
                   // 
                   // .to({x:1000},400,createjs.Ease.linear);
   // The words YOU GOT moves across the screen
-  var giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot, {paused:true})
+  giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot, {paused:true})
                     .to({x:120},200,createjs.Ease.linear)
                     .to({x:80},1750,createjs.Ease.linear)
                     .to({x:-500},200,createjs.Ease.linear);
   // the gift name pans across
-  var giftRewardAnim = createjs.Tween.get(endCardGiftReward, {paused:true})
+  giftRewardAnim = createjs.Tween.get(endCardGiftReward, {paused:true})
                   .wait(2500)
                   .to({x:0},200,createjs.Ease.linear)
                   .wait(3100)
@@ -1573,7 +1610,7 @@ function endCardFinal() {
   replayButton1.addEventListener("rollover",replayButtonMouseOver);
   replayButton1.addEventListener("rollout",replayButtonMouseOut);
   //test image fades in
-  var FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
+  FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
             .to({alpha:1},1000);
   FinalAnim.setPaused(false);
 }
