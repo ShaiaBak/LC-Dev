@@ -1287,7 +1287,11 @@ function stageUpdate(event) {
   }
 
   if((duckTrigger && upPressed) || (duckTrigger && leftPressed) || (duckTrigger && rightPressed)) {
-    dodgeTrigger = false;
+    dodgeTrigger    = true;
+    leftPressed = false;
+    rightPressed = false;
+    upPressed = false;
+    characterSprite.gotoAndStop("duck");
   }
 
   //****************
@@ -1326,6 +1330,14 @@ function stageUpdate(event) {
   if (((!duckTrigger&&!leftPressed&&!rightPressed&&!upPressed) || (rightPressed&&leftPressed) || (rightPressed&&upPressed)) && alert != 1) {
     characterSprite.gotoAndStop("idle");
     anyKeyPressed = false;
+  }
+
+  if(((rightPressed&&duckTrigger) || (leftPressed&&duckTrigger) || (duckTrigger&&upPressed))&& alert != 1) {
+    characterSprite.gotoAndPlay("duck");
+    leftPressed = false;
+    rightPressed = false;
+    upPressed = false;
+    anyKeyPressed = true;
   }
 
   if (characterSprite.x >= 340) {
