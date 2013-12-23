@@ -481,6 +481,8 @@ function startInstructionClick() {
 
 function instructionScreen() {
   stage.removeAllChildren();
+  startScreenStatus = false;
+  charSelectStatus = false;
   instructionScreenStatus = true;
   instructionScreenCount = 0;
 
@@ -570,7 +572,7 @@ function charScreen() {
   var girlDisplayContainer = new createjs.Container();
   var charDisplayWidth = 100;
   var charDisplayHeight = 150;
-
+  charSelectCount = 0;
 
 
 
@@ -666,40 +668,41 @@ function charGirlMouseOver() {
 
 function charBoyClick() {
   if (!charSelectToggle) {
-
-    boySelect()
+    boySelect();
   }
 }
 
 function charGirlClick() {
   if (charSelectToggle) {
-    girlSelect()
+    girlSelect();
   }
 }
 
 function charSelectAnim() {
 
 
-  // var charSelectFrameAnim = createjs.Tween.get(charSelectFrame1, {paused:true})
-  //                       .to({alpha:0},50)
-  //                       .to({alpha:1},50)                         
-  //                       .to({alpha:0},50)
-  //                       .to({alpha:1},50)
-  //                       .to({alpha:0},50)
-  //                       .to({alpha:1},50)
-  //                       .to({alpha:0},50)
-  //                       .to({alpha:1},50)
-  //                       .to({alpha:0},50)
-  //                       .to({alpha:1},50)
-  //                       .wait(450);
-  // charSelectFrameAnim.setPaused(false);
-  charSelectCount++;
+  var charSelectFrameAnim = createjs.Tween.get(charSelectFrame1)
+                        .to({alpha:0},50)
+                        .to({alpha:1},50)
+                        .to({alpha:0},50)
+                        .to({alpha:1},50)
+                        .to({alpha:0},50)
+                        .to({alpha:1},50)
+                        .to({alpha:0},50)
+                        .to({alpha:1},50)
+                        .to({alpha:0},50)
+                        .to({alpha:1},50);
+  charSelectFrameAnim.setPaused(false);
   if (charSelectCount == 1*60 ) {
-    createjs.Tween.removeAllTweens();
+    // charSelectFrameAnim.setPaused(true);
+    createjs.Ticker.removeEventListener("tick",charSelectAnim);
+    createjs.Tween.removeTweens(charSelectFrame1);
     startGame();
+    stage.update();
 
   }
-  
+
+  charSelectCount++;
   stage.update();
 }
 
@@ -710,7 +713,7 @@ function startGame() {
   stage.removeAllChildren();
   charSelectStatus = false;
   gameStatus = true;
-  createjs.Ticker.removeAllEventListeners("tick");
+
   stage.removeAllEventListeners("click");
   stage.removeAllEventListeners("rollover");
   backgroundContainer = new createjs.Container();
@@ -1008,11 +1011,24 @@ function handleKeyUp(e) {
   }
 
 
-
-
-  if (charSelectStatus) {
+// If the game is in the instruction screen, press space or enter to skip
+// and return to the start screen
+  if (instructionScreenStatus && !charSelectStatus && !startScreenStatus) {
     switch(e.keyCode) {
+      case KEYCODE_ENTER:
+      case KEYCODE_SPACE:
+      startScreen();
+      instructionScreenStatus = false;
+      createjs.Ticker.removeEventListener("tick", instructionScreenAnimation);
+      e = 0;
+      break;
+    }
+  }
 
+// If the game is at the Character Select screen, press left or right to
+// chose between the characters
+  if (charSelectStatus && !instructionScreenStatus && !startScreenStatus) {
+    switch(e.keyCode) {
       case KEYCODE_LEFT:
       case KEYCODE_A:
       case KEYCODE_RIGHT:
@@ -1045,7 +1061,7 @@ function handleKeyUp(e) {
     }
   }
 
-  if (startScreenStatus ) {
+  if (startScreenStatus && !instructionScreenStatus && !charSelectStatus) {
     switch(e.keyCode) {
       case KEYCODE_UP:
       case KEYCODE_W:
@@ -1192,11 +1208,11 @@ function stageUpdate(event) {
     characterSprite.gotoAndStop("idle");
     anyKeyPressed = false;
   }
-  if (characterSprite.x >= 395){
+  if (characterSprite.x >= 345){
     santaSprite.gotoAndPlay("surprise");
   }
 
-  if (characterSprite.x >= 200){
+  if (characterSprite.x >= 350){
 
     endCardPhoto();
   }
