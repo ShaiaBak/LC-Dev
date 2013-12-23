@@ -75,18 +75,23 @@ var background;
 
 var startPage;
 var startText;
-var scoreDisplay;
-var score = 0;
-var backgroundvalue = 0;
+var backgroundvalue     = 0;
 var loadProgressLabel;
 
-var characterDiveCount = 0;
+var characterDiveCount  = 0;
+
+// score and score timer
+var scoreDisplay;
+var score       = 0;
+var finalScore  = 0;
+var scoreTimer  = 25;
+var multiplier  = 1; 
 
 //End Card
-var endCardPhotoStatus = false;
-var endCardPhotoCount = 0;
-var endCardGiftStatus = false;
-var endCardFinalStatus = false;
+var endCardPhotoStatus  = false;
+var endCardPhotoCount   = 0;
+var endCardGiftStatus   = false;
+var endCardFinalStatus  = false;
 var endCardGiftReward;
 var endcardFlash;
 var endBackground;
@@ -99,21 +104,22 @@ var timeDisplay;
 var timeDelay;
 var warningDisplay;
 var wanringCountDisplay;
+var scoreTimeDisplay;
 
-var gameStatus = false;
+var gameStatus    = false;
 
-var stepsTaken = 0;
-var alert = 0;
-var alertCount = 0;
-var warning = 0;
-var warningCount = 0;
-var santaCount = 0;
+var stepsTaken    = 0;
+var alert         = 0;
+var alertCount    = 0;
+var warning       = 0;
+var warningCount  = 0;
+var santaCount    = 0;
+var duckAnim      = false;
+var dodgeTrigger  = false;
 var detection;
 var alertStatus;
-var duckAnim = false;
-var dodgeTrigger = false;
 
-var keyActive = true;
+var keyActive     = true;
 
 var replayButton2;
 var replayButton1;
@@ -727,7 +733,8 @@ function startGame() {
   //TODO: for testing movment and score
   backgroundxDisplay = new createjs.Text("bg: 0", "20px PixelFont3", "#FFFFFF");
   spritexDisplay = new createjs.Text("sprite: 0", "20px PixelFont3", "#FFFFFF"); 
-  
+  scoreTimeDisplay = new createjs.Text("sprite: 0", "32px PixelFont3", "#FFFFFF");
+
   //TODO: for testing alert
   detectSteps = new createjs.Text("Steps: 0", "32px PixelFont3", "#FFFFFF");
   alertStatus = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF");
@@ -742,8 +749,11 @@ function startGame() {
   //fill the background at 0,0 to the size of the screen
   
   
-  scoreDisplay.x = 275;
+  scoreDisplay.x = 175;
   scoreDisplay.y = 100;
+
+  scoreTimeDisplay.x = 175;
+  scoreTimeDisplay.y = 120;
 
   backgroundxDisplay.x = 275;
   backgroundxDisplay.y = 150;
@@ -816,7 +826,7 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay, warningDisplay, wanringCountDisplay);
+  stage.addChild(backgroundContainer, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay, warningDisplay, wanringCountDisplay, scoreDisplay, scoreTimeDisplay);
   
   if(gameStatus) {
     santaAlert();
@@ -831,20 +841,22 @@ function startGame() {
 }
 
 function gameScore() {
-
+  var scoreTimerFunc = setInterval(function() {
+    scoreTimer--;
+  }, 1000);
 }
 
 function santaAlert() {
   var santaCountFunc = setInterval(function() {
     santaCount++;
-    if(santaCount >= 4) {
+    if(santaCount >= 3) {
       santaCount = 0;
     }
     if(alertCount > 0) {
       santaCount = 0;
     }
     // when santa counts to this number, check if hes alerted
-    if(santaCount == 3){ 
+    if(santaCount == 2){ 
       // selects a number from 1 - 10
       detection =  Math.floor((Math.random()*10)+1);
       console.log(detection);
@@ -852,9 +864,6 @@ function santaAlert() {
       // if detection is any of these numbers
       //TODO - frequency of detection up
       switch(detection) {
-        case 1:
-          warning = 1;
-          break;
         case 2:
           warning = 1;
           break;
@@ -865,6 +874,9 @@ function santaAlert() {
           warning = 1;
           break;
         case 8:
+          warning = 1;
+          break;
+        case 10:
           warning = 1;
           break;
         default:
@@ -1162,6 +1174,10 @@ function stageUpdate(event) {
   timeDisplay.text = "time: " + santaCount + " ";
   wanringCountDisplay.text = "warningCount: " + warningCount;
   warningDisplay.text = "warning: " + warning;
+  scoreDisplay.text = "Score: " + score + " X" + multiplier;
+  scoreTimeDisplay.text = "Gametime: " + scoreTimer;
+
+  score = stepsTaken;
 
 
   if (leftPressed && !anyKeyPressed && !duckTrigger && !upPressed && !rightPressed) {
@@ -1198,21 +1214,6 @@ function stageUpdate(event) {
   //stage 3
   //200 < character.x <= 400 && bg.x == -500
   //character runs freely past 200 to 400
-  
-  //Pressed the Left Arrow Key **********
-/*  if (leftPressed && !rightPressed && !duckTrigger) {
-    // flip at regular state
-    megamanSprite.scaleX = 1;
-    
-    if ((megamanSprite.x > 15 && megamanSprite.x <= 200 && backgroundContainer.x == 0) || 
-    (megamanSprite.x > 200 && megamanSprite.x <= 400 && backgroundContainer.x == -500)) {
-      megamanSprite.x--;
-    } 
-    if (megamanSprite.x == 200 && backgroundContainer.x >= -500 && backgroundContainer.x <= 0) {
-      backgroundContainer.x++;
-    }
-  }*/
-
 
   //Pressed the Right Arrow Key **********
   if (!leftPressed && rightPressed && !duckTrigger && !upPressed) {
@@ -1232,7 +1233,7 @@ function stageUpdate(event) {
 
   // If left and right are pressed at the same time or nothing is pressed
   // return to the standing animation
-  if (((!duckTrigger&&!leftPressed&&!rightPressed) || (rightPressed&&leftPressed) || (rightPressed&&upPressed)) && alert != 1) {
+  if (((!duckTrigger&&!leftPressed&&!rightPressed&&!upPressed) || (rightPressed&&leftPressed) || (rightPressed&&upPressed)) && alert != 1) {
     characterSprite.gotoAndStop("idle");
     anyKeyPressed = false;
   }
@@ -1251,8 +1252,7 @@ function stageUpdate(event) {
     }
     var characterDiveAnim = createjs.Tween.get(characterSprite, {paused:true})
                           .to({x:300},600);
-    characterDiveAnim.setPaused(false);            
-    
+    characterDiveAnim.setPaused(false);
   }
 
   stage.update();
@@ -1261,6 +1261,13 @@ function stageUpdate(event) {
 //First stage of the end cards
 //displays the photo of character and santa for 5 seconds
 function endCardPhoto() {
+  /*if(scoreTimer < )*/
+
+  if(!gameStatus) {
+    finalScore = score * multiplier;
+  }
+
+
   endCardPhotoStatus = true;
   characterSprite.x = 120;
 
