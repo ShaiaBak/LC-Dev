@@ -110,6 +110,8 @@ var alertCount    = 0;
 var warning       = 0;
 var warningCount  = 0;
 var santaCount    = 0;
+var totalDodged   = 0;
+var totalAlerts   = 0;
 var duckAnim      = false;
 var dodgeTrigger  = false;
 var detection;
@@ -976,6 +978,7 @@ function forceduck() {
       characterSprite.gotoAndStop("idle");
       santaSprite.gotoAndPlay("idle");
       bellSprite.gotoAndStop("initial");
+      totalAlerts++;
       alert             = 0;
       alertCount        = -1;
       keyActive         = true;
@@ -989,6 +992,8 @@ function forceduck() {
     if(alertCount == 2) {
       santaSprite.gotoAndPlay("idle");
       bellSprite.gotoAndStop("initial");
+      totalAlerts++;
+      totalDodged++;
       alert             = 0;
       alertCount        = -1;
       keyActive         = true;
@@ -1379,7 +1384,7 @@ function endCardPhoto() {
   /*if(scoreTimer < )*/
 
   if(!gameStatus) {
-    finalScore = parseInt(score * multiplier);
+    finalScore = parseInt(score * (multiplier + totalDodged/totalAlerts)*1.5 );
   }
 
   endCardPhotoStatus = true;
