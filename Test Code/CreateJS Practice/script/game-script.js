@@ -318,12 +318,12 @@ function buildArt() {
     "frames": [
     /*00-01*/   [0,0,40,96,0,20,0],[40,0,40,96,0,20,0],
     /*02-03*/   [0,96,40,96,0,20,0],[40,96,40,96,0,20,0],
-    /*04-05*/   [0,192,52,96,0,20,0],[52,192,52,96,0,20,0],
+    /*04-05*/   [0,192,52,96,0,12,0],[52,192,52,96,0,12,0],
     /*06-11*/   [0,288,40,96,0,20,0],[40,288,40,96,0,20,0],[80,288,40,96,0,20,0],[120,288,40,96,0,20,0],[160,288,40,96,0,20,0],[200,288,40,96,0,20,0],
     /*12-21*/   [0,384,56,96,0,28,0],[56,384,56,96,0,28,0],[112,384,56,96,0,28,0],[168,384,56,96,0,28,0],[224,384,56,96,0,28,0],[280,384,56,96,0,28,0],[336,384,56,96,0,28,0],[392,384,56,96,0,28,0],[448,384,56,96,0,28,0],[504,384,56,96,0,28,0],
     /*22-31*/   [0,480,56,96,0,28,0],[56,480,56,96,0,28,0],[112,480,56,96,0,28,0],[168,480,56,96,0,28,0],[224,480,56,96,0,28,0],[280,480,56,96,0,28,0],[336,480,56,96,0,28,0],[392,480,56,96,0,28,0],[448,480,56,96,0,28,0],[504,480,56,96,0,28,0],
-    /*32-41*/   [0,576,56,96,0,28,0],[56,576,56,96,0,28,0],[112,576,56,96,0,28,0],[168,576,56,96,0,28,0],[224,576,56,96,0,28,0],[280,576,56,96,0,28,0],[336,576,56,96,0,28,0],[392,576,56,96,0,28,0],[448,576,56,96,0,28,0],[504,576,56,96,0,28,0],
-    /*42-45*/   [0,672,56,96,0,28,0],[56,672,56,96,0,28,0],[112,672,56,96,0,28,0],[168,672,56,96,0,28,0],
+    /*32-41*/   [0,576,56,96,0,20,0],[56,576,56,96,0,20,0],[112,576,56,96,0,20,0],[168,576,56,96,0,20,0],[224,576,56,96,0,20,0],[280,576,56,96,0,20,0],[336,576,56,96,0,20,0],[392,576,56,96,0,20,0],[448,576,56,96,0,20,0],[504,576,56,96,0,20,0],
+    /*42-45*/   [0,672,56,96,0,20,0],[56,672,56,96,0,20,0],[112,672,56,96,0,20,0],[168,672,56,96,0,20,0],
     /*46-50*/   [0,768,82,100,0,41,0],[82,768,82,100,0,41,0],[164,768,82,100,0,41,0],[246,768,82,100,0,41,0],[328,768,82,100,0,41,0],
     /*51-56*/   [0,868,42,104,0,22,9],[42,868,42,104,0,22,9],[84,868,42,104,0,22,9],[126,868,42,104,0,22,9],[168,868,42,104,0,22,9],[210,868,42,104,0,22,9]
     ], 
@@ -1188,8 +1188,9 @@ function restart() {
   // createjs.Ticker.removeAllEventListeners();
   clearInterval(scoreTimerFunc);
   clearInterval(santaCountFunc);
-//Restore default values
+  //Restore default values
   instructionScreenCount = 0;
+  charSelectToggle = false;
   charSelectCount = 0;
   startScreenStatus = false;
   startSelectToggle = false;
@@ -1219,7 +1220,11 @@ function restart() {
   keyActive = true;
   characterSprite.x = 100;
   backgroundContainer.x = 0;
-
+  leftPressed = false;
+  rightPressed = false;
+  duckTrigger = false;
+  upPressed = false;
+  anyKeyPressed = false;
   // take out EVERYTHING
   stage.removeAllChildren();
   startScreen();
@@ -1357,6 +1362,7 @@ function endCardPhoto() {
   endCardFlash = new createjs.Shape();
 
   endCardEnterSkip = new createjs.Text("Press Enter to skip >", "32px PixelFont3", "#FFFFFF");
+  endCardEnterSkip.alpha = 0.3;
   endPhotoContainer = new createjs.Container();
 
   if (character == 0) {
@@ -1424,7 +1430,7 @@ function endCardGift() {
   endCardGiftBanner = new createjs.Shape();
   endCardGiftYouGot = new createjs.Text("YOU GOT", "160px PixelFont3", "#FFFFFF");
   endCardGiftReward = new createjs.Shape();
-  endCardGiftYouGot.y = 70;
+  endCardGiftYouGot.y = 50;
   endCardGiftYouGot.x = 500;
 
   if (finalScore >= 1000) {
@@ -1486,7 +1492,7 @@ function endCardGift() {
 
   // Red banner pans across the screen
   giftBannerAnim = createjs.Tween.get(endCardGiftBanner, {paused:true})
-            .wait(1850)
+                  .wait(1850)
                   .to({x:-500},500,createjs.Ease.linear);
                   // 
                   // .to({x:1000},400,createjs.Ease.linear);
