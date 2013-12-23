@@ -333,7 +333,7 @@ function buildArt() {
       "lookLeft": [3],
       "stressed":[4,5,"stressed",5/60],
       "blink": [6,11,"idle",5/60],
-      "sneak": [12,31,"sneak",8/60],
+      "sneak": [12,31,"sneak", 15/60],
       "duck": [32,45,"duckIdle", 20/60],
       "duckIdle":[45],
       "dive": [46,50,false,10/60],
@@ -347,7 +347,7 @@ function buildArt() {
     "images": [loader.getResult("santa")],
     "frames": {height: 150, width: 190, regX: 0, regY: 0},
     "animations": {
-      "idle": [0, 35,"idle", 5/60],
+      "idle": [0, 35,"idle", 10/60],
       "surprise": [36, 40, "surprise", 20/60]
     }
   });
@@ -952,7 +952,7 @@ function forceduck() {
     }
     if(alertCount == 6) {
       characterSprite.gotoAndStop("idle");
-      santaSprite.gotoAndStop("idle");
+      santaSprite.gotoAndPlay("idle");
       bellSprite.gotoAndStop("initial");
       alert             = 0;
       alertCount        = -1;
@@ -965,7 +965,7 @@ function forceduck() {
   // if player IS ducking, do this
   else {
     if(alertCount == 2) {
-      santaSprite.gotoAndStop("idle");
+      santaSprite.gotoAndPlay("idle");
       bellSprite.gotoAndStop("initial");
       alert             = 0;
       alertCount        = -1;
@@ -1169,16 +1169,23 @@ function restart() {
   score = 0;
   stepsTaken = 0;
   scoreTimer = 30;
-  
 
-
-  createjs.Tween.removeTweens(endCardFlash);
-  createjs.Tween.removeTweens(endPhotoContainer);
-  createjs.Tween.removeTweens(endCardGiftBanner);
-  createjs.Tween.removeTweens(endCardGiftYouGot);
-  createjs.Tween.removeTweens(endCardGiftReward);
-  createjs.Tween.removeTweens(endCardFinalContainer);
-  createjs.Ticker.removeAllEventListeners();
+  createjs.Ticker.removeEventListener("tick",endCardUpdate);
+  createjs.Ticker.removeEventListener("tick",endCardFlashAnim);
+  createjs.Ticker.removeEventListener("tick",endPhotoContainerAnim);
+  createjs.Ticker.removeEventListener("tick",giftBannerAnim);
+  createjs.Ticker.removeEventListener("tick",giftYouGotAnim);
+  createjs.Ticker.removeEventListener("tick",giftRewardAnim);
+  createjs.Ticker.removeEventListener("tick",FinalAnim);
+  createjs.Ticker.removeEventListener("tick",characterDiveAnim);
+  // createjs.Tween.removeTweens(endCardFlash);
+  // createjs.Tween.removeTweens(endPhotoContainer);
+  // createjs.Tween.removeTweens(endCardGiftBanner);
+  // createjs.Tween.removeTweens(endCardGiftYouGot);
+  // createjs.Tween.removeTweens(endCardGiftReward);
+  // createjs.Tween.removeTweens(endCardFinalContainer);
+  createjs.Ticker.removeEventListener("tick",stageUpdate);
+  // createjs.Ticker.removeAllEventListeners();
   clearInterval(scoreTimerFunc);
   clearInterval(santaCountFunc);
 //Restore default values
