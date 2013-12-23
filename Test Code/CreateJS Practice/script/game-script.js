@@ -1285,6 +1285,10 @@ function stageUpdate(event) {
     anyKeyPressed = true;
   }
 
+  if((duckTrigger && upPressed) || (duckTrigger && leftPressed) || (duckTrigger && rightPressed)) {
+    dodgeTrigger = false;
+  }
+
   //****************
 
   //Walking logic broken down into 3 stages
