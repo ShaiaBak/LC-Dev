@@ -1185,35 +1185,40 @@ function handleKeyUp(e) {
 
 
 function restart() {
-
-//Restore default values
-  instructionScreenCount = 0;
-  charSelectCount = 0;
-  startScreenStatus = false;
-  startSelectToggle = false;
-  charSelectStatus = false;
-  instructionScreenStatus = false;
-  instructionScreenCount = 0;
-  character = -1;
   score = 0;
-  backgroundvalue = 0;
-  characterDiveCount = 0;
-  endCardPhotoStatus = false;
-  endCardPhotoCount = 0;
-  endCardGiftStatus = false;
-  endCardFinalStatus = false;
-  gameStatus = false;
-  stepsTaken = 0;
-  alert = 0;
-  alertCount = 0;
-  warning = 0;
-  warningCount = 0;
-  santaCount = 0;
-  detection;
-  alertStatus;
-  duckAnim = false;
-  dodgeTrigger = false;
-  keyActive = true;
+  scoreTime = 25;
+  createjs.Ticker.removeAllEventListeners();
+//Restore default values
+  // instructionScreenCount = 0;
+  // charSelectCount = 0;
+  // startScreenStatus = false;
+  // startSelectToggle = false;
+  // charSelectStatus = false;
+  // instructionScreenStatus = false;
+  // instructionScreenCount = 0;
+  // character = -1;
+  // score = 0;
+  // backgroundvalue = 0;
+  // characterDiveCount = 0;
+  // endCardPhotoStatus = false;
+  // endCardPhotoCount = 0;
+  // endCardGiftStatus = false;
+  // endCardFinalStatus = false;
+
+  // gameStatus = false;
+  // stepsTaken = 0;
+  // alert = 0;
+  // alertCount = 0;
+  // warning = 0;
+  // warningCount = 0;
+  // santaCount = 0;
+  // detection;
+  // alertStatus;
+  // duckAnim = false;
+  // dodgeTrigger = false;
+  // keyActive = true;
+  // characterSprite.x = 100;
+  // backgroundContainer.x = 0;
 
   // take out EVERYTHING
   stage.removeAllChildren();
@@ -1461,7 +1466,7 @@ function endCardGift() {
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pPoop")).drawRect(0,0,500,131);
   }
 
-  endCardGiftBanner.graphics.beginFill("F25050").drawRect(screen_width,100,screen_width,100);
+  endCardGiftBanner.graphics.beginFill("#f74f4d").drawRect(screen_width,100,screen_width,100);
   
   endCardGiftReward.y = 85;
   endCardGiftReward.x = 500;
