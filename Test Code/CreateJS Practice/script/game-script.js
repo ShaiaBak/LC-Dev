@@ -836,10 +836,10 @@ function gameScore() {
 function santaAlert() {
   santaCountFunc = setInterval(function() {
     santaCount++;
-    if(santaCount >= 2) {
+    if(santaCount > 2) {
       santaCount = 0;
     }
-    if(alertCount > 0) {
+    if(alertCount > 2) {
       santaCount = 0;
     }
     // when santa counts to this number, check if hes alerted
