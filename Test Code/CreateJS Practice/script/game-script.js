@@ -797,8 +797,8 @@ function startGame() {
 
   fireplaceSprite.framerate = 60;
 
-  bellSprite.x = 450;
-  bellSprite.y = 10;
+  bellSprite.x = 440;
+  bellSprite.y = 75;
   bellSprite.gotoAndStop("initial");
 
 
@@ -850,7 +850,7 @@ function santaAlert() {
 
       // if detection is any of these numbers
       //TODO - frequency of detection up
-      if (characterSprite.x >= 100 && backgroundContainer.x >= 0 ) {
+      if (characterSprite.x >= 0 && backgroundContainer.x >= 0 ) {
         console.log("Q1");
         switch(detection) {
           case 2:
@@ -869,25 +869,6 @@ function santaAlert() {
         }
       }
       else if (backgroundContainer.x <= -100 && backgroundContainer.x > -300) {
-        console.log("Q2");
-        switch(detection) {
-          case 1:
-          case 2:
-          case 4:
-          case 5:
-          case 6:
-          case 8:
-          case 10:
-            
-            bellSprite.gotoAndPlay("initial");
-            warning = 1;
-            break;
-          default:
-            warning = 0;
-            break;
-        }
-      }
-      else if (backgroundContainer.x <= -300 && backgroundContainer.x > -500) {
         console.log("Q3");
         switch(detection) {
           case 1:
@@ -907,28 +888,7 @@ function santaAlert() {
             break;
         }
       }
-      else if (backgroundContainer.x <= -500 && characterSprite.x > -300) {
-        console.log("Q4");
-        switch(detection) {
-          case 1:
-          case 2:
-          case 3:
-          case 4:
-          case 5:
-          case 6:
-          case 8:
-          case 9:
-          case 10:
-            
-            bellSprite.gotoAndPlay("initial");
-            warning = 1;
-            break;
-          default:
-            warning = 0;
-            break;
-        }
-      }
-      else if (characterSprite.x <= -300) {
+      else if (backgroundContainer.x <= -300 && characterSprite.x <= 300) {
         console.log("Q5");
         switch(detection) {
           case 1:
@@ -1553,7 +1513,7 @@ function endCardFinal() {
   endCardFinalScore.textAlign = "center";
   endCardFinalScore.textBaseline = "alphabetic";
   endCardFinalScore.x = 250;
-  endCardFinalScore.y = 75;
+  endCardFinalScore.y = 65;
   endCardFinalScore.text = "You Scored: " + finalScore;
 
   replayButton1 = new createjs.Text("Replay?", "128px PixelFont3", "#fbaf5d");
