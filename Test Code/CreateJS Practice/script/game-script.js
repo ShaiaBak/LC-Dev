@@ -833,25 +833,90 @@ function santaAlert() {
 
       // if detection is any of these numbers
       //TODO - frequency of detection up
-      switch(detection) {
-        case 2:
-          warning = 1;
-          break;
-        case 4:
-          warning = 1;
-          break;
-        case 6:
-          warning = 1;
-          break;
-        case 8:
-          warning = 1;
-          break;
-        case 10:
-          warning = 1;
-          break;
-        default:
-          warning = 0;
-          break;
+      if (characterSprite.x >= 100 && backgroundContainer.x > 100) {
+        console.log("-100");
+        switch(detection) {
+          case 2:
+          case 4:
+          case 6:
+          case 8:
+          case 10:
+            warning = 1;
+            break;
+          default:
+            warning = 0;
+            break;
+        }
+      }
+      else if (backgroundContainer.x <= -100 && backgroundContainer.x > -300) {
+        console.log("100");
+        switch(detection) {
+          case 1:
+          case 2:
+          case 4:
+          case 6:
+          case 8:
+          case 10:
+            warning = 1;
+            break;
+          default:
+            warning = 0;
+            break;
+        }
+      }
+      else if (backgroundContainer.x <= -300 && backgroundContainer.x > -500) {
+        console.log("300");
+        switch(detection) {
+          case 1:
+          case 2:
+          case 4:
+          case 6:
+          case 8:
+          case 9:
+          case 10:
+            warning = 1;
+            break;
+          default:
+            warning = 0;
+            break;
+        }
+      }
+      else if (backgroundContainer.x <= -500 && characterSprite.x > -400) {
+        console.log("500");
+        switch(detection) {
+          case 1:
+          case 2:
+          case 3:
+          case 4:
+          case 6:
+          case 8:
+          case 9:
+          case 10:
+            warning = 1;
+            break;
+          default:
+            warning = 0;
+            break;
+        }
+      }
+      else if (characterSprite.x <= -400) {
+        console.log("400");
+        switch(detection) {
+          case 1:
+          case 2:
+          case 3:
+          case 4:
+          case 5:
+          case 6:
+          case 8:
+          case 9:
+          case 10:
+            warning = 1;
+            break;
+          default:
+            warning = 0;
+            break;
+        }
       }
     }
     console.log("Key active: " + keyActive);
@@ -1149,7 +1214,6 @@ function stageUpdate(event) {
   scoreTimeDisplay.text = "Gametime: " + scoreTimer;
 
   score = stepsTaken;
-  console.log(multiplier);
 
   if(scoreTimer <= 13 && scoreTimer >= 11) {
     multiplier = 4;
