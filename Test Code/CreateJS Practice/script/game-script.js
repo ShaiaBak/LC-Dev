@@ -484,7 +484,7 @@ function instructionScreen() {
   instructionText.textAlign = "center";
   instructionBanner.graphics.beginFill("F25050").drawRect(0,0,screen_width,60);
   instructionBanner.alpha = 0.9;
-  instructionBanner.y = 30
+  instructionBanner.y = 40
   instructionBoy = new createjs.Sprite(boySpriteSheet, "idle");
   instructionBoy.x = 45;
   instructionBoy.y = 200;
@@ -1467,9 +1467,9 @@ function endCardGift() {
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pPoop")).drawRect(0,0,500,131);
   }
 
-  endCardGiftBanner.graphics.beginFill("#f74f4d").drawRect(screen_width,100,screen_width,100);
+  endCardGiftBanner.graphics.beginFill("#f74f4d").drawRect(screen_width,70,screen_width,120);
   
-  endCardGiftReward.y = 85;
+  endCardGiftReward.y = 65;
   endCardGiftReward.x = 500;
 
   stage.addChild(endBackground, endCardGiftBanner, endCardGiftYouGot, endCardGiftReward);
@@ -1513,19 +1513,19 @@ function endCardFinal() {
   endCardFinalScore.textAlign = "center";
   endCardFinalScore.textBaseline = "alphabetic";
   endCardFinalScore.x = 250;
-  endCardFinalScore.y = 65;
+  endCardFinalScore.y = 55;
   endCardFinalScore.text = "You Scored: " + finalScore;
 
   replayButton1 = new createjs.Text("Replay?", "128px PixelFont3", "#fbaf5d");
   replayButton1.textAlign = "center";
   replayButton1.textBaseline = "alphabetic";
-  replayButton1.x = 120;
+  replayButton1.x = 130;
   replayButton1.y = 265;
 
   replayButton2 = new createjs.Text("Replay?", "128px PixelFont3", "#FFFFFF");
   replayButton2.textAlign = "center";
   replayButton2.textBaseline = "alphabetic";
-  replayButton2.x = 120;
+  replayButton2.x = 130;
   replayButton2.y = 265;
 
   replayButtonHitArea.graphics.beginFill("#FFFFFF").drawRect(-125,-64,250,128);
@@ -1556,7 +1556,7 @@ function endCardFinal() {
   socialMediaInfo.addChild(tumblrButton, twitterButton, facebookButton, lcLogo);
 
   socialMediaInfo.x = 265;
-  socialMediaInfo.y = 210;
+  socialMediaInfo.y = 205;
 
 
   //Set to invisible 
