@@ -941,7 +941,7 @@ function santaAlert() {
     // minus 1 from warning count for accuracy 
     if(warning == 1) {
       warningCount++;
-      if(warningCount == 3) {
+      if(warningCount == 3/2) {
         bellSprite.gotoAndPlay("ringing");
         alert = 1;
         warningCount = 0;
@@ -976,7 +976,7 @@ function forceduck() {
       duckAnim    = true;
       return;
     }
-    if(alertCount == 5) {
+    if(alertCount == 6) {
       characterSprite.gotoAndStop("idle");
       santaSprite.gotoAndStop("idle");
       bellSprite.alpha  = 0;
@@ -1357,7 +1357,7 @@ function endCardPhoto() {
   endCardFlash.graphics.beginFill("#FFFFFF").drawRect(0,0,screen_width,screen_height);
 
   var endCardFlashAnim = createjs.Tween.get(endCardFlash, {paused:true})
-          .to({alpha:0},75);
+          .to({alpha:0},500);
 
   endCardFlashAnim.setPaused(false);
 
@@ -1462,16 +1462,8 @@ function endCardGift() {
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pPoop")).drawRect(0,0,500,131);
   }
 
-
-
-
-
-
-
-
   endCardGiftBanner.graphics.beginFill("F25050").drawRect(screen_width,100,screen_width,100);
   
-  endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pBear")).drawRect(0,0,500,131);
   endCardGiftReward.y = 85;
   endCardGiftReward.x = 500;
 
@@ -1517,7 +1509,7 @@ function endCardFinal() {
   endCardFinalScore.textBaseline = "alphabetic";
   endCardFinalScore.x = 250;
   endCardFinalScore.y = 75;
-  endCardFinalScore.Text = "You Scored: " + finalScore;
+  endCardFinalScore.text = "You Scored: " + finalScore;
 
   replayButton1 = new createjs.Text("Replay?", "128px PixelFont3", "#fbaf5d");
   replayButton1.textAlign = "center";
