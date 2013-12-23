@@ -58,7 +58,6 @@ var instructionBell;
 //Snow Stuff
 var snowList;
 
-
 var leftPressed = false;
 var rightPressed = false;
 var duckTrigger = false;
@@ -818,12 +817,21 @@ function startGame() {
 
   // .addchild put everythign on the screen
   stage.addChild(backgroundContainer, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay, warningDisplay, wanringCountDisplay);
-  santaAlert();
+  
+  if(gameStatus) {
+    santaAlert();
+    gameScore();
+  }
+  
   // not sure what .timingMode is
   // .Ticker adds continuous timer
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
   createjs.Ticker.setFPS(60);
   createjs.Ticker.addEventListener("tick", stageUpdate);
+}
+
+function gameScore() {
+
 }
 
 function santaAlert() {
@@ -1145,27 +1153,7 @@ function restart() {
   startScreen();
 }
 
-function scoretimer(event) {
-
-  score++;
-
-  /*scoreDisplay.text = "Score: " + score + " ";
-  backgroundxDisplay.text = "bg: " + background.x + " ";
-  spritexDisplay.text = "sprite: " + megamanSprite.x + " ";*/
-}
-
-
 function stageUpdate(event) {
-
-
-  // run santa alert function
-  //santaAlert();
-  //When an arrow key is pressed, it will play the "run" animation (which loops)
-  //will remove the anykeypress flag so that the animation will be only played once
-  // if ((leftPressed||rightPressed) && !anyKeyPressed && !duckTrigger) {
-  //   megamanSprite.gotoAndPlay("run");
-  //   anyKeyPressed = true;
-  // }
 
   // TODO: get this outta here when done, TESTING
   detectSteps.text = "steps: " + stepsTaken + " ";
