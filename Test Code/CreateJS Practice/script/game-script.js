@@ -308,7 +308,7 @@ function buildArt() {
     "frames": [
     /*00-01*/   [0,0,40,96,0,20,0],[40,0,40,96,0,20,0],
     /*02-03*/   [0,96,40,96,0,20,0],[40,96,40,96,0,20,0],
-    /*04-05*/   [0,192,52,96,0,26,0],[52,192,52,96,0,26,0],
+    /*04-05*/   [0,192,52,96,0,20,0],[52,192,52,96,0,20,0],
     /*06-11*/   [0,288,40,96,0,20,0],[40,288,40,96,0,20,0],[80,288,40,96,0,20,0],[120,288,40,96,0,20,0],[160,288,40,96,0,20,0],[200,288,40,96,0,20,0],
     /*12-21*/   [0,384,56,96,0,28,0],[56,384,56,96,0,28,0],[112,384,56,96,0,28,0],[168,384,56,96,0,28,0],[224,384,56,96,0,28,0],[280,384,56,96,0,28,0],[336,384,56,96,0,28,0],[392,384,56,96,0,28,0],[448,384,56,96,0,28,0],[504,384,56,96,0,28,0],
     /*22-31*/   [0,480,56,96,0,28,0],[56,480,56,96,0,28,0],[112,480,56,96,0,28,0],[168,480,56,96,0,28,0],[224,480,56,96,0,28,0],[280,480,56,96,0,28,0],[336,480,56,96,0,28,0],[392,480,56,96,0,28,0],[448,480,56,96,0,28,0],[504,480,56,96,0,28,0],
@@ -660,7 +660,7 @@ function charGirlClick() {
 }
 
 function charSelectAnim() {
-
+  charSelectStatus = false;
 
   var charSelectFrameAnim = createjs.Tween.get(charSelectFrame1)
                         .to({alpha:0},50)
@@ -784,6 +784,11 @@ function startGame() {
 
   fireplaceSprite.framerate = 60;
 
+  bellSprite.x = 450;
+  bellSprite.y = 10;
+  bellSprite.alpha = 0;
+  bellSprite.gotoAndStop("initial");
+
 
   
     // setTransform sets sprites x and y coordinates and scale
@@ -796,7 +801,7 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay, warningDisplay, warningCountDisplay, scoreDisplay, scoreTimeDisplay);
+  stage.addChild(backgroundContainer, detectSteps, alertStatus, characterSprite, timeDisplay, timeDelay, warningDisplay, warningCountDisplay, scoreDisplay, scoreTimeDisplay, bellSprite);
   
   if(gameStatus) {
     santaAlert();
@@ -841,6 +846,8 @@ function santaAlert() {
           case 6:
           case 8:
           case 10:
+            bellSprite.alpha = 1;
+            bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
           default:
@@ -857,6 +864,8 @@ function santaAlert() {
           case 6:
           case 8:
           case 10:
+            bellSprite.alpha = 1;
+            bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
           default:
@@ -874,6 +883,8 @@ function santaAlert() {
           case 8:
           case 9:
           case 10:
+            bellSprite.alpha = 1;
+            bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
           default:
@@ -892,6 +903,8 @@ function santaAlert() {
           case 8:
           case 9:
           case 10:
+            bellSprite.alpha = 1;
+            bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
           default:
@@ -911,6 +924,8 @@ function santaAlert() {
           case 8:
           case 9:
           case 10:
+            bellSprite.alpha = 1;
+            bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
           default:
@@ -927,6 +942,7 @@ function santaAlert() {
     if(warning == 1) {
       warningCount++;
       if(warningCount == 3) {
+        bellSprite.gotoAndPlay("ringing");
         alert = 1;
         warningCount = 0;
       }
@@ -934,6 +950,7 @@ function santaAlert() {
 
     if(alert == 1) {
       forceduck();
+      bellSprite.advance;
       santaCount = 0;
       warning = 0;
       alertCount++;
@@ -962,22 +979,24 @@ function forceduck() {
     if(alertCount == 5) {
       characterSprite.gotoAndStop("idle");
       santaSprite.gotoAndStop("idle");
-      alert           = 0;
-      alertCount      = -1;
-      keyActive       = true;
-      duckTrigger     = false;
-      duckAnim        = false;
-      anyKeyPressed   = false;
+      bellSprite.alpha  = 0;
+      alert             = 0;
+      alertCount        = -1;
+      keyActive         = true;
+      duckTrigger       = false;
+      duckAnim          = false;
+      anyKeyPressed     = false;
     }
   }
   // if player IS ducking, do this
   else {
     if(alertCount == 2) {
       santaSprite.gotoAndStop("idle");
-      alert       = 0;
-      alertCount  = -1;
-      keyActive   = true;
-      duckAnim    = false;
+      bellSprite.alpha  = 0;
+      alert             = 0;
+      alertCount        = -1;
+      keyActive         = true;
+      duckAnim          = false;
     }
   }
   
@@ -1396,6 +1415,59 @@ function endCardGift() {
   endCardGiftYouGot.y = 70;
   endCardGiftYouGot.x = 500;
 
+  if (finalScore >= 80) {
+    //Game Box
+    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pGameBox01")).drawRect(0,0,500,131);
+  } else if (finalScore >= 60) {
+    //Pet
+    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pKitty")).drawRect(0,0,500,131);
+  } else if (finalScore >= 40) {
+    //Action Figure
+    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pCowmandobot")).drawRect(0,0,500,131);
+  } else if (finalScore >= 20) {
+    //Sweater
+    switch(Math.floor((Math.random()*5)+1)) {
+      case 1:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pSweater01")).drawRect(0,0,500,131);
+      break;
+     
+      case 2:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pSweater02")).drawRect(0,0,500,131);
+      break;
+     
+      case 3:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pSweater03")).drawRect(0,0,500,131);
+      break;
+     
+      case 4:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pSweater04")).drawRect(0,0,500,131);
+      break;
+     
+      case 5:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pSweater05")).drawRect(0,0,500,131);
+      break;
+    }
+
+  } else if (finalScore >= 0) {
+    //Socks
+    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pSocks")).drawRect(0,0,500,131);
+  } else if (finalScore >= 0) {
+    //Eraser
+    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pEraser")).drawRect(0,0,500,131);
+  } else if (finalScore >= 0) {
+    //Coal
+    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pCoal")).drawRect(0,0,500,131);  
+  } else if (finalScore >= 0) {
+    //Poop
+    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pPoop")).drawRect(0,0,500,131);
+  }
+
+
+
+
+
+
+
 
   endCardGiftBanner.graphics.beginFill("F25050").drawRect(screen_width,100,screen_width,100);
   
@@ -1440,6 +1512,12 @@ function endCardFinal() {
   stage.removeChild(endCardGiftYouGot)
   //stage.removeAllChildren();
   var replayButtonHitArea = new createjs.Shape();
+  endCardFinalScore = new createjs.Text("You Scored 102", "96px PixelFont3", "#fbaf5d");
+  endCardFinalScore.textAlign = "center";
+  endCardFinalScore.textBaseline = "alphabetic";
+  endCardFinalScore.x = 250;
+  endCardFinalScore.y = 75;
+  endCardFinalScore.Text = "You Scored: " + finalScore;
 
   replayButton1 = new createjs.Text("Replay?", "128px PixelFont3", "#fbaf5d");
   replayButton1.textAlign = "center";
@@ -1485,10 +1563,10 @@ function endCardFinal() {
 
 
   //Set to invisible 
-  endCardFinalContainer.addChild(socialMediaInfo);
+  endCardFinalContainer.addChild(socialMediaInfo, endCardFinalScore, replayButton2, replayButton1);
   endCardFinalContainer.alpha = 0;
 
-  stage.addChild(endCardFinalContainer, replayButton2, replayButton1);
+  stage.addChild(endCardFinalContainer);
 
   
 
