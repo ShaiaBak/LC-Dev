@@ -302,7 +302,7 @@ function buildArt() {
       "lookLeft": [3],
       "stressed":[4,5,"stressed",5/60],
       "blink": [6,11,"idle",5/60],
-      "sneak": [12,31,"sneak",10/60],
+      "sneak": [12,31,"sneak",15/60],
       "duck": [32,46,"duckIdle", 20/60],
       "duckIdle":[46],
       "dive": [47,51,false,10/60],
@@ -497,10 +497,10 @@ function instructionScreen() {
   // Boy moves across the screen 2 times
   var instructionBoyAnim = new createjs.Tween.get(instructionBoy, {paused:true})
             .wait(500)          //500
-            .to({x:275},2000)   //2500
+            .to({x:250},2000)   //2500
             .wait(500)          //3000
             .to({x:45},0)       
-            .to({x:275},2000)   //5000
+            .to({x:250},2000)   //5000
             .wait(500);         //5500
 
   instructionBoyAnim.setPaused(false);
@@ -543,7 +543,7 @@ function instructionScreenAnimation() {
     instructionText.text = "or else...";
   } else if ( instructionScreenCount == 13.5*60) {
     //Return to start screen and remove ticker
-    restart();
+    startScreen();
     createjs.Tween.removeTweens(instructionBoy);
     createjs.Ticker.removeEventListener("tick", instructionScreenAnimation);
   }
@@ -585,10 +585,10 @@ function charScreen() {
   girlDisplayContainer.x = 375;
   girlDisplayContainer.y = 150;
 
-  charSelectBoy.x = 125;
-  charSelectBoy.y = 110; 
-  charSelectGirl.x = 375;
-  charSelectGirl.y = 102; 
+  charSelectBoy.x = 0;
+  charSelectBoy.y = -30; 
+  charSelectGirl.x = 0;
+  charSelectGirl.y = -40; 
 
   // draw it and fill it
   charPage.graphics.beginFill("#B26BE8").drawRect(0,0,500,screen_height);
@@ -617,17 +617,17 @@ function charScreen() {
 
 
   //put stuff into its containers
-  boyDisplayContainer.addChild(boyDisplay);
-  girlDisplayContainer.addChild(girlDisplay);
+  boyDisplayContainer.addChild(boyDisplay, charSelectBoy);
+  girlDisplayContainer.addChild(girlDisplay, charSelectGirl );
 
   //put is all on the main screen
-  stage.addChild(startTitleBG, boyDisplayContainer, girlDisplayContainer, charTitle, charSelectBoy, charSelectGirl, charSelectFrame2, charSelectFrame1);
+  stage.addChild(startTitleBG, boyDisplayContainer, girlDisplayContainer, charTitle, charSelectFrame2, charSelectFrame1);
 
   //add eventListeners (hover, clikc etc..)
-  boyDisplay.addEventListener("rollover",charBoyMouseOver);
-  girlDisplay.addEventListener("rollover",charGirlMouseOver);
-  boyDisplay.addEventListener("click",charBoyClick);
-  girlDisplay.addEventListener("click",charGirlClick);
+  boyDisplayContainer.addEventListener("rollover",charBoyMouseOver);
+  girlDisplayContainer.addEventListener("rollover",charGirlMouseOver);
+  boyDisplayContainer.addEventListener("click",charBoyClick);
+  girlDisplayContainer.addEventListener("click",charGirlClick);
   
 
 
