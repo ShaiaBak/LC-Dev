@@ -162,7 +162,8 @@ function init() {
     {src:"images/endcard_girl.png", id:"endcard_girl"},
     {src:"images/santa_sprite.png", id:"santa"},
     {src:"images/flake_big.png", id:"bigSnow"},
-    {src:"images/flake_small.png", id:"smallSnow"}
+    {src:"images/flake_small.png", id:"smallSnow"},
+    {src:"images/merrychristmas.png", id:"mcEndCard"}  
     
   ];
   loader = new createjs.LoadQueue(false);
@@ -1228,8 +1229,9 @@ function endCardPhoto() {
 
   endCardPhotoStatus = true;
   characterSprite.x = 120;
-  stage.removeAllChildren();
 
+  stage.removeAllChildren();
+  endCardMerry = new createjs.Shape();
   endPhoto = new createjs.Shape();
   endBackground = new createjs.Shape();
   endCardFlash = new createjs.Shape();
@@ -1243,6 +1245,9 @@ function endCardPhoto() {
     endPhoto.graphics.beginBitmapFill(loader.getResult("endcard_girl")).drawRect(0,0,500,300);
   }
 
+
+  
+  endCardMerry.graphics.beginBitmapFill(loader.getResult("mcEndCard")).drawRect(0,0,216,71);
   endBackground.graphics.beginFill("#000000").drawRect(0,0,screen_width,screen_height);
   endCardFlash.graphics.beginFill("#FFFFFF").drawRect(0,0,screen_width,screen_height);
 
@@ -1253,8 +1258,11 @@ function endCardPhoto() {
 
   endCardEnterSkip.x = 310;
   endCardEnterSkip.y = 270;
+  
+  endCardMerry.x = 275;
+  endCardMerry.y = 100;
  
-  endPhotoContainer.addChild(endPhoto, endCardEnterSkip);
+  endPhotoContainer.addChild(endPhoto, endCardEnterSkip, endCardMerry);
 
   stage.addChild(endBackground, endPhotoContainer, endPhoto, endCardFlash);
 
