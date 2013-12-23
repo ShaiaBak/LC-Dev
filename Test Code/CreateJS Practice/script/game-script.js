@@ -484,7 +484,7 @@ function instructionScreen() {
   instructionText.textAlign = "center";
   instructionBanner.graphics.beginFill("F25050").drawRect(0,0,screen_width,60);
   instructionBanner.alpha = 0.9;
-  instructionBanner.y = 40
+  instructionBanner.y = 30;
   instructionBoy = new createjs.Sprite(boySpriteSheet, "idle");
   instructionBoy.x = 45;
   instructionBoy.y = 200;
@@ -498,10 +498,10 @@ function instructionScreen() {
   var instructionBoyAnim = new createjs.Tween.get(instructionBoy, {paused:true})
             .wait(500)          //500
             .to({x:250},2000)   //2500
-            .wait(500)          //3000
+            .wait(1000)         //3500
             .to({x:45},0)       
-            .to({x:250},2000)   //5000
-            .wait(500);         //5500
+            .to({x:250},2000)   //5500
+            .wait(1000);         //6000
 
   instructionBoyAnim.setPaused(false);
   createjs.Ticker.addEventListener("tick", instructionScreenAnimation);
@@ -521,27 +521,27 @@ function instructionScreenAnimation() {
     instructionBoy.gotoAndPlay("sneak")
   } else if ( instructionScreenCount == 2.5*60) {
     instructionBoy.gotoAndPlay("idle");
-  } else if ( instructionScreenCount == 3*60) {
+  } else if ( instructionScreenCount == 3.5*60) {
     instructionBoy.gotoAndPlay("sneak");
-  } else if ( instructionScreenCount == 5*60) {
-    instructionBoy.gotoAndPlay("idle");
   } else if ( instructionScreenCount == 5.5*60) {
+    instructionBoy.gotoAndPlay("idle");
+  } else if ( instructionScreenCount == 6.5*60) {
 
     instructionBoy.gotoAndPlay("duck");
     instructionText.text = "Press down or space to duck";
 
-  } else if ( instructionScreenCount == 7.5*60) {
+  } else if ( instructionScreenCount == 9*60) {
     instructionBell.gotoAndPlay("initial");
     instructionBoy.gotoAndPlay("idle");
     instructionText.text = "Beware of Santa's gaze!";
-  } else if ( instructionScreenCount == 9.5*60) {
+  } else if ( instructionScreenCount == 13*60) {
     instructionBell.gotoAndPlay("ringing");
     instructionBoy.gotoAndPlay("duck");
     instructionText.text = "Duck to avoid being noticed";
-  } else if ( instructionScreenCount == 11.5*60) {
+  } else if ( instructionScreenCount == 17*60) {
     instructionBoy.gotoAndPlay("stressed");
     instructionText.text = "or else...";
-  } else if ( instructionScreenCount == 13.5*60) {
+  } else if ( instructionScreenCount == 21*60) {
     //Return to start screen and remove ticker
     startScreen();
     createjs.Tween.removeTweens(instructionBoy);
@@ -1492,19 +1492,19 @@ function endCardGift() {
 
   // Red banner pans across the screen
   giftBannerAnim = createjs.Tween.get(endCardGiftBanner, {paused:true})
-                  .wait(1850)
+                  .wait(2600)
                   .to({x:-500},500,createjs.Ease.linear);
                   // 
                   // .to({x:1000},400,createjs.Ease.linear);
   // The words YOU GOT moves across the screen
   giftYouGotAnim = createjs.Tween.get(endCardGiftYouGot, {paused:true})
-                    .to({x:120},200,createjs.Ease.linear)
-                    .to({x:80},1750,createjs.Ease.linear)
-                    .to({x:-500},200,createjs.Ease.linear);
+                    .to({x:120},400,createjs.Ease.linear)
+                    .to({x:80},2000,createjs.Ease.linear)
+                    .to({x:-500},400,createjs.Ease.linear);
   // the gift name pans across
   giftRewardAnim = createjs.Tween.get(endCardGiftReward, {paused:true})
-                  .wait(2500)
-                  .to({x:0},200,createjs.Ease.linear)
+                  .wait(3100)
+                  .to({x:0},300,createjs.Ease.linear)
                   .wait(3100)
                   // .to({x:500},400,createjs.Ease.linear)
                   .call(endCardFinal);
