@@ -130,6 +130,11 @@ var giftYouGotAnim;
 var giftRewardAnim;
 var FinalAnim;
 
+
+var drumLoop;
+var mainMusic;
+
+
 function init() {
   // conventional initializer
   stage = new createjs.Stage("myCanvas");
@@ -141,7 +146,8 @@ function init() {
   manifest = [
     // array of assest (images/music) that load with manifest
     // grabbing assets from the DOM
-    {src:"assets/Test.mp3", id:"music"},
+    {src:"assets/drumloop.mp3", id:"drumLoopID"},
+    {src:"assets/rooftop-dreams-draft1.mp3", id:"mainMusicID"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
     {src:"images/presents/present_bear.png", id:"pBear"},
     {src:"images/presents/present_bunny.png", id:"pBunny"},
@@ -352,7 +358,8 @@ function buildArt() {
     }
   });
 
-
+  mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+  drumLoop = createjs.Sound.play("drumLoopID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
 function createSnow() {
@@ -373,7 +380,9 @@ function createSnow() {
 }
 
 function startScreen() {
-  
+  createjs.Sound.stop();
+  mainMusic.play();
+
   // crates new stages and properties for assets to live on
   startScreenStatus = true;
   charSelectStatus = false;
@@ -472,6 +481,8 @@ function startInstructionClick() {
 // Add score displays
 
 function instructionScreen() {
+  createjs.Sound.stop();
+  drumLoop.play();
   stage.removeAllChildren();
   startScreenStatus = false;
   charSelectStatus = false;
@@ -554,6 +565,8 @@ function instructionScreenAnimation() {
 
 
 function charScreen() {
+  createjs.Sound.stop();
+  drumLoop.play();
   startScreenStatus = false; 
   charSelectStatus = true;
   // create shapes and containers
@@ -648,27 +661,31 @@ function girlSelect() {
 
 
 function charBoyMouseOver() {
-  charSelectToggle = false;
-  charSelectFrame1.x = 125;
-  charSelectFrame2.x = 125;
-  stage.update();
+  if (charSelectStatus) {
+    charSelectToggle = false;
+    charSelectFrame1.x = 125;
+    charSelectFrame2.x = 125;
+    stage.update();
+  }
 }
 
 function charGirlMouseOver() {
-  charSelectToggle = true;
-  charSelectFrame1.x = 375;
-  charSelectFrame2.x = 375;
-  stage.update();
+  if (charSelectStatus) {
+    charSelectToggle = true;
+    charSelectFrame1.x = 375;
+    charSelectFrame2.x = 375;
+    stage.update();
+  }
 }
 
 function charBoyClick() {
-  if (!charSelectToggle) {
+  if (!charSelectToggle && charSelectStatus) {
     boySelect();
   }
 }
 
 function charGirlClick() {
-  if (charSelectToggle) {
+  if (charSelectToggle && charSelectStatus) {
     girlSelect();
   }
 }
@@ -705,6 +722,10 @@ function charSelectAnim() {
 
 // Create the starting point of the game
 function startGame() {
+
+  createjs.Sound.stop();
+  mainMusic.setPosition(7000);
+  mainMusic.play();
   stage.removeAllChildren();
   charSelectStatus = false;
   gameStatus = true;
