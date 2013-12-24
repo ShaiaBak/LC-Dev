@@ -867,7 +867,7 @@ function santaAlert() {
       santaCount = 0;
     }
     // when santa counts to this number, check if hes alerted
-    if(santaCount == 2){ 
+    if(santaCount == 2 && gameStatus){ 
       // selects a number from 1 - 10
       detection =  Math.floor((Math.random()*10)+1);
       console.log(detection);
