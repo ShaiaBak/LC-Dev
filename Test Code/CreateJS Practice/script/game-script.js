@@ -1816,6 +1816,10 @@ function endCardFinal() {
   replayButton1.addEventListener("rollover",replayButtonMouseOver);
   replayButton1.addEventListener("rollout",replayButtonMouseOut);
   //test image fades in
+  facebookButton.cursor='pointer';
+  tumblrButton.cursor='pointer';
+  twitterButton.cursor='pointer';
+  
   FinalAnim = createjs.Tween.get(endCardFinalContainer, {paused:true})
             .to({alpha:1},1000);
   FinalAnim.setPaused(false);
