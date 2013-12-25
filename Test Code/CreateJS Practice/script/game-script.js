@@ -163,18 +163,18 @@ function init() {
   manifest = [
     // array of assest (images/music) that load with manifest
     // grabbing assets from the DOM
-    {src:"assets/drumloop-draft2.mp3", id:"drumLoopID"},
-    {src:"assets/rooftop-dreams-draft4.mp3", id:"mainMusicID"},
-    {src:"assets/start-rooftop-draft1.mp3", id:"startMusicID"},
-    {src:"assets/alarm-fx.mp3", id:"alarmFXID"},
-    {src:"assets/boy-choose-fx.mp3", id:"boyChooseFXID"},
-    {src:"assets/girl-choose-fx.mp3", id:"girlChooseFXID"},
-    {src:"assets/caught-fx.mp3", id:"caughtFXID"},
-    {src:"assets/dodge-fx.mp3", id:"dodgeFXID"},
-    {src:"assets/warning2-fx.mp3", id:"warningFXID"},
-    {src:"assets/gift-reward.mp3", id:"giftRewardFXID"},
-    {src:"assets/camera-shutter.mp3", id:"cameraShutterFXID"},
-    {src:"assets/char-select.mp3", id:"charSelectFXID"},
+    {src:"assets/drumloop-draft2.ogg", id:"drumLoopID"},
+    {src:"assets/rooftop-dreams-draft4.ogg", id:"mainMusicID"},
+    {src:"assets/start-rooftop-draft1.ogg", id:"startMusicID"},
+    {src:"assets/alarm-fx.ogg", id:"alarmFXID"},
+    {src:"assets/boy-choose-fx.ogg", id:"boyChooseFXID"},
+    {src:"assets/girl-choose-fx.ogg", id:"girlChooseFXID"},
+    {src:"assets/caught-fx.ogg", id:"caughtFXID"},
+    {src:"assets/dodge-fx.ogg", id:"dodgeFXID"},
+    {src:"assets/warning2-fx.ogg", id:"warningFXID"},
+    {src:"assets/gift-reward.ogg", id:"giftRewardFXID"},
+    {src:"assets/camera-shutter.ogg", id:"cameraShutterFXID"},
+    {src:"assets/char-select.ogg", id:"charSelectFXID"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
     {src:"images/presents/present_bear.png", id:"pBear"},
     {src:"images/presents/present_bunny.png", id:"pBunny"},
@@ -219,7 +219,7 @@ function init() {
 
   
   loader.installPlugin(createjs.Sound);
-  createjs.Sound.alternativeExtensions = ["ogg"];
+  createjs.Sound.alternativeExtensions = ["mp3"];
   loader.addEventListener("complete", handleComplete);
   //loader.addEventListener("progress", handleProgress);
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
