@@ -165,7 +165,7 @@ function init() {
     {src:"assets/girl-choose-fx.mp3", id:"girlChooseFXID"},
     {src:"assets/caught-fx.mp3", id:"caughtFXID"},
     {src:"assets/dodge-fx.mp3", id:"dodgeFXID"},
-    {src:"assets/warning-fx.mp3", id:"warningFXID"},
+    {src:"assets/warning2-fx.mp3", id:"warningFXID"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
     {src:"images/presents/present_bear.png", id:"pBear"},
     {src:"images/presents/present_bunny.png", id:"pBunny"},
