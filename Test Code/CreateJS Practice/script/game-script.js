@@ -392,9 +392,11 @@ function buildArt() {
   
 
   musicButton.x = 425,
-  musicButton.y = 250;
+  musicButton.y = 253;
+  musicButton.alpha = 0.6;
   musicButtonHitArea.x = 0,
   musicButtonHitArea.y = 9;
+
   musicButton.hitArea = musicButtonHitArea; 
 
   soundFXButton = new createjs.Text("SoundFX On", "32px PixelFont3", "#FFFFFF");
@@ -403,7 +405,8 @@ function buildArt() {
   
 
   soundFXButton.x = 403,
-  soundFXButton.y = 265;
+  soundFXButton.y = 268;
+  soundFXButton.alpha = 0.6;
   soundFXButtonHitArea.x = 0,
   soundFXButtonHitArea.y = 9;
   soundFXButton.hitArea = musicButtonHitArea; 
@@ -419,7 +422,7 @@ function buildArt() {
   dodgeFX = createjs.Sound.play("dodgeFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2, 1); 
   warningFX = createjs.Sound.play("warningFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2, 1);
   giftRewardFX = createjs.Sound.play("giftRewardFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.3);
-  cameraShutterFX = createjs.Sound.play("cameraShutterFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.3);
+  cameraShutterFX = createjs.Sound.play("cameraShutterFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.15);
   charSelectFX = createjs.Sound.play("charSelectFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.3);
   mainMusicFade = new createjs.Tween.get(mainMusic, {paused:true})
                  .to({volume: 0.15}, 2000);
@@ -569,7 +572,7 @@ function soundFXButtonClick() {
     dodgeFX.setVolume(0.2);
     warningFX.setVolume(0.2);
     giftRewardFX.setVolume(0.3);
-    cameraShutterFX.setVolume(0.3);
+    cameraShutterFX.setVolume(0.15);
     charSelectFX.setVolume(0.3);
     stage.update();
   } else {
