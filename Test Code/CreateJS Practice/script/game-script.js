@@ -857,10 +857,10 @@ function startGame() {
   musicButton.addEventListener("click", musicButtonClick);
 
 
-  // if(gameStatus) {
-  //   santaAlert();
-  //   gameScore();
-  // }
+  if(gameStatus) {
+    santaAlert();
+    gameScore();
+  }
   
   // not sure what .timingMode is
   // .Ticker adds continuous timer
