@@ -217,7 +217,9 @@ function init() {
   //Not completely sure what this does. I think it runs handlerComplete when
   //the files are done loading
 
+  
   loader.installPlugin(createjs.Sound);
+  createjs.Sound.alternativeExtensions = ["ogg"];
   loader.addEventListener("complete", handleComplete);
   //loader.addEventListener("progress", handleProgress);
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
