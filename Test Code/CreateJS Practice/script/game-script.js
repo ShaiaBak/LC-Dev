@@ -415,12 +415,12 @@ function buildArt() {
   mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.15);
   drumLoop = createjs.Sound.play("drumLoopID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.3);
   startMusic = createjs.Sound.play("startMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.3);
-  alarmFX = createjs.Sound.play("alarmFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1, 1);
+  alarmFX = createjs.Sound.play("alarmFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
   boyChooseFX = createjs.Sound.play("boyChooseFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
   girlChooseFX = createjs.Sound.play("girlChooseFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
-  caughtFX = createjs.Sound.play("caughtFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1, 1);
-  dodgeFX = createjs.Sound.play("dodgeFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2, 1); 
-  warningFX = createjs.Sound.play("warningFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2, 1);
+  caughtFX = createjs.Sound.play("caughtFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
+  dodgeFX = createjs.Sound.play("dodgeFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2); 
+  warningFX = createjs.Sound.play("warningFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2);
   giftRewardFX = createjs.Sound.play("giftRewardFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.3);
   cameraShutterFX = createjs.Sound.play("cameraShutterFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.15);
   charSelectFX = createjs.Sound.play("charSelectFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.3);
