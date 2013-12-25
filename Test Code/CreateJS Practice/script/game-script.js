@@ -159,7 +159,7 @@ function init() {
     {src:"images/presents/present_cowmandobot.png", id:"pCowmandobot"},
     {src:"images/presents/present_eraser.png", id:"pEraser"},
     {src:"images/presents/present_gamebox01.png", id:"pGameBox01"},
-    {src:"images/presents/present_gamebox02.png", id:"pGameBox01"},
+    {src:"images/presents/present_gamebox02.png", id:"pGameBox02"},
     {src:"images/presents/present_guy.png", id:"pGuy"},
     {src:"images/presents/present_kitty.png", id:"pKitty"},
     {src:"images/presents/present_poop.png", id:"pPoop"},
@@ -857,10 +857,10 @@ function startGame() {
   musicButton.addEventListener("click", musicButtonClick);
 
 
-  if(gameStatus) {
-    santaAlert();
-    gameScore();
-  }
+  // if(gameStatus) {
+  //   santaAlert();
+  //   gameScore();
+  // }
   
   // not sure what .timingMode is
   // .Ticker adds continuous timer
@@ -975,7 +975,7 @@ function santaAlert() {
       }
     }
 
-    if(alert == 1) {
+    if(alert == 1 && gameStatus) {
       forceduck();
       bellSprite.advance;
       santaCount = 0;
@@ -1023,6 +1023,7 @@ function forceduck() {
       bellSprite.gotoAndStop("initial");
       totalAlerts++;
       totalDodged++;
+      scoreTimer       += 2;
       alert             = 0;
       alertCount        = -1;
       keyActive         = true;
@@ -1341,13 +1342,13 @@ function stageUpdate(event) {
     anyKeyPressed = true;
   }
 
-  if((duckTrigger && upPressed) || (duckTrigger && leftPressed) || (duckTrigger && rightPressed)) {
-    leftPressed = false;
-    rightPressed = false;
-    upPressed = false;
-    characterSprite.gotoAndPlay("duck");
-    anyKeyPressed = true;
-  }
+  // if((duckTrigger && upPressed) || (duckTrigger && leftPressed) || (duckTrigger && rightPressed)) {
+  //   leftPressed = false;
+  //   rightPressed = false;
+  //   upPressed = false;
+  //   characterSprite.gotoAndPlay("duck");
+  //   anyKeyPressed = true;
+  // }
 
   //****************
 
@@ -1413,7 +1414,7 @@ function endCardPhoto() {
   /*if(scoreTimer < )*/
 
   if(!gameStatus) {
-    finalScore = parseInt(score * (multiplier + totalDodged/totalAlerts)*1.5 );
+    finalScore = parseInt(score * (multiplier + totalDodged/totalAlerts) );
   }
 
   endCardPhotoStatus = true;
@@ -1499,14 +1500,38 @@ function endCardGift() {
 
   if (finalScore >= 1000) {
     //Game Box
-    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pGameBox01")).drawRect(0,0,500,131);
-  } else if (finalScore >= 750) {
+      switch(Math.floor((Math.random()*2)+1)) {
+      case 1:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pGameBox01")).drawRect(0,0,500,131);
+      break;
+      case 2:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pGameBox02")).drawRect(0,0,500,131);
+      break;
+    }
+  } else if (finalScore >= 875) {
     //Pet
-    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pKitty")).drawRect(0,0,500,131);
-  } else if (finalScore >= 625) {
+      switch(Math.floor((Math.random()*2)+1)) {
+      case 1:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pKitty")).drawRect(0,0,500,131);
+      break;
+      case 2:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pPuppy")).drawRect(0,0,500,131);
+      break;
+    }
+  } else if (finalScore >= 750) {
     //Action Figure100
-    endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pCowmandobot")).drawRect(0,0,500,131);
-  } else if (finalScore >= 500) {
+    switch(Math.floor((Math.random()*3)+1)) {
+      case 1:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pCowmandobot")).drawRect(0,0,500,131);
+      break;
+      case 2:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pGuy")).drawRect(0,0,500,131);
+      break;
+      case 3:
+      endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pPowerguy")).drawRect(0,0,500,131);
+      break;
+    }
+  } else if (finalScore >= 625) {
     //Sweater
     switch(Math.floor((Math.random()*5)+1)) {
       case 1:
@@ -1530,13 +1555,13 @@ function endCardGift() {
       break;
     }
 
-  } else if (finalScore >= 375) {
+  } else if (finalScore >= 500) {
     //Socks
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pSocks")).drawRect(0,0,500,131);
-  } else if (finalScore >= 250) {
+  } else if (finalScore >= 375) {
     //Eraser
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pEraser")).drawRect(0,0,500,131);
-  } else if (finalScore >= 125) {
+  } else if (finalScore >= 250) {
     //Coal
     endCardGiftReward.graphics.beginBitmapFill(loader.getResult("pCoal")).drawRect(0,0,500,131);  
   } else if (finalScore >= 0) {
