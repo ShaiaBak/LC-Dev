@@ -136,8 +136,8 @@ var FinalAnim;
 var drumLoop;
 var mainMusic;
 var musicToggle   = false;
-var musicIconSprite;
-var musicIconSpriteSheet;
+var musicButton;
+var musicButtonHitArea;
 var soundFXButton;
 var soundFXButtonHitArea;
 var soundFXToggle   = false;
@@ -150,7 +150,7 @@ var dodgeFX;
 var warningFX;
 var giftRewardFX;
 var cameraShutter;
-
+var charSelectFX;
 
 function init() {
   // conventional initializer
@@ -173,9 +173,9 @@ function init() {
     {src:"assets/dodge-fx.mp3", id:"dodgeFXID"},
     {src:"assets/warning2-fx.mp3", id:"warningFXID"},
     {src:"assets/gift-reward.mp3", id:"giftRewardFXID"},
-    {src:"assets/camera-Shutter.mp3", id:"cameraShutterFXID"},
+    {src:"assets/camera-shutter.mp3", id:"cameraShutterFXID"},
+    {src:"assets/char-select.mp3", id:"charSelectFXID"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
-    {src:"images/music_icon.png", id:"musicIconID"},
     {src:"images/presents/present_bear.png", id:"pBear"},
     {src:"images/presents/present_bunny.png", id:"pBunny"},
     {src:"images/presents/present_coal.png", id:"pCoal"},
@@ -384,22 +384,30 @@ function buildArt() {
       "surprise": [36, 40, "surprise", 20/60]
     }
   });
-  musicIconSpriteSheet = new createjs.SpriteSheet( {
-  // all main strings are reserved strings (images, frames, animations) that do a specific task
-    "images": [loader.getResult("musicIconID")],
-    "frames": {height: 39, width: 40, regX: 0, regY: 0},
-    "animations": {
-      "on": [0],
-      "off": [1]
-    }
-  });
 
   //Music Button
-  musicIconSprite = new createjs.Sprite(musicIconSpriteSheet, "on");
+  musicButton = new createjs.Text("Music On", "32px PixelFont3", "#FFFFFF");
+  musicButtonHitArea = new createjs.Shape();
+  musicButtonHitArea.graphics.beginFill("#000000").drawRect(0,0,100,15);
+  
 
+  musicButton.x = 425,
+  musicButton.y = 250;
+  musicButtonHitArea.x = 0,
+  musicButtonHitArea.y = 9;
+  musicButton.hitArea = musicButtonHitArea; 
 
-  musicIconSprite.x = 450,
-  musicIconSprite.y = 250;
+  soundFXButton = new createjs.Text("SoundFX On", "32px PixelFont3", "#FFFFFF");
+  soundFXButtonHitArea = new createjs.Shape();
+  soundFXButtonHitArea.graphics.beginFill("#000000").drawRect(0,0,100,15);
+  
+
+  soundFXButton.x = 403,
+  soundFXButton.y = 265;
+  soundFXButtonHitArea.x = 0,
+  soundFXButtonHitArea.y = 9;
+  soundFXButton.hitArea = musicButtonHitArea; 
+
 
   mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.15);
   drumLoop = createjs.Sound.play("drumLoopID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.3);
@@ -412,7 +420,7 @@ function buildArt() {
   warningFX = createjs.Sound.play("warningFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2, 1);
   giftRewardFX = createjs.Sound.play("giftRewardFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.3);
   cameraShutterFX = createjs.Sound.play("cameraShutterFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.3);
-
+  charSelectFX = createjs.Sound.play("charSelectFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.3);
   mainMusicFade = new createjs.Tween.get(mainMusic, {paused:true})
                  .to({volume: 0.15}, 2000);
 
@@ -500,10 +508,10 @@ function startScreen() {
   startInstruction.addEventListener("rollover",startInstructionMouseOver);
   startText.addEventListener("click",startTextClick);
   startInstruction.addEventListener("click",startInstructionClick);
-  musicIconSprite.addEventListener("click", musicIconSpriteClick);
-  
+  musicButton.addEventListener("click", musicButtonClick);
+  soundFXButton.addEventListener("click", soundFXButtonClick);
 
-  stage.addChild(startTitleBG, startTitle, startSelection, startText, startInstruction, musicIconSprite);
+  stage.addChild(startTitleBG, startTitle, startSelection, startText, startInstruction, musicButton, soundFXButton);
 
   stage.update();
 }
@@ -533,20 +541,48 @@ function startInstructionClick() {
 }
 
 
-function musicIconSpriteClick() {
+function musicButtonClick() {
   musicToggle = !musicToggle;
   if (!musicToggle) {
-    musicIconSprite.gotoAndPlay("on");
+    musicButton.text = "Music On";
     mainMusic.setVolume(0.15);
     startMusic.setVolume(0.3);
     drumLoop.setVolume(0.3);
-    
+    stage.update();
   } else {
-    musicIconSprite.gotoAndPlay("off");
+    musicButton.text = "Music Off";
     mainMusic.setVolume(0);
     startMusic.setVolume(0);
     drumLoop.setVolume(0);
     mainMusicFade.setPaused(true);
+    stage.update();
+  }
+}
+
+function soundFXButtonClick() {
+  soundFXToggle = !soundFXToggle;
+  if (!soundFXToggle) {
+    soundFXButton.text = "SoundFX On";
+    alarmFX.setVolume(0.1);
+    boyChooseFX.setVolume(0.1);
+    caughtFX.setVolume(0.1);
+    dodgeFX.setVolume(0.2);
+    warningFX.setVolume(0.2);
+    giftRewardFX.setVolume(0.3);
+    cameraShutterFX.setVolume(0.3);
+    charSelectFX.setVolume(0.3);
+    stage.update();
+  } else {
+    soundFXButton.text = "SoundFX Off";
+    alarmFX.setVolume(0);
+    boyChooseFX.setVolume(0);
+    caughtFX.setVolume(0);
+    dodgeFX.setVolume(0);
+    warningFX.setVolume(0);
+    giftRewardFX.setVolume(0);
+    cameraShutterFX.setVolume(0);
+    charSelectFX.setVolume(0);
+    stage.update();
   }
 }
 
@@ -713,7 +749,7 @@ function charScreen() {
   girlDisplayContainer.addChild(girlDisplay, charSelectGirl );
 
   //put is all on the main screen
-  stage.addChild(startTitleBG, boyDisplayContainer, girlDisplayContainer, charTitle, charSelectFrame2, charSelectFrame1);
+  stage.addChild(startTitleBG, boyDisplayContainer, girlDisplayContainer, charTitle, charSelectFrame2, charSelectFrame1, musicButton, soundFXButton);
 
   //add eventListeners (hover, clikc etc..)
   boyDisplayContainer.addEventListener("rollover",charBoyMouseOver);
@@ -727,12 +763,14 @@ function charScreen() {
 }
 function boySelect() {
   character = 0;
+  charSelectFX.play();
   charSelectBoy.gotoAndPlay("pickMe");
   createjs.Ticker.addEventListener("tick",charSelectAnim);
 }
 
 function girlSelect() {
   character = 1;
+  charSelectFX.play();
   charSelectGirl.gotoAndPlay("pickMe");
   createjs.Ticker.addEventListener("tick",charSelectAnim);
 }
@@ -925,7 +963,7 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, characterSprite, bellSprite, musicIconSprite);
+  stage.addChild(backgroundContainer, characterSprite, bellSprite, musicButton, soundFXButton);
 
 
 
