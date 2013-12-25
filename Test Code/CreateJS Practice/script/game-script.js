@@ -150,8 +150,8 @@ function init() {
   manifest = [
     // array of assest (images/music) that load with manifest
     // grabbing assets from the DOM
-    {src:"assets/drumloop.mp3", id:"drumLoopID"},
-    {src:"assets/rooftop-dreams-draft1.mp3", id:"mainMusicID"},
+    {src:"assets/drumloop-draft2.mp3", id:"drumLoopID"},
+    {src:"assets/rooftop-dreams-draft4.mp3", id:"mainMusicID"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
     {src:"images/presents/present_bear.png", id:"pBear"},
     {src:"images/presents/present_bunny.png", id:"pBunny"},
@@ -362,7 +362,7 @@ function buildArt() {
     }
   });
 
-  mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+  mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.5);
   drumLoop = createjs.Sound.play("drumLoopID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
 }
 
@@ -386,7 +386,6 @@ function createSnow() {
 function startScreen() {
   createjs.Sound.stop();
   mainMusic.play();
-
   // crates new stages and properties for assets to live on
   startScreenStatus = true;
   charSelectStatus = false;
@@ -728,8 +727,10 @@ function charSelectAnim() {
 function startGame() {
 
   createjs.Sound.stop();
-  mainMusic.setPosition(7000);
-  mainMusic.play();
+  mainMusic.play({volume: 0});
+  mainMusicFade = new createjs.Tween.get(mainMusic, {paused:true})
+                .to({volume: 0.5}, 1000);
+  mainMusicFade.setPaused(false);
 
   stage.removeAllChildren();
   charSelectStatus = false;
@@ -873,7 +874,7 @@ function musicButtonClick() {
   musicToggle = !musicToggle;
   if (!musicToggle) {
     musicButton.text = "Music Off";
-    mainMusic.setVolume(1);
+    mainMusic.setVolume(0.5);
   } else {
     musicButton.text = "Music On";
     mainMusic.setVolume(0);
