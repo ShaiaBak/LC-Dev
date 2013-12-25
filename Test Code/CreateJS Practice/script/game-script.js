@@ -135,7 +135,9 @@ var FinalAnim;
 
 var drumLoop;
 var mainMusic;
-
+var musicButton;
+var musicButtonHitArea;
+var musicToggle   = false;
 
 function init() {
   // conventional initializer
@@ -728,6 +730,7 @@ function startGame() {
   createjs.Sound.stop();
   mainMusic.setPosition(7000);
   mainMusic.play();
+
   stage.removeAllChildren();
   charSelectStatus = false;
   gameStatus = true;
@@ -752,6 +755,14 @@ function startGame() {
 
   //TODO: second count
   timeDisplay = new createjs.Text("Alert: false", "32px PixelFont3", "#FFFFFF")
+
+
+  //Music Button
+  musicButton = new createjs.Text("Music Off", "48px PixelFont3", "#FFFFFF");
+  musicButtonHitArea = new createjs.Shape();
+
+  musicButtonHitArea.graphics.beginFill("#000000").drawRect(0,0,120,30);
+  musicButton.hitArea = musicButtonHitArea;
 
   //fill the background at 0,0 to the size of the screen
   
@@ -786,6 +797,11 @@ function startGame() {
   warningCountDisplay.x = 350;
   warningCountDisplay.y = 120;
 
+  musicButton.x = 17,
+  musicButton.y = 0;
+
+  musicButtonHitArea.x = 10,
+  musicButtonHitArea.y = 10;
 
 //Boy Selection
   if (character == 0) {
@@ -837,8 +853,10 @@ function startGame() {
   backgroundContainer.addChild(background, fireplaceSprite, santaSprite);
 
   // .addchild put everythign on the screen
-  stage.addChild(backgroundContainer, characterSprite, bellSprite);
-  
+  stage.addChild(backgroundContainer, characterSprite, bellSprite, musicButton);
+  musicButton.addEventListener("click", musicButtonClick);
+
+
   if(gameStatus) {
     santaAlert();
     gameScore();
@@ -849,6 +867,17 @@ function startGame() {
   createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
   createjs.Ticker.setFPS(60);
   createjs.Ticker.addEventListener("tick", stageUpdate);
+}
+
+function musicButtonClick() {
+  musicToggle = !musicToggle;
+  if (!musicToggle) {
+    musicButton.text = "Music Off";
+    mainMusic.setVolume(1);
+  } else {
+    musicButton.text = "Music On";
+    mainMusic.setVolume(0);
+  }
 }
 
 function gameScore() {
