@@ -140,6 +140,11 @@ var musicButtonHitArea;
 var musicToggle   = false;
 var mainMusicFade;
 var alarmFX;
+var boyChooseFX;
+var girlChooseFX;
+var caughtFX;
+var dodgeFX;
+var warningFX;
 
 function init() {
   // conventional initializer
@@ -156,6 +161,11 @@ function init() {
     {src:"assets/rooftop-dreams-draft4.mp3", id:"mainMusicID"},
     {src:"assets/start-rooftop-draft1.mp3", id:"startMusicID"},
     {src:"assets/alarm-fx.mp3", id:"alarmFXID"},
+    {src:"assets/boy-choose-fx.mp3", id:"boyChooseFXID"},
+    {src:"assets/girl-choose-fx.mp3", id:"girlChooseFXID"},
+    {src:"assets/caught-fx.mp3", id:"caughtFXID"},
+    {src:"assets/dodge-fx.mp3", id:"dodgeFXID"},
+    {src:"assets/warning-fx.mp3", id:"warningFXID"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
     {src:"images/presents/present_bear.png", id:"pBear"},
     {src:"images/presents/present_bunny.png", id:"pBunny"},
@@ -369,8 +379,12 @@ function buildArt() {
   mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.5);
   drumLoop = createjs.Sound.play("drumLoopID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
   startMusic = createjs.Sound.play("startMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.5);
-  alarmFX = createjs.Sound.play("alarmFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.1);
-   
+  alarmFX = createjs.Sound.play("alarmFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
+  boyChooseFX = createjs.Sound.play("boyChooseFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
+  girlChooseFX = createjs.Sound.play("girlChooseFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
+  caughtFX = createjs.Sound.play("caughtFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
+  dodgeFX = createjs.Sound.play("dodgeFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2); 
+  warningFX = createjs.Sound.play("warningFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2);
 }
 
 function createSnow() {
@@ -672,6 +686,11 @@ function girlSelect() {
 
 function charBoyMouseOver() {
   if (charSelectStatus) {
+    boyChooseFX.stop();
+    girlChooseFX.stop();
+    boyChooseFX.play();
+
+
     charSelectToggle = false;
     charSelectFrame1.x = 125;
     charSelectFrame2.x = 125;
@@ -680,7 +699,11 @@ function charBoyMouseOver() {
 }
 
 function charGirlMouseOver() {
-  if (charSelectStatus) {
+  if (charSelectStatus) {        
+    boyChooseFX.stop();
+    girlChooseFX.stop();
+    girlChooseFX.play();
+
     charSelectToggle = true;
     charSelectFrame1.x = 375;
     charSelectFrame2.x = 375;
@@ -927,7 +950,7 @@ function santaAlert() {
           case 6:
           case 8:
           case 10:
-            
+            warningFX.play();
             bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
@@ -947,7 +970,7 @@ function santaAlert() {
           case 8:
           case 9:
           case 10:
-            
+            warningFX.play();
             bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
@@ -968,6 +991,7 @@ function santaAlert() {
           case 8:
           case 9:
           case 10:
+            warningFX.play();
             bellSprite.gotoAndPlay("initial");
             warning = 1;
             break;
@@ -984,7 +1008,9 @@ function santaAlert() {
     if(warning == 1) {
       warningCount++;
       if(warningCount == 2) {
+        
         bellSprite.gotoAndPlay("ringing");
+        warningFX.stop();
         alarmFX.play();
         alert = 1;
         warningCount = 0;
@@ -1024,6 +1050,7 @@ function forceduck() {
       santaSprite.gotoAndPlay("idle");
       bellSprite.gotoAndStop("initial");
       alarmFX.stop();
+      caughtFX.play();
       totalAlerts++;
       alert             = 0;
       alertCount        = -1;
@@ -1039,6 +1066,7 @@ function forceduck() {
       santaSprite.gotoAndPlay("idle");
       bellSprite.gotoAndStop("initial");
       alarmFX.stop();
+      dodgeFX.play();
       totalAlerts++;
       totalDodged++;
       scoreTimer       += 2;
@@ -1172,11 +1200,19 @@ function handleKeyUp(e) {
       
       // IF startSelectToggle is true, cursor on "Instructions"
       if (charSelectToggle) {
+        boyChooseFX.stop();
+        girlChooseFX.stop();
+        girlChooseFX.play();
+
         charSelectFrame1.x = 375;
         charSelectFrame2.x = 375;
         stage.update();
         break;
       } else {
+        boyChooseFX.stop();
+        girlChooseFX.stop();
+        boyChooseFX.play();
+
         charSelectFrame1.x = 125;
         charSelectFrame2.x = 125;
         stage.update();
