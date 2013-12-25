@@ -80,7 +80,7 @@ var characterDiveCount  = 0;
 var scoreDisplay;
 var score       = 0;
 var finalScore  = 0;
-var scoreTimer  = 30;
+var scoreTimer  = 33;
 var multiplier  = 4; 
 
 //End Card
@@ -138,6 +138,8 @@ var mainMusic;
 var musicButton;
 var musicButtonHitArea;
 var musicToggle   = false;
+var mainMusicFade;
+var alarmFX;
 
 function init() {
   // conventional initializer
@@ -153,6 +155,7 @@ function init() {
     {src:"assets/drumloop-draft2.mp3", id:"drumLoopID"},
     {src:"assets/rooftop-dreams-draft4.mp3", id:"mainMusicID"},
     {src:"assets/start-rooftop-draft1.mp3", id:"startMusicID"},
+    {src:"assets/alarm-fx.mp3", id:"alarmFXID"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
     {src:"images/presents/present_bear.png", id:"pBear"},
     {src:"images/presents/present_bunny.png", id:"pBunny"},
@@ -366,6 +369,8 @@ function buildArt() {
   mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.5);
   drumLoop = createjs.Sound.play("drumLoopID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
   startMusic = createjs.Sound.play("startMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.5);
+  alarmFX = createjs.Sound.play("alarmFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.1);
+   
 }
 
 function createSnow() {
@@ -730,10 +735,11 @@ function startGame() {
 
   createjs.Sound.stop();
   mainMusic.play({volume: 0});
-  mainMusicFade = new createjs.Tween.get(mainMusic, {paused:true})
-                .to({volume: 0.5}, 2000);
-  mainMusicFade.setPaused(false);
-
+  if (!musicToggle) {
+    mainMusicFade = new createjs.Tween.get(mainMusic, {paused:true})
+                 .to({volume: 0.5}, 2000);
+    mainMusicFade.setPaused(false);
+  }
   stage.removeAllChildren();
   charSelectStatus = false;
   gameStatus = true;
@@ -878,12 +884,14 @@ function musicButtonClick() {
     musicButton.text = "Music Off";
     mainMusic.setVolume(0.5);
     startMusic.setVolume(0.5);
-    drumLoop.SetVolume(0.5);
+    drumLoop.setVolume(0.5);
+    
   } else {
     musicButton.text = "Music On";
     mainMusic.setVolume(0);
     startMusic.setVolume(0);
-    drumLoop.SetVolume(0);
+    drumLoop.setVolume(0);
+    mainMusicFade.setPaused(true);
   }
 }
 
@@ -977,6 +985,7 @@ function santaAlert() {
       warningCount++;
       if(warningCount == 2) {
         bellSprite.gotoAndPlay("ringing");
+        alarmFX.play();
         alert = 1;
         warningCount = 0;
       }
@@ -1014,6 +1023,7 @@ function forceduck() {
       characterSprite.gotoAndStop("idle");
       santaSprite.gotoAndPlay("idle");
       bellSprite.gotoAndStop("initial");
+      alarmFX.stop();
       totalAlerts++;
       alert             = 0;
       alertCount        = -1;
@@ -1028,6 +1038,7 @@ function forceduck() {
     if(alertCount == 2) {
       santaSprite.gotoAndPlay("idle");
       bellSprite.gotoAndStop("initial");
+      alarmFX.stop();
       totalAlerts++;
       totalDodged++;
       scoreTimer       += 2;
@@ -1232,7 +1243,7 @@ function handleKeyUp(e) {
 function restart() {
   score = 0;
   stepsTaken = 0;
-  scoreTimer = 30;
+  scoreTimer = 33;
 
   createjs.Ticker.removeEventListener("tick",endCardUpdate);
   createjs.Ticker.removeEventListener("tick",endCardFlashAnim);
@@ -1297,14 +1308,15 @@ function restart() {
 function stageUpdate(event) {
 
   // TODO: get this outta here when done, TESTING
-  detectSteps.text = "steps: " + stepsTaken + " ";
-  alertStatus.text = "alert: " + alert + " ";
-  timeDelay.text = "delay: " + alertCount + " ";
-  timeDisplay.text = "time: " + santaCount + " ";
-  warningCountDisplay.text = "warningCount: " + warningCount;
-  warningDisplay.text = "warning: " + warning;
-  scoreDisplay.text = "Score: " + score + " X" + multiplier;
-  scoreTimeDisplay.text = "Gametime: " + scoreTimer;
+  // detectSteps.text = "steps: " + stepsTaken + " ";
+  // alertStatus.text = "alert: " + alert + " ";
+  // timeDelay.text = "delay: " + alertCount + " ";
+  // timeDisplay.text = "time: " + santaCount + " ";
+  // warningCountDisplay.text = "warningCount: " + warningCount;
+  // warningDisplay.text = "warning: " + warning;
+  // scoreDisplay.text = "Score: " + score + " X" + multiplier;
+  // scoreTimeDisplay.text = "Gametime: " + scoreTimer;
+
 
   score = stepsTaken;
 
@@ -1421,7 +1433,7 @@ function endCardPhoto() {
   /*if(scoreTimer < )*/
 
   if(!gameStatus) {
-    finalScore = parseInt(score * (multiplier + totalDodged/totalAlerts) );
+    finalScore = parseInt(score * (multiplier + (totalDodged/totalAlerts)) );
   }
 
   endCardPhotoStatus = true;
@@ -1639,6 +1651,25 @@ function endCardFinal() {
 
   replayButtonHitArea.graphics.beginFill("#FFFFFF").drawRect(-125,-64,250,128);
 
+  var backgroundxDisplay = new createjs.Text("bg: 0", "20px PixelFont3", "#FFFFFF");
+  var spritexDisplay = new createjs.Text("sprite: 0", "20px PixelFont3", "#FFFFFF"); 
+  var scoreTimeDisplay = new createjs.Text("sprite: 0", "32px PixelFont3", "#FFFFFF");
+  
+  //TODO TYLER FINAL TESTING VALUES
+  // detectSteps.text = "steps: " + stepsTaken + " ";
+  // alertStatus.text = "alert: " + totalAlerts + " ";
+  // timeDelay.text = "delay: " + alertCount + " ";
+  // timeDisplay.text = "time: " + santaCount + " ";
+  // warningCountDisplay.text = "dodgeCount: " + totalDodged;
+  // warningDisplay.text = "warning: " + warning;
+  // scoreDisplay.text = "Score: " + score + " X" + multiplier;
+  // scoreTimeDisplay.text = "Gametime: " + scoreTimer;
+  
+
+
+
+
+
 
   tumblrButton = new createjs.Shape();
   twitterButton = new createjs.Shape();
@@ -1673,7 +1704,8 @@ function endCardFinal() {
   endCardFinalContainer.alpha = 0;
 
   stage.addChild(endCardFinalContainer);
-
+//TODO: Remove LATER
+  // stage.addChild(detectSteps, alertStatus, scoreTimeDisplay, warningCountDisplay, scoreDisplay);
   
 
   replayButton1.addEventListener('click', restart);
