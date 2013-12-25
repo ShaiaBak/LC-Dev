@@ -376,9 +376,9 @@ function buildArt() {
     }
   });
 
-  mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.5);
-  drumLoop = createjs.Sound.play("drumLoopID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
-  startMusic = createjs.Sound.play("startMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.5);
+  mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.3);
+  drumLoop = createjs.Sound.play("drumLoopID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.3);
+  startMusic = createjs.Sound.play("startMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.3);
   alarmFX = createjs.Sound.play("alarmFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
   boyChooseFX = createjs.Sound.play("boyChooseFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
   girlChooseFX = createjs.Sound.play("girlChooseFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
@@ -905,9 +905,9 @@ function musicButtonClick() {
   musicToggle = !musicToggle;
   if (!musicToggle) {
     musicButton.text = "Music Off";
-    mainMusic.setVolume(0.5);
-    startMusic.setVolume(0.5);
-    drumLoop.setVolume(0.5);
+    mainMusic.setVolume(0.3);
+    startMusic.setVolume(0.3);
+    drumLoop.setVolume(0.3);
     
   } else {
     musicButton.text = "Music On";
