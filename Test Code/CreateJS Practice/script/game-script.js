@@ -145,7 +145,8 @@ var girlChooseFX;
 var caughtFX;
 var dodgeFX;
 var warningFX;
-
+var giftRewardFX;
+var giftRewardFXDelay;
 function init() {
   // conventional initializer
   stage = new createjs.Stage("myCanvas");
@@ -166,6 +167,7 @@ function init() {
     {src:"assets/caught-fx.mp3", id:"caughtFXID"},
     {src:"assets/dodge-fx.mp3", id:"dodgeFXID"},
     {src:"assets/warning2-fx.mp3", id:"warningFXID"},
+    {src:"assets/gift-reward.mp3", id:"giftRewardFXID"},
     {src:"assets/PixelFont3.ttf", id:"PixelFont3"},
     {src:"images/presents/present_bear.png", id:"pBear"},
     {src:"images/presents/present_bunny.png", id:"pBunny"},
@@ -376,7 +378,7 @@ function buildArt() {
     }
   });
 
-  mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.3);
+  mainMusic = createjs.Sound.play("mainMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.15);
   drumLoop = createjs.Sound.play("drumLoopID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.3);
   startMusic = createjs.Sound.play("startMusicID", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.3);
   alarmFX = createjs.Sound.play("alarmFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
@@ -385,6 +387,7 @@ function buildArt() {
   caughtFX = createjs.Sound.play("caughtFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.1);
   dodgeFX = createjs.Sound.play("dodgeFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2); 
   warningFX = createjs.Sound.play("warningFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.2);
+  giftRewardFX = createjs.Sound.play("giftRewardFXID", createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 0.3);
 }
 
 function createSnow() {
@@ -567,10 +570,12 @@ function instructionScreenAnimation() {
     instructionText.text = "Press down or space to duck";
 
   } else if ( instructionScreenCount == 9*60) {
+    warningFX.play({loop:1});
     instructionBell.gotoAndPlay("initial");
     instructionBoy.gotoAndPlay("idle");
     instructionText.text = "Beware of Santa's gaze!";
   } else if ( instructionScreenCount == 13*60) {
+    alarmFX.play();
     instructionBell.gotoAndPlay("ringing");
     instructionBoy.gotoAndPlay("duck");
     instructionText.text = "Duck to avoid being noticed";
@@ -579,6 +584,8 @@ function instructionScreenAnimation() {
     instructionText.text = "or else...";
   } else if ( instructionScreenCount == 21*60) {
     //Return to start screen and remove ticker
+    warningFX.stop();
+    alarmFX.stop();
     startScreen();
     createjs.Tween.removeTweens(instructionBoy);
     createjs.Ticker.removeEventListener("tick", instructionScreenAnimation);
@@ -687,7 +694,6 @@ function girlSelect() {
 function charBoyMouseOver() {
   if (charSelectStatus) {
     boyChooseFX.stop();
-    girlChooseFX.stop();
     boyChooseFX.play();
 
 
@@ -701,8 +707,7 @@ function charBoyMouseOver() {
 function charGirlMouseOver() {
   if (charSelectStatus) {        
     boyChooseFX.stop();
-    girlChooseFX.stop();
-    girlChooseFX.play();
+    boyChooseFX.play();
 
     charSelectToggle = true;
     charSelectFrame1.x = 375;
@@ -760,7 +765,7 @@ function startGame() {
   mainMusic.play({volume: 0});
   if (!musicToggle) {
     mainMusicFade = new createjs.Tween.get(mainMusic, {paused:true})
-                 .to({volume: 0.5}, 2000);
+                 .to({volume: 0.15}, 2000);
     mainMusicFade.setPaused(false);
   }
   stage.removeAllChildren();
@@ -905,7 +910,7 @@ function musicButtonClick() {
   musicToggle = !musicToggle;
   if (!musicToggle) {
     musicButton.text = "Music Off";
-    mainMusic.setVolume(0.3);
+    mainMusic.setVolume(0.15);
     startMusic.setVolume(0.3);
     drumLoop.setVolume(0.3);
     
@@ -1179,6 +1184,8 @@ function handleKeyUp(e) {
     switch(e.keyCode) {
       case KEYCODE_ENTER:
       case KEYCODE_SPACE:
+      warningFX.stop();
+      alarmFX.stop();
       startScreen();
       instructionScreenStatus = false;
       createjs.Ticker.removeEventListener("tick", instructionScreenAnimation);
@@ -1195,24 +1202,17 @@ function handleKeyUp(e) {
       case KEYCODE_A:
       case KEYCODE_RIGHT:
       case KEYCODE_D:
-
+      boyChooseFX.stop();
+      boyChooseFX.play();
       charSelectToggle = !charSelectToggle; 
       
       // IF startSelectToggle is true, cursor on "Instructions"
       if (charSelectToggle) {
-        boyChooseFX.stop();
-        girlChooseFX.stop();
-        girlChooseFX.play();
-
         charSelectFrame1.x = 375;
         charSelectFrame2.x = 375;
         stage.update();
         break;
       } else {
-        boyChooseFX.stop();
-        girlChooseFX.stop();
-        boyChooseFX.play();
-
         charSelectFrame1.x = 125;
         charSelectFrame2.x = 125;
         stage.update();
@@ -1467,7 +1467,7 @@ function stageUpdate(event) {
 //displays the photo of character and santa for 5 seconds
 function endCardPhoto() {
   /*if(scoreTimer < )*/
-
+  mainMusic.setVolume(0.05);
   if(!gameStatus) {
     finalScore = parseInt(score * (multiplier + (totalDodged/totalAlerts)) );
   }
@@ -1543,7 +1543,7 @@ function endCardGift() {
   endCardPhotoStatus = false;
   endCardPhotoCount = 0;
   endCardGiftStatus = true;
-
+  giftRewardFX.play({delay:1500});
   stage.removeAllChildren();
 
 
@@ -1663,6 +1663,7 @@ function endCardGift() {
 function endCardFinal() {
   endCardGiftStatus = false;
   endCardFinalStatus = true;
+  mainMusic.setVolume(0.15);
   stage.removeChild(endCardGiftYouGot)
   //stage.removeAllChildren();
   var replayButtonHitArea = new createjs.Shape();
